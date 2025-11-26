@@ -1,11 +1,13 @@
 import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
+import { requireActionCtx } from "@convex-dev/better-auth/utils";
 import { betterAuth } from "better-auth";
 import { components } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
+import { sendEmailVerification, sendResetPassword } from "./email";
 
-const siteUrl = process.env.SITE_URL!;
+const siteUrl = process.env.SITE_URL || "http://localhost:3000";
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
@@ -21,15 +23,53 @@ export const createAuth = (
 		},
 		baseURL: siteUrl,
 		database: authComponent.adapter(ctx),
-		// Configure simple, non-verified email/password to get started
+		session: {
+			expiresIn: 60 * 60 * 24 * 7, // 7 days
+			updateAge: 60 * 60 * 24, // Refresh every 24 hours
+			cookieCache: {
+				enabled: true,
+				maxAge: 5 * 60, // 5 minutes
+			},
+		},
 		emailAndPassword: {
 			enabled: true,
 			requireEmailVerification: false,
+			sendResetPassword: async ({ user, url }) => {
+				await sendResetPassword(requireActionCtx(ctx), {
+					to: user.email,
+					url,
+				});
+			},
 		},
-		plugins: [
-			// The Convex plugin is required for Convex compatibility
-			convex(),
-		],
+		emailVerification: {
+			sendOnSignUp: true,
+			// autoSignInAfterVerification: true,
+			sendVerificationEmail: async ({ user, token }) => {
+				await sendEmailVerification(requireActionCtx(ctx), {
+					to: user.email,
+					token,
+				});
+			},
+			verificationTokenExpiresIn: 86_400, // 24 hours in seconds
+		},
+		user: {
+			deleteUser: {
+				enabled: true,
+			},
+			// additionalFields: {
+			//   hasCompletedOnboarding: {
+			//     type: "boolean",
+			//     required: false,
+			//     defaultValue: false,
+			//   },
+			//   accountStatus: {
+			//     type: "string",
+			//     required: false,
+			//     defaultValue: "active",
+			//   },
+			// },
+		},
+		plugins: [convex()],
 	});
 };
 

@@ -33,7 +33,7 @@
     "source.organizeImports.biome": "explicit",
     "source.fixAll.biome": "explicit"
   },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.defaultFormatter": "biomejs.biome",
   "[graphql]": {
     "editor.defaultFormatter": "biomejs.biome"
   },

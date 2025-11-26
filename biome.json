@@ -12,8 +12,11 @@
       "**/.vscode/**/*",
       "**/index.html",
       "**/vite.config.js",
+      "!**/src/styles.css",
       "!**/src/routeTree.gen.ts",
-      "!**/src/styles.css"
+      "!**/src/convex/**/*",
+      "!**/convex/**/*",
+      "!**/convex.config.ts"
     ]
   },
   "formatter": {
@@ -30,12 +33,33 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "style": {
+        "useImportType": "off",
+        "noNestedTernary": "off",
+        "useFilenamingConvention": "off"
+      },
+      "nursery": {
+        "useConsistentArrowReturn": "off",
+        "noEmptySource": "off",
+        "useSortedClasses": "off"
+      },
+      "suspicious": {
+        "noConsole": "off",
+        "noExplicitAny": "off",
+        "noSkippedTests": "off"
+      },
+      "performance": {
+        "noNamespaceImport": "off",
+        "noImgElement": "off"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "info"
+      }
     }
   },
   "javascript": {
     "formatter": {
-      "quoteStyle": "double"
+      "quoteStyle": "single"
     }
   },
   "extends": ["ultracite/core", "ultracite/remix"]

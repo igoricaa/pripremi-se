@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link } from '@tanstack/react-router';
 import {
 	ChevronDown,
 	ChevronRight,
@@ -10,8 +10,8 @@ import {
 	SquareFunction,
 	StickyNote,
 	X,
-} from "lucide-react";
-import { useState } from "react";
+} from 'lucide-react';
+import { useState } from 'react';
 
 export default function Header() {
 	const [isOpen, setIsOpen] = useState(false);
@@ -26,6 +26,7 @@ export default function Header() {
 					aria-label="Open menu"
 					className="rounded-lg p-2 transition-colors hover:bg-gray-700"
 					onClick={() => setIsOpen(true)}
+					type="button"
 				>
 					<Menu size={24} />
 				</button>
@@ -42,7 +43,7 @@ export default function Header() {
 
 			<aside
 				className={`fixed top-0 left-0 z-50 flex h-full w-80 transform flex-col bg-gray-900 text-white shadow-2xl transition-transform duration-300 ease-in-out ${
-					isOpen ? "translate-x-0" : "-translate-x-full"
+					isOpen ? 'translate-x-0' : '-translate-x-full'
 				}`}
 			>
 				<div className="flex items-center justify-between border-gray-700 border-b p-4">
@@ -51,6 +52,7 @@ export default function Header() {
 						aria-label="Close menu"
 						className="rounded-lg p-2 transition-colors hover:bg-gray-800"
 						onClick={() => setIsOpen(false)}
+						type="button"
 					>
 						<X size={24} />
 					</button>
@@ -60,7 +62,7 @@ export default function Header() {
 					<Link
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 						className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
 						onClick={() => setIsOpen(false)}
@@ -75,7 +77,7 @@ export default function Header() {
 					<Link
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 						className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
 						onClick={() => setIsOpen(false)}
@@ -88,7 +90,7 @@ export default function Header() {
 					<Link
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 						className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
 						onClick={() => setIsOpen(false)}
@@ -102,7 +104,7 @@ export default function Header() {
 						<Link
 							activeProps={{
 								className:
-									"flex-1 flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+									'flex-1 flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 							}}
 							className="mb-2 flex flex-1 items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
 							onClick={() => setIsOpen(false)}
@@ -119,6 +121,7 @@ export default function Header() {
 									StartSSRDemo: !prev.StartSSRDemo,
 								}))
 							}
+							type="button"
 						>
 							{groupedExpanded.StartSSRDemo ? (
 								<ChevronDown size={20} />
@@ -132,7 +135,7 @@ export default function Header() {
 							<Link
 								activeProps={{
 									className:
-										"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+										'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 								}}
 								className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
 								onClick={() => setIsOpen(false)}
@@ -145,7 +148,7 @@ export default function Header() {
 							<Link
 								activeProps={{
 									className:
-										"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+										'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 								}}
 								className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
 								onClick={() => setIsOpen(false)}
@@ -158,7 +161,7 @@ export default function Header() {
 							<Link
 								activeProps={{
 									className:
-										"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+										'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 								}}
 								className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
 								onClick={() => setIsOpen(false)}
@@ -173,7 +176,7 @@ export default function Header() {
 					<Link
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 						className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
 						onClick={() => setIsOpen(false)}
@@ -186,7 +189,7 @@ export default function Header() {
 					<Link
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 						className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
 						onClick={() => setIsOpen(false)}
@@ -199,7 +202,7 @@ export default function Header() {
 					<Link
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 						className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
 						onClick={() => setIsOpen(false)}
@@ -212,7 +215,7 @@ export default function Header() {
 					<Link
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 						className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
 						onClick={() => setIsOpen(false)}

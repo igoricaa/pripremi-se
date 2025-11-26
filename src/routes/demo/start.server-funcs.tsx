@@ -1,7 +1,7 @@
-import fs from "node:fs";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
-import { useCallback, useState } from "react";
+import fs from 'node:fs';
+import { createFileRoute, useRouter } from '@tanstack/react-router';
+import { createServerFn } from '@tanstack/react-start';
+import { useCallback, useState } from 'react';
 
 /*
 const loggingMiddleware = createMiddleware().server(
@@ -15,15 +15,15 @@ const loggedServerFunction = createServerFn({ method: "GET" }).middleware([
 ]);
 */
 
-const TODOS_FILE = "todos.json";
+const TODOS_FILE = 'todos.json';
 
 async function readTodos() {
 	return JSON.parse(
-		await fs.promises.readFile(TODOS_FILE, "utf-8").catch(() =>
+		await fs.promises.readFile(TODOS_FILE, 'utf-8').catch(() =>
 			JSON.stringify(
 				[
-					{ id: 1, name: "Get groceries" },
-					{ id: 2, name: "Buy a new phone" },
+					{ id: 1, name: 'Get groceries' },
+					{ id: 2, name: 'Buy a new phone' },
 				],
 				null,
 				2
@@ -33,10 +33,10 @@ async function readTodos() {
 }
 
 const getTodos = createServerFn({
-	method: "GET",
+	method: 'GET',
 }).handler(async () => await readTodos());
 
-const addTodo = createServerFn({ method: "POST" })
+const addTodo = createServerFn({ method: 'POST' })
 	.inputValidator((d: string) => d)
 	.handler(async ({ data }) => {
 		const todos = await readTodos();
@@ -45,7 +45,7 @@ const addTodo = createServerFn({ method: "POST" })
 		return todos;
 	});
 
-export const Route = createFileRoute("/demo/start/server-funcs")({
+export const Route = createFileRoute('/demo/start/server-funcs')({
 	component: Home,
 	loader: async () => await getTodos(),
 });
@@ -54,11 +54,11 @@ function Home() {
 	const router = useRouter();
 	let todos = Route.useLoaderData();
 
-	const [todo, setTodo] = useState("");
+	const [todo, setTodo] = useState('');
 
 	const submitTodo = useCallback(async () => {
 		todos = await addTodo({ data: todo });
-		setTodo("");
+		setTodo('');
 		router.invalidate();
 	}, [addTodo, todo]);
 
@@ -67,7 +67,7 @@ function Home() {
 			className="flex min-h-screen items-center justify-center bg-gradient-to-br from-zinc-800 to-black p-4 text-white"
 			style={{
 				backgroundImage:
-					"radial-gradient(50% 50% at 20% 60%, #23272a 0%, #18181b 50%, #000000 100%)",
+					'radial-gradient(50% 50% at 20% 60%, #23272a 0%, #18181b 50%, #000000 100%)',
 			}}
 		>
 			<div className="w-full max-w-2xl rounded-xl border-8 border-black/10 bg-black/50 p-8 shadow-xl backdrop-blur-md">
@@ -87,7 +87,7 @@ function Home() {
 						className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/60 backdrop-blur-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-400"
 						onChange={(e) => setTodo(e.target.value)}
 						onKeyDown={(e) => {
-							if (e.key === "Enter") {
+							if (e.key === 'Enter') {
 								submitTodo();
 							}
 						}}

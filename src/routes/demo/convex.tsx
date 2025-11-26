@@ -1,12 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useMutation, useQuery } from "convex/react";
-import { Check, Circle, Plus, Trash2 } from "lucide-react";
-import { useCallback, useState } from "react";
+import { createFileRoute } from '@tanstack/react-router';
+import { useMutation, useQuery } from 'convex/react';
+import { Check, Circle, Plus, Trash2 } from 'lucide-react';
+import { useCallback, useState } from 'react';
 
-import { api } from "../../../convex/_generated/api";
-import type { Id } from "../../../convex/_generated/dataModel";
+import { api } from '../../../convex/_generated/api';
+import type { Id } from '../../../convex/_generated/dataModel';
 
-export const Route = createFileRoute("/demo/convex")({
+export const Route = createFileRoute('/demo/convex')({
 	ssr: false,
 	component: ConvexTodos,
 });
@@ -17,24 +17,24 @@ function ConvexTodos() {
 	const toggleTodo = useMutation(api.todos.toggle);
 	const removeTodo = useMutation(api.todos.remove);
 
-	const [newTodo, setNewTodo] = useState("");
+	const [newTodo, setNewTodo] = useState('');
 
 	const handleAddTodo = useCallback(async () => {
 		if (newTodo.trim()) {
 			await addTodo({ text: newTodo.trim() });
-			setNewTodo("");
+			setNewTodo('');
 		}
 	}, [addTodo, newTodo]);
 
 	const handleToggleTodo = useCallback(
-		async (id: Id<"todos">) => {
+		async (id: Id<'todos'>) => {
 			await toggleTodo({ id });
 		},
 		[toggleTodo]
 	);
 
 	const handleRemoveTodo = useCallback(
-		async (id: Id<"todos">) => {
+		async (id: Id<'todos'>) => {
 			await removeTodo({ id });
 		},
 		[removeTodo]
@@ -48,7 +48,7 @@ function ConvexTodos() {
 			className="flex min-h-screen items-center justify-center p-4"
 			style={{
 				background:
-					"linear-gradient(135deg, #667a56 0%, #8fbc8f 25%, #90ee90 50%, #98fb98 75%, #f0fff0 100%)",
+					'linear-gradient(135deg, #667a56 0%, #8fbc8f 25%, #90ee90 50%, #98fb98 75%, #f0fff0 100%)',
 			}}
 		>
 			<div className="w-full max-w-2xl">
@@ -79,7 +79,7 @@ function ConvexTodos() {
 							className="flex-1 rounded-xl border-2 border-green-200 bg-white/80 px-4 py-3 text-gray-800 placeholder-gray-500 transition-colors focus:border-green-400 focus:outline-none"
 							onChange={(e) => setNewTodo(e.target.value)}
 							onKeyDown={(e) => {
-								if (e.key === "Enter") {
+								if (e.key === 'Enter') {
 									handleAddTodo();
 								}
 							}}
@@ -116,7 +116,7 @@ function ConvexTodos() {
 								{todos.map((todo, index) => (
 									<div
 										className={`flex items-center gap-4 p-4 transition-colors hover:bg-green-50/50 ${
-											todo.completed ? "opacity-75" : ""
+											todo.completed ? 'opacity-75' : ''
 										}`}
 										key={todo._id}
 										style={{
@@ -126,8 +126,8 @@ function ConvexTodos() {
 										<button
 											className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border-2 transition-all duration-200 ${
 												todo.completed
-													? "border-green-500 bg-green-500 text-white"
-													: "border-green-300 text-transparent hover:border-green-400 hover:text-green-400"
+													? 'border-green-500 bg-green-500 text-white'
+													: 'border-green-300 text-transparent hover:border-green-400 hover:text-green-400'
 											}`}
 											onClick={() => handleToggleTodo(todo._id)}
 										>
@@ -137,8 +137,8 @@ function ConvexTodos() {
 										<span
 											className={`flex-1 text-lg transition-all duration-200 ${
 												todo.completed
-													? "text-gray-500 line-through"
-													: "text-gray-800"
+													? 'text-gray-500 line-through'
+													: 'text-gray-800'
 											}`}
 										>
 											{todo.text}
