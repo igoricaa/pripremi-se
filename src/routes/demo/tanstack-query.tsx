@@ -19,10 +19,10 @@ function TanStackQueryDemo() {
 	});
 
 	const { mutate: addTodo } = useMutation({
-		mutationFn: (todo: string) =>
+		mutationFn: (newTodo: string) =>
 			fetch('/demo/api/tq-todos', {
 				method: 'POST',
-				body: JSON.stringify(todo),
+				body: JSON.stringify(newTodo),
 			}).then((res) => res.json()),
 		onSuccess: () => refetch(),
 	});
@@ -71,6 +71,7 @@ function TanStackQueryDemo() {
 						className="rounded-lg bg-blue-500 px-4 py-3 font-bold text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-blue-500/50"
 						disabled={todo.trim().length === 0}
 						onClick={submitTodo}
+						type="button"
 					>
 						Add todo
 					</button>
