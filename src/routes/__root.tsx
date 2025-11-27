@@ -17,6 +17,8 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import { createServerFn } from '@tanstack/react-start';
 import { getCookie, getRequest } from '@tanstack/react-start/server';
 import type { ConvexReactClient } from 'convex/react';
+import { ThemeProvider } from '@/components/ThemeProvider';
+import { Toaster } from '@/components/ui/sonner';
 import { authClient } from '@/lib/auth-client';
 import Header from '../components/Header';
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools';
@@ -34,11 +36,11 @@ const fetchAuth = createServerFn({ method: 'GET' }).handler(async () => {
 	};
 });
 
-interface MyRouterContext {
+type MyRouterContext = {
 	queryClient: QueryClient;
 	convexClient: ConvexReactClient;
 	convexQueryClient: ConvexQueryClient;
-}
+};
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
 	head: () => ({
@@ -75,7 +77,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 		return { userId, token };
 	},
 	component: RootComponent,
-	// shellComponent: RootDocument,
 });
 
 function RootComponent() {
@@ -85,22 +86,25 @@ function RootComponent() {
 			authClient={authClient}
 			client={context.convexClient}
 		>
-			<RootDocument>
-				<Outlet />
-			</RootDocument>
+			<ThemeProvider>
+				<RootDocument>
+					<Outlet />
+				</RootDocument>
+			</ThemeProvider>
 		</ConvexBetterAuthProvider>
 	);
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="en">
+		<html lang="sr-RS">
 			<head>
 				<HeadContent />
 			</head>
 			<body>
 				<Header />
 				{children}
+				<Toaster />
 				<TanStackDevtools
 					config={{
 						position: 'bottom-right',

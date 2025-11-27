@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate, useRouteContext } from '@tanstack/react-router';
 import {
 	ChevronDown,
 	ChevronRight,
@@ -11,13 +11,32 @@ import {
 	StickyNote,
 	X,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { authClient } from '@/lib/auth-client';
+import { useTheme } from './ThemeProvider';
+import { ThemeSwitcher } from './ThemeSwitcher';
+import { Button } from './ui/button';
 
 export default function Header() {
+	const navigate = useNavigate();
 	const [isOpen, setIsOpen] = useState(false);
 	const [groupedExpanded, setGroupedExpanded] = useState<
 		Record<string, boolean>
 	>({});
+	const { theme } = useTheme();
+	const [mounted, setMounted] = useState(false);
+	const { userId } = useRouteContext({ from: '__root__' });
+
+	const handleSignOut = async () => {
+		await authClient.signOut();
+		navigate({ to: '/' });
+	};
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
+	const currentTheme = mounted ? theme || 'light' : 'light'; // Default during SSR/hydration
 
 	return (
 		<>
@@ -36,7 +55,11 @@ export default function Header() {
 							alt="TanStack Logo"
 							className="h-10"
 							height={40}
-							src="/tanstack-word-logo-white.svg"
+							src={
+								currentTheme === 'dark'
+									? '/tanstack-word-logo-white.svg'
+									: '/tanstack-word-logo-black.svg'
+							}
 							width={40}
 						/>
 					</Link>
@@ -228,6 +251,31 @@ export default function Header() {
 					</Link>
 
 					{/* Demo Links End */}
+					<ThemeSwitcher />
+					{/* Sign in / sign out */}
+					{userId ? (
+						<Button
+							className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
+							onClick={() => {
+								handleSignOut();
+								setIsOpen(false);
+							}}
+						>
+							Odjavi se
+						</Button>
+					) : (
+						<Link
+							activeProps={{
+								className:
+									'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
+							}}
+							className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
+							onClick={() => setIsOpen(false)}
+							to="/sign-in"
+						>
+							Prijavi se
+						</Link>
+					)}
 				</nav>
 			</aside>
 		</>

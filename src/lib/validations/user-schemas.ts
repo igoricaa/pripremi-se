@@ -26,7 +26,7 @@ export const signUpSchema = z
 				'Password must contain at least one uppercase letter, one lowercase letter, and one number'
 			),
 		passwordConfirmation: z.string().min(1, 'Please confirm your password'),
-		image: z
+		avatar: z
 			.instanceof(File)
 			.optional()
 			.refine(

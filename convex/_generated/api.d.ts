@@ -20,6 +20,7 @@ import type * as emails_components_verifyEmail from "../emails/components/verify
 import type * as emails_components_welcome from "../emails/components/welcome.js";
 import type * as http from "../http.js";
 import type * as todos from "../todos.js";
+import type * as users from "../users.js";
 
 import type {
   ApiFromModules,
@@ -40,6 +41,7 @@ declare const fullApi: ApiFromModules<{
   "emails/components/welcome": typeof emails_components_welcome;
   http: typeof http;
   todos: typeof todos;
+  users: typeof users;
 }>;
 
 /**

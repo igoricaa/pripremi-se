@@ -41,7 +41,8 @@
       "nursery": {
         "useConsistentArrowReturn": "off",
         "noEmptySource": "off",
-        "useSortedClasses": "off"
+        "useSortedClasses": "off",
+        "noShadow": "off"
       },
       "suspicious": {
         "noConsole": "off",
