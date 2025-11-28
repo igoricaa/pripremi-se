@@ -36,6 +36,15 @@ export const createAuth = (
 				enabled: true,
 				maxAge: 5 * 60, // 5 minutes
 			},
+			freshAge: 60 * 10, // 10 minutes - session is "fresh" for sensitive actions
+		},
+		advanced: {
+			useSecureCookies: process.env.NODE_ENV === "production",
+			defaultCookieAttributes: {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === "production",
+				sameSite: "lax",
+			},
 		},
 		emailAndPassword: {
 			enabled: true,
@@ -51,7 +60,7 @@ export const createAuth = (
 		},
 		emailVerification: {
 			sendOnSignUp: true,
-			// autoSignInAfterVerification: true,
+			autoSignInAfterVerification: true,
 			sendVerificationEmail: async ({ user, token }) => {
 				await sendEmailVerification(requireActionCtx(ctx), {
 					to: user.email,
@@ -65,18 +74,6 @@ export const createAuth = (
 			deleteUser: {
 				enabled: true,
 			},
-			// additionalFields: {
-			//   hasCompletedOnboarding: {
-			//     type: "boolean",
-			//     required: false,
-			//     defaultValue: false,
-			//   },
-			//   accountStatus: {
-			//     type: "string",
-			//     required: false,
-			//     defaultValue: "active",
-			//   },
-			// },
 		},
 		rateLimit: {
 			enabled: true,
@@ -87,9 +84,9 @@ export const createAuth = (
 				"/sign-in/email": {
 					window: 10,
 					max: 3,
-				}
+				},
 			},
 		},
-		plugins: [convex()],
+		plugins: [convex({ jwtExpirationSeconds: 900 })], // 15 min JWT expiration
 	});
 };

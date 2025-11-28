@@ -92,7 +92,7 @@ function RouteComponent() {
 					<CardHeader>
 						<CardTitle className="text-lg md:text-xl">Sign Up</CardTitle>
 						<CardDescription className="text-xs md:text-sm">
-							Enter your email below to login to your account
+							Create an account to get started
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
@@ -199,6 +199,7 @@ function RouteComponent() {
 												<FieldLabel htmlFor={field.name}>Password</FieldLabel>
 												<Input
 													aria-invalid={isInvalid}
+													autoComplete="new-password"
 													id={field.name}
 													name={field.name}
 													onBlur={field.handleBlur}
@@ -228,6 +229,7 @@ function RouteComponent() {
 												</FieldLabel>
 												<Input
 													aria-invalid={isInvalid}
+													autoComplete="new-password"
 													id={field.name}
 													name={field.name}
 													onBlur={field.handleBlur}
@@ -253,15 +255,11 @@ function RouteComponent() {
 								)}
 							</Button>
 
-							<div className="relative">
-								<div className="absolute inset-0 flex items-center">
-									<span className="w-full border-t border-neutral-800" />
-								</div>
-								<div className="relative flex justify-center text-xs">
-									<span className="bg-card px-2 text-neutral-500">
-										or continue with
-									</span>
-								</div>
+							<div className="text-center text-sm">
+								Already have an account?{' '}
+								<a className="underline underline-offset-4" href="/sign-in">
+									Sign in
+								</a>
 							</div>
 						</form>
 					</CardContent>
