@@ -88,17 +88,6 @@ export const passwordResetSchema = z
 
 export type PasswordResetFormValues = z.infer<typeof passwordResetSchema>;
 
-// 2FA verification schema
-export const twoFactorSchema = z.object({
-	code: z
-		.string()
-		.min(6, 'Verification code must be 6 digits')
-		.max(6, 'Verification code must be 6 digits')
-		.regex(/^\d{6}$/, 'Verification code must be 6 digits'),
-});
-
-export type TwoFactorFormValues = z.infer<typeof twoFactorSchema>;
-
 // Profile update schema
 export const profileUpdateSchema = z.object({
 	displayName: z
@@ -126,21 +115,3 @@ export const uploadImageSchema = z.object({
 });
 
 export type UploadImageFormValues = z.infer<typeof uploadImageSchema>;
-
-// Onboarding schema
-export const onboardingSchema = z.object({
-	displayName: z
-		.string()
-		.min(2, 'Display name must be at least 2 characters')
-		.max(50, 'Display name must be less than 50 characters'),
-	role: z.enum(['athlete', 'coach']).refine((val) => val !== undefined, {
-		message: 'Please select a role',
-	}),
-	bio: z.string().max(500, 'Bio must be less than 500 characters').optional(),
-	location: z
-		.string()
-		.max(100, 'Location must be less than 100 characters')
-		.optional(),
-});
-
-export type OnboardingFormValues = z.infer<typeof onboardingSchema>;

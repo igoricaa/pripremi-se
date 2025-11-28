@@ -49,6 +49,7 @@ export const createAuth = (
 		emailAndPassword: {
 			enabled: true,
 			requireEmailVerification: false,
+			autoSignIn: true,
 			sendResetPassword: async ({ user, url }) => {
 				await sendResetPassword(requireActionCtx(ctx), {
 					to: user.email,
