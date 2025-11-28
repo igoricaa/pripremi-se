@@ -5,71 +5,78 @@ import SupportSection from "./SupportSection";
 
 const VerifyEmailTemplate = ({
 	verificationUrl,
+	studentName,
 }: {
 	verificationUrl: string;
+	studentName: string;
 }) => {
 	return (
-		<Layout preview="Verify your email to start your EKVI journey">
+		<Layout preview="Potvrdite svoj nalog i počnite pripremu za prijemni" title="Dobrodošli u Pripremi se!" subtitle="Vaš put ka uspešnom polaganju prijemnog počinje ovde">
 			{/* Main Content */}
-			<Section className="mb-8">
-				<Heading className="m-0 mb-4 font-bold text-2xl text-white">
-					Verify Your Email Address
+            <Section className="mb-8">
+				<Text className="text-base text-gray-700 mb-4">
+					Pozdrav {studentName},
+				</Text>
+				<Text className="text-base text-gray-700 mb-4 leading-6">
+					Hvala vam što ste se pridružili Pripremi se platformi! Spremni smo da vam pomognemo 
+					da se odlično pripremite za prijemne ispite za srednje škole i fakultete u Srbiji.
+				</Text>
+				<Text className="text-base text-gray-700 mb-6 leading-6">
+					Da biste aktivirali svoj nalog i počeli sa učenjem, potrebno je samo da 
+					potvrdite svoju email adresu klikom na dugme ispod:
+				</Text>
+            </Section>
+
+            {/* CTA Button */}
+            <Section className="text-center mb-8">
+				<Button
+					href={verificationUrl}
+					className="bg-blue-600 text-white px-8 py-4 rounded-md text-base font-semibold no-underline box-border"
+				>
+					Potvrdite email adresu
+				</Button>
+            </Section>
+
+            {/* What's Next */}
+            <Section className="mb-8 bg-blue-50 p-6 rounded-md">
+				<Heading className="text-xl font-bold text-gray-900 m-0 mb-4">
+					Šta vas čeka:
 				</Heading>
-
-				<Text className="m-0 mb-4 text-base text-gray-300 leading-[24px]">
-					Welcome to EKVI! We're excited to have you join our community of
-					athletes, coaches, and movement enthusiasts.
+				<Text className="text-sm text-gray-700 m-0 mb-2">
+					📚 Struktuiran kurikulum kreiran od strane vrhunskih profesora
 				</Text>
-
-				<Text className="m-0 mb-12 text-base text-gray-300 leading-[24px]">
-					To complete your registration and start accessing evidence-based
-					training programs, masterclasses, and mentorship opportunities, please
-					verify your email address by clicking the button below:
+				<Text className="text-sm text-gray-700 m-0 mb-2">
+					📝 Testovi nakon svake lekcije sa detaljnim objašnjenjima
 				</Text>
-
-				<Section className="my-8 text-center">
-					<Button href={verificationUrl}>Verify Email Address</Button>
-				</Section>
-
-				<Text className="m-0 mb-4 text-gray-400 text-sm leading-[20px]">
-					If the button doesn't work, you can copy and paste this link into your
-					browser:
+				<Text className="text-sm text-gray-700 m-0 mb-2">
+					📊 Praćenje napretka za vas i vaše roditelje
 				</Text>
-
-				<Text className="m-0 mb-6 break-all text-primary text-sm">
-					<Link className="text-primary underline" href={verificationUrl}>
-						{verificationUrl}
-					</Link>
+				<Text className="text-sm text-gray-700 m-0">
+					🎯 Fokus na srpski jezik i matematiku za srednje škole
 				</Text>
+            </Section>
 
-				<Text className="m-0 text-gray-400 text-sm leading-[20px]">
-					This verification link will expire in 24 hours for security purposes.
+
+  			<Section className="mb-8">
+				<Text className="text-sm text-gray-600 mb-2">
+					Kopirajte i nalepite sledeći link u vaš browser:
+              	</Text>
+				<Text className="text-base text-blue-600 break-all">
+					{verificationUrl}
 				</Text>
-			</Section>
+            </Section>
+
 
 			{/* What's Next Section */}
-			<Section className="mb-8 rounded-[8px] bg-gray-900 p-6">
-				<Heading className="m-0 mb-4 font-bold text-lg text-white">
-					What's waiting for you on EKVI:
-				</Heading>
-
-				<Text className="m-0 mb-2 text-gray-300 text-sm leading-[20px]">
-					• Access to evidence-based training programs across all disciplines
+			 <Section className="mb-[32px]">
+				<Text className="text-[14px] text-gray-600 mb-[8px]">
+					Ako dugme ne radi, kopirajte i nalepite sledeći link u vaš browser:
 				</Text>
-				<Text className="m-0 mb-2 text-gray-300 text-sm leading-[20px]">
-					• Direct mentorship from experienced coaches and sport professionals
+				<Text className="text-[14px] text-blue-600 break-all">
+					{verificationUrl}
 				</Text>
-				<Text className="m-0 mb-2 text-gray-300 text-sm leading-[20px]">
-					• Video-based courses and masterclasses for every skill level
-				</Text>
-				<Text className="m-0 mb-2 text-gray-300 text-sm leading-[20px]">
-					• Progress tracking with video analysis support
-				</Text>
-				<Text className="m-0 text-gray-300 text-sm leading-[20px]">
-					• A supportive community focused on sustainable, intelligent movement
-				</Text>
-			</Section>
-
+            </Section>
+			
 			<SupportSection />
 		</Layout>
 	);

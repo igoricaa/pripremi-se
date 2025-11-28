@@ -45,6 +45,8 @@ export const createAuth = (
 				await sendResetPassword(requireActionCtx(ctx), {
 					to: user.email,
 					url,
+					studentName: user.name,
+					expirationTime: "10",
 				});
 			},
 		},
@@ -55,6 +57,7 @@ export const createAuth = (
 				await sendEmailVerification(requireActionCtx(ctx), {
 					to: user.email,
 					token,
+					studentName: user.name,
 				});
 			},
 			verificationTokenExpiresIn: 86_400, // 24 hours in seconds

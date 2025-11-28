@@ -1,16 +1,16 @@
-import { Link, Section, Text } from "@react-email/components";
+import { Heading, Link, Section, Text } from "@react-email/components";
 
 const SupportSection = () => (
-	<Section className="mb-8">
-		<Text className="m-0 text-gray-400 text-sm leading-[20px]">
-			Need help? Our support team is here to assist you. Reply to this email or
-			contact us at{" "}
-			<Link
-				className="text-primary underline"
-				href="mailto:support@ekvilibrijum.rs"
-			>
-				support@ekvilibrijum.rs
-			</Link>
+	<Section className="mb-8 bg-gray-50 p-6 rounded-md">
+		<Heading className="text-xl font-bold text-gray-900 m-0 mb-4">
+			Potrebna vam je pomoć?
+		</Heading>
+		<Text className="text-sm text-gray-700 m-0 mb-2">
+			Ako imate problema sa resetovanjem lozinke ili bilo kakva pitanja, 
+			slobodno nas kontaktirajte na:
+		</Text>
+		<Text className="text-sm text-blue-600 m-0">
+			podrska@pripremi-se.app
 		</Text>
 	</Section>
 );

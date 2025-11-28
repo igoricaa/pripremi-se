@@ -5,74 +5,78 @@ import SupportSection from "./SupportSection";
 
 const ResetPasswordEmailTemplate = ({
 	resetUrl,
+	studentName,
+	expirationTime,
 	// userEmail,
 }: {
 	resetUrl: string;
+	studentName: string;
+	expirationTime: string;
 	// userEmail: string;
 }) => {
 	return (
-		<Layout preview="Reset your EKVI password securely">
+		<Layout preview="Resetujte svoju lozinku za Pripremi se nalog" title="Resetovanje lozinke" subtitle="Pripremi se - Vaš partner u pripremi za prijemni">
 			{/* Main Content */}
-			<Section className="mb-[32px]">
-				<Heading className="m-0 mb-[16px] font-bold text-[24px] text-white">
-					Reset Your Password
-				</Heading>
-
-				<Text className="m-0 mb-[16px] text-[16px] text-gray-300 leading-[24px]">
-					We received a request to reset the password for your EKVI account.
-					Don't worry - it happens to the best of us!
+            <Section className="mb-8">
+				<Text className="text-base text-gray-700 mb-4">
+					Pozdrav {studentName},
 				</Text>
-
-				<Text className="m-0 mb-[48px] text-[16px] text-gray-300 leading-[24px]">
-					To create a new password and regain access to your training programs,
-					masterclasses, and mentorship opportunities, click the button below:
+				<Text className="text-base text-gray-700 mb-4 leading-6">
+					Primili smo zahtev za resetovanje lozinke za vaš Pripremi se nalog. Ako ste vi poslali ovaj zahtev, kliknite na dugme ispod da kreirate novu lozinku.
 				</Text>
-
-				<Section className="my-8 text-center">
-					<Button href={resetUrl}>Reset Password</Button>
-				</Section>
-
-				<Text className="m-0 mb-[16px] text-[14px] text-gray-400 leading-[20px]">
-					If the button doesn't work, you can copy and paste this link into your
-					browser:
+				<Text className="text-base text-gray-700 mb-6 leading-6">
+					Ako niste vi poslali ovaj zahtev, možete bezbedno ignorisati ovaj email. Vaša lozinka neće biti promenjena.
 				</Text>
+            </Section>
 
-				<Text className="m-0 mb-[24px] break-all text-[14px] text-primary">
-					<Link className="text-primary underline" href={resetUrl}>
-						{resetUrl}
-					</Link>
-				</Text>
+            {/* CTA Button */}
+            <Section className="text-center mb-8">
+				<Button
+					href={resetUrl}
+					className="bg-blue-600 text-white px-8 py-4 rounded-md text-base font-semibold no-underline box-border"
+				>
+					Resetuj lozinku
+				</Button>
+            </Section>
 
-				<Text className="m-0 text-[14px] text-gray-400 leading-[20px]">
-					This password reset link will expire in 1 hour for security purposes.
-				</Text>
-			</Section>
+            <Section className="mb-8 bg-red-50 p-6 rounded-md border-l-4 border-solid border-red-500">
+              <Heading className="text-lg font-bold text-red-800 m-0 mb-4">
+                Važne bezbednosne napomene:
+              </Heading>
+              <Text className="text-sm text-red-700 m-0 mb-2">
+                🔒 Ovaj link je valjan samo {expirationTime} minuta
+              </Text>
+              <Text className="text-sm text-red-700 m-0 mb-2">
+                🔒 Link može biti korišćen samo jednom
+              </Text>
+              <Text className="text-sm text-red-700 m-0 mb-2">
+                🔒 Nikada ne delite ovaj link sa drugim osobama
+              </Text>
+              <Text className="text-sm text-red-700 m-0">
+                🔒 Ako niste vi zatražili resetovanje, kontaktirajte nas odmah
+              </Text>
+            </Section>
 
-			{/* Security Notice */}
-			<Section className="mb-[32px] rounded-[8px] bg-gray-900 p-[24px]">
-				<Heading className="m-0 mb-[16px] font-bold text-[18px] text-white">
-					Security Notice
-				</Heading>
 
-				<Text className="m-0 mb-[16px] text-[14px] text-gray-300 leading-[20px]">
-					If you didn't request this password reset, you can safely ignore this
-					email. Your account remains secure and no changes will be made.
+  			<Section className="mb-8">
+				<Text className="text-sm text-gray-600 mb-2">
+					Kopirajte i nalepite sledeći link u vaš browser:
+              	</Text>
+				<Text className="text-base text-blue-600 break-all">
+					{resetUrl}
 				</Text>
+            </Section>
 
-				<Text className="m-0 mb-[16px] text-[14px] text-gray-300 leading-[20px]">
-					For your security, we recommend:
-				</Text>
 
-				<Text className="m-0 mb-[8px] text-[14px] text-gray-300 leading-[20px]">
-					• Using a strong, unique password for your EKVI account
+			{/* What's Next Section */}
+			 <Section className="mb-8">
+				<Text className="text-sm text-gray-600 mb-2">
+					Ako dugme ne radi, kopirajte i nalepite sledeći link u vaš browser:
 				</Text>
-				<Text className="m-0 mb-[8px] text-[14px] text-gray-300 leading-[20px]">
-					• Enabling two-factor authentication when available
+				<Text className="text-sm text-blue-600 break-all">
+					{resetUrl}
 				</Text>
-				<Text className="m-0 text-[14px] text-gray-300 leading-[20px]">
-					• Never sharing your login credentials with others
-				</Text>
-			</Section>
+            </Section>
 
 			<SupportSection />
 		</Layout>
@@ -81,7 +85,8 @@ const ResetPasswordEmailTemplate = ({
 
 ResetPasswordEmailTemplate.PreviewProps = {
 	resetUrl: "https://ekvilibrijum.rs/reset-password?token=abc123xyz789",
-	userEmail: "stanisavljevic.igor@proton.me",
+	studentName: "Igor Stanisavljević",
+	expirationTime: "10",
 };
 
 export default ResetPasswordEmailTemplate;

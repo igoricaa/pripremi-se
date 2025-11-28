@@ -12,10 +12,12 @@ import { Header } from "./Header";
 type LayoutProps = {
 	preview: string;
 	children: React.ReactNode;
+	title:string;
+	subtitle:string;
 };
 
-export const Layout = ({ preview, children }: LayoutProps) => (
-	<Html dir="ltr" lang="en">
+export const Layout = ({ preview, children, title, subtitle }: LayoutProps) => (
+	<Html dir="ltr" lang="sr-RS">
 		<Head />
 		<Preview>{preview}</Preview>
 		<Tailwind
@@ -31,9 +33,9 @@ export const Layout = ({ preview, children }: LayoutProps) => (
 				},
 			}}
 		>
-			<Body className="bg-background py-10 font-sans">
-				<Container className="mx-auto max-w-[600px] rounded-[8px] bg-background p-10">
-					<Header />
+			<Body className="bg-gray-100 font-sans py-10">
+				<Container className="bg-white rounded-[8px] shadow-lg max-w-[600px] mx-auto p-10">
+					<Header title={title} subtitle={subtitle} />
 					{children}
 					<Footer />
 				</Container>

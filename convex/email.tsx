@@ -27,21 +27,23 @@ export const sendEmailVerification = async (
 	ctx: ActionCtx,
 	{
 		to,
+		studentName,
 		token,
 	}: {
 		to: string;
+		studentName: string;
 		token: string;
 	}
 ) => {
 	const siteUrl = process.env.SITE_URL || "http://localhost:3001";
-	const verificationUrl = `${siteUrl}/api/auth/verify-email?token=${token}&callbackURL=/onboarding?verified=true`;
+	const verificationUrl = `${siteUrl}/api/auth/verify-email?token=${token}&callbackURL=/dashboard?verified=true`;
 
 	await resend.sendEmail(ctx, {
 		from: "EKVI <noreply@ekvilibrijum.rs>",
 		to,
 		subject: "Verify your email address",
 		html: await render(
-			<VerifyEmailTemplate verificationUrl={verificationUrl} />
+			<VerifyEmailTemplate verificationUrl={verificationUrl} studentName={studentName} />
 		),
 	});
 };
@@ -51,15 +53,19 @@ export const sendResetPassword = async (
 	{
 		to,
 		url,
+		studentName,
+		expirationTime,
 	}: {
 		to: string;
 		url: string;
+		studentName: string;
+		expirationTime: string;
 	}
 ) => {
 	await resend.sendEmail(ctx, {
 		from: "EKVI <noreply@ekvilibrijum.rs>",
 		to,
 		subject: "Reset your password",
-		html: await render(<ResetPasswordEmailTemplate resetUrl={url} />),
+		html: await render(<ResetPasswordEmailTemplate resetUrl={url} studentName={studentName} expirationTime={expirationTime} />),
 	});
 };
