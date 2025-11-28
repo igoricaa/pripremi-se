@@ -7,5 +7,5 @@ export const Route = createFileRoute('/_auth/dashboard')({
 function RouteComponent() {
 	const { userId } = Route.useRouteContext();
 
-	return <div>Hello "/dashboard"!</div>;
+	return <div>Hello "/dashboard"! {userId}</div>;
 }

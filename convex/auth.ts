@@ -4,7 +4,6 @@ import { requireActionCtx } from "@convex-dev/better-auth/utils";
 import { betterAuth } from "better-auth";
 import { components } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
-import { query } from "./_generated/server";
 import authSchema from "./betterAuth/schema";
 import { sendEmailVerification, sendResetPassword } from "./email";
 
@@ -78,6 +77,18 @@ export const createAuth = (
 			//     defaultValue: "active",
 			//   },
 			// },
+		},
+		rateLimit: {
+			enabled: true,
+			storage: "database",
+			window: 60,
+			max: 100,
+			customRules: {
+				"/sign-in/email": {
+					window: 10,
+					max: 3,
+				}
+			},
 		},
 		plugins: [convex()],
 	});

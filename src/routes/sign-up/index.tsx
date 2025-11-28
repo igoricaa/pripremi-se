@@ -90,7 +90,7 @@ function RouteComponent() {
 			<div className="w-full max-w-md">
 				<Card>
 					<CardHeader>
-						<CardTitle className="text-lg md:text-xl">Sign In</CardTitle>
+						<CardTitle className="text-lg md:text-xl">Sign Up</CardTitle>
 						<CardDescription className="text-xs md:text-sm">
 							Enter your email below to login to your account
 						</CardDescription>
@@ -199,7 +199,6 @@ function RouteComponent() {
 												<FieldLabel htmlFor={field.name}>Password</FieldLabel>
 												<Input
 													aria-invalid={isInvalid}
-													autoComplete="current-password"
 													id={field.name}
 													name={field.name}
 													onBlur={field.handleBlur}
@@ -229,7 +228,6 @@ function RouteComponent() {
 												</FieldLabel>
 												<Input
 													aria-invalid={isInvalid}
-													autoComplete="off"
 													id={field.name}
 													name={field.name}
 													onBlur={field.handleBlur}

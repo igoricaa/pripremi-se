@@ -4,152 +4,103 @@ import { Layout } from "./Layout";
 import SupportSection from "./SupportSection";
 
 const WelcomeEmailTemplate = ({
-	userName,
+	name,
 	dashboardUrl,
 	programsUrl,
 	communityUrl,
 	// supportUrl,
 }: {
-	userName: string;
+	name: string;
 	dashboardUrl: string;
 	programsUrl: string;
 	communityUrl: string;
 	// supportUrl: string;
 }) => {
 	return (
-		<Layout preview="Welcome to EKVI - Your movement journey starts now!">
+		<Layout preview="Dobrodošli u Pripremi se!" title="Dobrodošli u Pripremi se!" subtitle="Spremni ste za početak vaše priprema">
 			{/* Main Content */}
-			<Section className="mb-[32px]">
-				<Heading className="m-0 mb-[16px] font-bold text-[24px] text-white">
-					Welcome to EKVI, {userName}! 🎉
-				</Heading>
+			 <Section className="mb-8">
+              <Text className="text-base text-gray-700 mb-4">
+                Pozdrav {name},
+              </Text>
+              <Text className="text-base text-gray-700 mb-4 leading-6">
+                Čestitamo! Uspešno ste kreirali nalog na Pripremi se platformi. 
+                Sada ste deo zajednice učenika koji ozbiljno pristupaju pripremi za prijemne ispite.
+              </Text>
+              <Text className="text-base text-gray-700 mb-6 leading-6">
+                Vaš put ka uspešnom polaganju prijemnog ispita počinje upravo sada. 
+                Pripremili smo sve što vam je potrebno za odličnu pripremu!
+              </Text>
+            </Section>
 
-				<Text className="m-0 mb-[16px] text-[16px] text-gray-300 leading-[24px]">
-					Congratulations! Your email has been verified and you're now
-					officially part of the EKVI community. We're thrilled to have you join
-					thousands of athletes, coaches, and movement enthusiasts on their
-					journey to smarter, more sustainable training.
-				</Text>
+            {/* CTA Button */}
+            <Section className="text-center mb-8">
+              <Button
+                href={dashboardUrl}
+                className="bg-green-600 text-white px-8 py-4 rounded-md text-base font-semibold no-underline box-border"
+              >
+                Počni sa učenjem
+              </Button>
+            </Section>
 
-				<Text className="m-0 mb-[48px] text-[16px] text-gray-300 leading-[24px]">
-					Your account is fully activated and ready to explore. Let's get you
-					started with everything EKVI has to offer:
-				</Text>
+            {/* What's Available */}
+            <Section className="mb-8 bg-green-50 p-6 rounded-md">
+              <Heading className="text-xl font-bold text-gray-900 m-0 mb-4">
+                Šta možete da radite odmah:
+              </Heading>
+              <Text className="text-sm text-gray-700 m-0 mb-3">
+                📖 <strong>Pristupite lekcijama</strong> - Počnite sa prvom lekcijom iz srpskog jezika ili matematike
+              </Text>
+              <Text className="text-sm text-gray-700 m-0 mb-3">
+                🎯 <strong>Rešavajte testove</strong> - Proverite svoje znanje sa našim probnim testovima
+              </Text>
+              <Text className="text-sm text-gray-700 m-0 mb-3">
+                📊 <strong>Pratite napredak</strong> - Vidite koliko ste napredovali kroz statistike
+              </Text>
+              <Text className="text-sm text-gray-700 m-0">
+                👤 <strong>Dopunite profil</strong> - Dodajte informacije o sebi za personalizovano iskustvo
+              </Text>
+            </Section>
 
-				<Section className="my-8 text-center">
-					<Button href={dashboardUrl}>Go to Your Dashboard</Button>
-				</Section>
-			</Section>
+            {/* Getting Started Tips */}
+            <Section className="mb-8 bg-blue-50 p-6 rounded-md">
+              <Heading className="text-xl font-bold text-gray-900 m-0 mb-4">
+                Saveti za početak:
+              </Heading>
+              <Text className="text-sm text-gray-700 m-0 mb-2">
+                ✅ Postavite cilj - koliko vremena dnevno možete da posvetite učenju
+              </Text>
+              <Text className="text-sm text-gray-700 m-0 mb-2">
+                ✅ Redovno vežbajte - bolje je 30 minuta dnevno nego 3 sata jednom nedeljno
+              </Text>
+              <Text className="text-sm text-gray-700 m-0 mb-2">
+                ✅ Pratite svoj napredak i slavite male pobede
+              </Text>
+              <Text className="text-sm text-gray-700 m-0">
+                ✅ Ne oklевajte da postavite pitanje ako vam nešto nije jasno
+              </Text>
+            </Section>
 
-			{/* Next Steps Section */}
-			<Section className="mb-[32px] rounded-[8px] bg-gray-900 p-[24px]">
-				<Heading className="m-0 mb-[16px] font-bold text-[18px] text-white">
-					Your Next Steps
-				</Heading>
-
-				<Text className="m-0 mb-[16px] text-[14px] text-gray-300 leading-[20px]">
-					<strong className="text-white">1. Complete Your Profile</strong>
-					<br />
-					Add your training background, goals, and preferences to get
-					personalized recommendations.
-				</Text>
-
-				<Text className="m-0 mb-[16px] text-[14px] text-gray-300 leading-[20px]">
-					<strong className="text-white">2. Explore Training Programs</strong>
-					<br />
-					Browse our evidence-based programs designed for every skill level and
-					discipline.
-				</Text>
-
-				<Text className="m-0 mb-[16px] text-[14px] text-gray-300 leading-[20px]">
-					<strong className="text-white">3. Join the Community</strong>
-					<br />
-					Connect with fellow athletes and coaches in our supportive community
-					forums.
-				</Text>
-
-				<Text className="m-0 text-[14px] text-gray-300 leading-[20px]">
-					<strong className="text-white">4. Book Your First Session</strong>
-					<br />
-					Schedule a mentorship session or join a masterclass to accelerate your
-					progress.
-				</Text>
-			</Section>
-
-			{/* Key Resources Section */}
-			<Section className="mb-8">
-				<Heading className="m-0 mb-[16px] font-bold text-[18px] text-white">
-					Key Resources to Get Started
-				</Heading>
-
-				<Section className="mb-4">
-					<Button href={programsUrl} variant="secondary">
-						Browse Programs
-					</Button>
-					<Button href={communityUrl} variant="secondary">
-						Join Community
-					</Button>
-				</Section>
-
-				<Text className="m-0 mb-[12px] text-[14px] text-gray-300 leading-[20px]">
-					<Link
-						className="text-primary underline"
-						href={`${dashboardUrl}/library`}
-					>
-						Knowledge Library
-					</Link>{" "}
-					- Access our comprehensive collection of articles and research
-				</Text>
-
-				<Text className="m-0 mb-[12px] text-[14px] text-gray-300 leading-[20px]">
-					<Link
-						className="text-primary underline"
-						href={`${dashboardUrl}/masterclasses`}
-					>
-						Masterclasses
-					</Link>{" "}
-					- Learn from industry experts through video courses
-				</Text>
-
-				<Text className="m-0 mb-[12px] text-[14px] text-gray-300 leading-[20px]">
-					<Link
-						className="text-primary underline"
-						href={`${dashboardUrl}/mentorship`}
-					>
-						Find a Mentor
-					</Link>{" "}
-					- Connect with experienced coaches for personalized guidance
-				</Text>
-
-				<Text className="m-0 mb-[12px] text-[14px] text-gray-300 leading-[20px]">
-					<Link
-						className="text-primary underline"
-						href={`${dashboardUrl}/mobile-app`}
-					>
-						Mobile App
-					</Link>{" "}
-					- Download our app for training on the go
-				</Text>
-
-				<Text className="m-0 text-[14px] text-gray-300 leading-[20px]">
-					<Link
-						className="text-primary underline"
-						href={`${dashboardUrl}/progress`}
-					>
-						Progress Tracking
-					</Link>{" "}
-					- Monitor your development with our advanced analytics
-				</Text>
-			</Section>
-
-			{/* Community Message */}
-			<Section className="mb-8 rounded-md border border-primary border-opacity-30 bg-primary bg-opacity-10 p-6">
-				<Text className="m-0 text-center text-[14px] text-black leading-[20px]">
-					<strong className="text-black">Pro Tip:</strong> Introduce yourself in
-					the community forum and let us know what you're working on. Our
-					members love welcoming newcomers and sharing their experiences!
-				</Text>
-			</Section>
+            {/* Quick Actions */}
+            <Section className="mb-8">
+              <Heading className="text-lg font-bold text-gray-900 m-0 mb-4">
+                Brze akcije:
+              </Heading>
+              <Section className="text-center">
+                <Button
+                  href={dashboardUrl}
+                  className="bg-blue-600 text-white px-8 py-3 rounded-md text-base font-medium no-underline box-border mr-3 mb-3"
+                >
+                  Dopuni profil
+                </Button>
+                <Button
+                  href={dashboardUrl}
+                  className="bg-gray-600 text-white px-6 py-3 rounded-md text-sm font-medium no-underline box-border mb-3"
+                >
+                  Pogledaj dashboard
+                </Button>
+              </Section>
+            </Section>
 
 			<SupportSection />
 		</Layout>
@@ -157,11 +108,11 @@ const WelcomeEmailTemplate = ({
 };
 
 WelcomeEmailTemplate.PreviewProps = {
-	userName: "John Doe",
-	dashboardUrl: "https://ekvilibrijum.rs/dashboard",
-	programsUrl: "https://ekvilibrijum.rs/programs",
-	communityUrl: "https://ekvilibrijum.rs/community",
-	supportUrl: "https://ekvilibrijum.rs/support",
+	name: "John Doe",
+	dashboardUrl: "https://pripremi-se.app/dashboard",
+	programsUrl: "https://pripremi-se.app/programs",
+	communityUrl: "https://pripremi-se.app/community",
+	supportUrl: "https://pripremi-se.app/support",
 	userEmail: "stanisavljevic.igor@proton.me",
 };
 

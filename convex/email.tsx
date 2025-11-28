@@ -35,7 +35,7 @@ export const sendEmailVerification = async (
 		token: string;
 	}
 ) => {
-	const siteUrl = process.env.SITE_URL || "http://localhost:3001";
+	const siteUrl = process.env.SITE_URL || "http://localhost:3000";
 	const verificationUrl = `${siteUrl}/api/auth/verify-email?token=${token}&callbackURL=/dashboard?verified=true`;
 
 	await resend.sendEmail(ctx, {
