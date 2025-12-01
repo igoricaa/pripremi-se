@@ -1,12 +1,13 @@
 import { useForm } from '@tanstack/react-form';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useQuery } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import {
 	AlertTriangle,
 	CheckCircle2,
 	Clock,
 	Loader2,
 	Mail,
+	MapPin,
 	Shield,
 	User,
 } from 'lucide-react';
@@ -47,6 +48,7 @@ import {
 	changeEmailSchema,
 	changePasswordSchema,
 	profileNameSchema,
+	profileUpdateSchema,
 } from '@/lib/validations/user-schemas';
 import { api } from '../../../convex/_generated/api';
 
@@ -113,13 +115,13 @@ type UserData = NonNullable<
 >;
 
 function ProfileTab() {
-	const user = useQuery(api.users.getCurrentUser);
+	const data = useQuery(api.users.getCurrentUser);
 
-	if (!user) {
+	if (!data) {
 		return <ProfileTabSkeleton />;
 	}
 
-	return <ProfileForms user={user} />;
+	return <ProfileForms user={data.user} userProfile={data.userProfile} />;
 }
 
 const COOLDOWN_KEY = 'emailVerificationCooldown';
@@ -140,11 +142,20 @@ function setCooldownExpiry(): void {
 	localStorage.setItem(COOLDOWN_KEY, expiresAt.toString());
 }
 
-function ProfileForms({ user }: { user: UserData }) {
+function ProfileForms({
+	user,
+	userProfile,
+}: {
+	user: UserData['user'];
+	userProfile: UserData['userProfile'];
+}) {
 	const [nameLoading, setNameLoading] = useState(false);
 	const [emailLoading, setEmailLoading] = useState(false);
 	const [resendLoading, setResendLoading] = useState(false);
+	const [profileLoading, setProfileLoading] = useState(false);
 	const [cooldown, setCooldown] = useState(() => getRemainingCooldown());
+
+	const updateProfile = useMutation(api.userProfiles.updateMyProfile);
 
 	useEffect(() => {
 		if (cooldown <= 0) {
@@ -229,6 +240,33 @@ function ProfileForms({ user }: { user: UserData }) {
 				toast.error(message);
 			} finally {
 				setEmailLoading(false);
+			}
+		},
+	});
+
+	// Profile details form
+	const profileForm = useForm({
+		defaultValues: {
+			displayName: userProfile?.displayName ?? user.name,
+			location: userProfile?.location ?? '',
+		},
+		validators: { onSubmit: profileUpdateSchema },
+		onSubmit: async ({ value }) => {
+			setProfileLoading(true);
+			try {
+				await updateProfile({
+					displayName: value.displayName,
+					location: value.location || '',
+				});
+				toast.success('Profile details updated!');
+			} catch (error: unknown) {
+				const message =
+					error instanceof Error
+						? error.message
+						: 'Failed to update profile details';
+				toast.error(message);
+			} finally {
+				setProfileLoading(false);
 			}
 		},
 	});
@@ -372,6 +410,72 @@ function ProfileForms({ user }: { user: UserData }) {
 							</emailForm.Subscribe>
 						</form>
 					</div>
+				</CardContent>
+			</Card>
+
+			{/* Profile Details Card */}
+			<Card>
+				<CardHeader>
+					<CardTitle className="flex items-center gap-2">
+						<MapPin className="h-5 w-5" />
+						Profile Details
+					</CardTitle>
+					<CardDescription>
+						Additional profile information visible to others
+					</CardDescription>
+				</CardHeader>
+				<CardContent>
+					<form
+						onSubmit={(e) => {
+							e.preventDefault();
+							profileForm.handleSubmit();
+						}}
+					>
+						<FieldGroup>
+							<profileForm.Field name="displayName">
+								{(field) => (
+									<Field>
+										<FieldLabel>Display Name</FieldLabel>
+										<Input
+											onChange={(e) => field.handleChange(e.target.value)}
+											placeholder="How you want to be called"
+											value={field.state.value}
+										/>
+										<FieldError errors={field.state.meta.errors} />
+									</Field>
+								)}
+							</profileForm.Field>
+
+							<profileForm.Field name="location">
+								{(field) => (
+									<Field>
+										<FieldLabel>Location</FieldLabel>
+										<Input
+											onChange={(e) => field.handleChange(e.target.value)}
+											placeholder="City, Country (optional)"
+											value={field.state.value}
+										/>
+										<FieldError errors={field.state.meta.errors} />
+									</Field>
+								)}
+							</profileForm.Field>
+						</FieldGroup>
+
+						<profileForm.Subscribe selector={(state) => state.isDefaultValue}>
+							{(isDefaultValue) => (
+								<Button
+									className="mt-4"
+									disabled={profileLoading || isDefaultValue}
+									type="submit"
+								>
+									{profileLoading && (
+										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									)}
+									Save Profile Details
+								</Button>
+							)}
+						</profileForm.Subscribe>
+					</form>
 				</CardContent>
 			</Card>
 		</div>

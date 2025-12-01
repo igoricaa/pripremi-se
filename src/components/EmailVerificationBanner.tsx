@@ -26,7 +26,7 @@ function setCooldownExpiry(): void {
 }
 
 export function EmailVerificationBanner() {
-	const user = useQuery(api.users.getCurrentUser);
+	const data = useQuery(api.users.getCurrentUser);
 	const [dismissed, setDismissed] = useState(false);
 	const [resending, setResending] = useState(false);
 	const [cooldown, setCooldown] = useState(() => getRemainingCooldown());
@@ -42,13 +42,13 @@ export function EmailVerificationBanner() {
 	}, [cooldown]);
 
 	const handleResendVerification = async () => {
-		if (!user?.email || cooldown > 0) {
+		if (!data?.user.email || cooldown > 0) {
 			return;
 		}
 		setResending(true);
 		try {
 			await authClient.sendVerificationEmail({
-				email: user.email,
+				email: data.user.email,
 				callbackURL: '/email-verified',
 			});
 			toast.success('Verification email sent!');
@@ -71,7 +71,7 @@ export function EmailVerificationBanner() {
 		}
 	};
 
-	if (!user || user.emailVerified || dismissed) {
+	if (!data || data.user.emailVerified || dismissed) {
 		return null;
 	}
 

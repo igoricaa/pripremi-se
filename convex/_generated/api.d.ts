@@ -21,6 +21,7 @@ import type * as emails_components_verifyEmail from "../emails/components/verify
 import type * as emails_components_welcome from "../emails/components/welcome.js";
 import type * as http from "../http.js";
 import type * as rateLimiter from "../rateLimiter.js";
+import type * as userProfiles from "../userProfiles.js";
 import type * as users from "../users.js";
 
 import type {
@@ -43,6 +44,7 @@ declare const fullApi: ApiFromModules<{
   "emails/components/welcome": typeof emails_components_welcome;
   http: typeof http;
   rateLimiter: typeof rateLimiter;
+  userProfiles: typeof userProfiles;
   users: typeof users;
 }>;
 
