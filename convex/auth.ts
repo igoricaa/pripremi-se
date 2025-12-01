@@ -5,7 +5,7 @@ import { betterAuth } from "better-auth";
 import { components } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
 import authSchema from "./betterAuth/schema";
-import { sendEmailVerification, sendResetPassword } from "./email";
+import { sendChangeEmailVerification, sendEmailVerification, sendResetPassword } from "./email";
 
 const siteUrl = process.env.SITE_URL || "http://localhost:3000";
 
@@ -70,8 +70,22 @@ export const createAuth = (
 				});
 			},
 			verificationTokenExpiresIn: 86_400, // 24 hours in seconds
+			async afterEmailVerification(_user, _request) {
+				// Email verification completed successfully
+			}
 		},
 		user: {
+			changeEmail: {
+				enabled: true,
+				sendChangeEmailVerification: async ({ user, newEmail, url }) => {
+					await sendChangeEmailVerification(requireActionCtx(ctx), {
+						to: user.email,
+						studentName: user.name,
+						newEmail,
+						url,
+					});
+				},
+			},
 			deleteUser: {
 				enabled: true,
 			},
@@ -85,6 +99,22 @@ export const createAuth = (
 				"/sign-in/email": {
 					window: 10,
 					max: 3,
+				},
+				"/change-password": {
+					window: 60,
+					max: 5,
+				},
+				"/delete-user": {
+					window: 300,
+					max: 3,
+				},
+				"/change-email": {
+					window: 60,
+					max: 3,
+				},
+				"/send-verification-email": {
+					window: 60,
+					max: 1,
 				},
 			},
 		},

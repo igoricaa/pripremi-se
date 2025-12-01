@@ -26,17 +26,6 @@ export const signUpSchema = z
 				'Password must contain at least one uppercase letter, one lowercase letter, and one number'
 			),
 		passwordConfirmation: z.string().min(1, 'Please confirm your password'),
-		avatar: z
-			.instanceof(File)
-			.optional()
-			.refine(
-				(file) => !file || file.size <= 5 * 1024 * 1024,
-				'Image must be less than 5MB'
-			)
-			.refine(
-				(file) => !file || file.type.startsWith('image/'),
-				'File must be an image'
-			),
 	})
 	.refine((data) => data.password === data.passwordConfirmation, {
 		message: 'Passwords do not match',
@@ -115,3 +104,50 @@ export const uploadImageSchema = z.object({
 });
 
 export type UploadImageFormValues = z.infer<typeof uploadImageSchema>;
+
+// Change password schema
+export const changePasswordSchema = z
+	.object({
+		currentPassword: z.string().min(1, 'Current password is required'),
+		newPassword: z
+			.string()
+			.min(1, 'New password is required')
+			.min(8, 'Password must be at least 8 characters')
+			.max(128, 'Password must be less than 128 characters')
+			.regex(
+				/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+				'Password must contain at least one uppercase letter, one lowercase letter, and one number'
+			),
+		confirmPassword: z.string().min(1, 'Please confirm your password'),
+	})
+	.refine((data) => data.newPassword === data.confirmPassword, {
+		message: 'Passwords do not match',
+		path: ['confirmPassword'],
+	});
+
+export type ChangePasswordFormValues = z.infer<typeof changePasswordSchema>;
+
+// Profile name update schema
+export const profileNameSchema = z.object({
+	name: z
+		.string()
+		.min(1, 'Name is required')
+		.min(2, 'Name must be at least 2 characters')
+		.max(100, 'Name must be less than 100 characters')
+		.regex(
+			/^[\p{L}\s'-]+$/u,
+			'Name can only contain letters, spaces, hyphens, and apostrophes'
+		),
+});
+
+export type ProfileNameFormValues = z.infer<typeof profileNameSchema>;
+
+// Change email schema
+export const changeEmailSchema = z.object({
+	newEmail: z
+		.string()
+		.min(1, 'Email is required')
+		.email('Please enter a valid email address'),
+});
+
+export type ChangeEmailFormValues = z.infer<typeof changeEmailSchema>;

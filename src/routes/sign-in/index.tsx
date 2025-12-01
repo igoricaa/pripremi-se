@@ -1,5 +1,10 @@
 import { useForm } from '@tanstack/react-form';
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
+import {
+	createFileRoute,
+	Link,
+	redirect,
+	useNavigate,
+} from '@tanstack/react-router';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -23,6 +28,11 @@ import { SignInFormValues, signInSchema } from '@/lib/validations/user-schemas';
 
 export const Route = createFileRoute('/sign-in/')({
 	component: RouteComponent,
+	beforeLoad: ({ context }) => {
+		if (context.userId) {
+			throw redirect({ to: '/dashboard' });
+		}
+	},
 });
 
 function RouteComponent() {
@@ -42,6 +52,20 @@ function RouteComponent() {
 			onSubmit(value);
 		},
 	});
+
+	const clearAuthErrors = () => {
+		if (formError) {
+			setFormError(null);
+			form.setFieldMeta('email', (prev) => ({
+				...prev,
+				errorMap: {},
+			}));
+			form.setFieldMeta('password', (prev) => ({
+				...prev,
+				errorMap: {},
+			}));
+		}
+	};
 
 	const onSubmit = async (data: SignInFormValues) => {
 		await authClient.signIn.email(
@@ -125,7 +149,10 @@ function RouteComponent() {
 													id={field.name}
 													name={field.name}
 													onBlur={field.handleBlur}
-													onChange={(e) => field.handleChange(e.target.value)}
+													onChange={(e) => {
+														clearAuthErrors();
+														field.handleChange(e.target.value);
+													}}
 													placeholder="m@example.com"
 													value={field.state.value}
 												/>
@@ -152,7 +179,10 @@ function RouteComponent() {
 													id={field.name}
 													name={field.name}
 													onBlur={field.handleBlur}
-													onChange={(e) => field.handleChange(e.target.value)}
+													onChange={(e) => {
+														clearAuthErrors();
+														field.handleChange(e.target.value);
+													}}
 													placeholder="password"
 													type="password"
 													value={field.state.value}

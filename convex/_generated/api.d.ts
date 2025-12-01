@@ -15,6 +15,7 @@ import type * as emails_components_Footer from "../emails/components/Footer.js";
 import type * as emails_components_Header from "../emails/components/Header.js";
 import type * as emails_components_Layout from "../emails/components/Layout.js";
 import type * as emails_components_SupportSection from "../emails/components/SupportSection.js";
+import type * as emails_components_changeEmail from "../emails/components/changeEmail.js";
 import type * as emails_components_resetPassword from "../emails/components/resetPassword.js";
 import type * as emails_components_verifyEmail from "../emails/components/verifyEmail.js";
 import type * as emails_components_welcome from "../emails/components/welcome.js";
@@ -36,6 +37,7 @@ declare const fullApi: ApiFromModules<{
   "emails/components/Header": typeof emails_components_Header;
   "emails/components/Layout": typeof emails_components_Layout;
   "emails/components/SupportSection": typeof emails_components_SupportSection;
+  "emails/components/changeEmail": typeof emails_components_changeEmail;
   "emails/components/resetPassword": typeof emails_components_resetPassword;
   "emails/components/verifyEmail": typeof emails_components_verifyEmail;
   "emails/components/welcome": typeof emails_components_welcome;

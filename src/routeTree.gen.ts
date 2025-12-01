@@ -16,6 +16,7 @@ import { Route as SignUpIndexRouteImport } from './routes/sign-up/index'
 import { Route as SignInIndexRouteImport } from './routes/sign-in/index'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
 import { Route as DemoConvexRouteImport } from './routes/demo/convex'
+import { Route as AuthSettingsRouteImport } from './routes/_auth/settings'
 import { Route as AuthDashboardRouteImport } from './routes/_auth/dashboard'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
 import { Route as DemoStartApiRequestRouteImport } from './routes/demo/start.api-request'
@@ -62,6 +63,11 @@ const DemoConvexRoute = DemoConvexRouteImport.update({
   id: '/demo/convex',
   path: '/demo/convex',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthSettingsRoute = AuthSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthRoute,
 } as any)
 const AuthDashboardRoute = AuthDashboardRouteImport.update({
   id: '/dashboard',
@@ -128,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/default': typeof DefaultRoute
   '/dashboard': typeof AuthDashboardRoute
+  '/settings': typeof AuthSettingsRoute
   '/demo/convex': typeof DemoConvexRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/sign-in': typeof SignInIndexRoute
@@ -148,6 +155,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/default': typeof DefaultRoute
   '/dashboard': typeof AuthDashboardRoute
+  '/settings': typeof AuthSettingsRoute
   '/demo/convex': typeof DemoConvexRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/sign-in': typeof SignInIndexRoute
@@ -170,6 +178,7 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/default': typeof DefaultRoute
   '/_auth/dashboard': typeof AuthDashboardRoute
+  '/_auth/settings': typeof AuthSettingsRoute
   '/demo/convex': typeof DemoConvexRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/sign-in/': typeof SignInIndexRoute
@@ -192,6 +201,7 @@ export interface FileRouteTypes {
     | '/'
     | '/default'
     | '/dashboard'
+    | '/settings'
     | '/demo/convex'
     | '/demo/tanstack-query'
     | '/sign-in'
@@ -212,6 +222,7 @@ export interface FileRouteTypes {
     | '/'
     | '/default'
     | '/dashboard'
+    | '/settings'
     | '/demo/convex'
     | '/demo/tanstack-query'
     | '/sign-in'
@@ -233,6 +244,7 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/default'
     | '/_auth/dashboard'
+    | '/_auth/settings'
     | '/demo/convex'
     | '/demo/tanstack-query'
     | '/sign-in/'
@@ -321,6 +333,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/demo/convex'
       preLoaderRoute: typeof DemoConvexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_auth/settings': {
+      id: '/_auth/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthSettingsRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/_auth/dashboard': {
       id: '/_auth/dashboard'
@@ -411,10 +430,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthRouteChildren {
   AuthDashboardRoute: typeof AuthDashboardRoute
+  AuthSettingsRoute: typeof AuthSettingsRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthDashboardRoute: AuthDashboardRoute,
+  AuthSettingsRoute: AuthSettingsRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)

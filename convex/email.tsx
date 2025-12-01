@@ -5,6 +5,7 @@ import { Resend } from "@convex-dev/resend";
 import { render } from "@react-email/render";
 import { components } from "./_generated/api";
 import type { ActionCtx } from "./_generated/server";
+import ChangeEmailTemplate from "./emails/components/changeEmail";
 import ResetPasswordEmailTemplate from "./emails/components/resetPassword";
 import VerifyEmailTemplate from "./emails/components/verifyEmail";
 
@@ -36,7 +37,7 @@ export const sendEmailVerification = async (
 	}
 ) => {
 	const siteUrl = process.env.SITE_URL || "http://localhost:3000";
-	const verificationUrl = `${siteUrl}/api/auth/verify-email?token=${token}&callbackURL=/dashboard?verified=true`;
+	const verificationUrl = `${siteUrl}/api/auth/verify-email?token=${token}&callbackURL=/dashboard`;
 
 	await resend.sendEmail(ctx, {
 		from: "EKVI <noreply@ekvilibrijum.rs>",
@@ -67,5 +68,62 @@ export const sendResetPassword = async (
 		to,
 		subject: "Reset your password",
 		html: await render(<ResetPasswordEmailTemplate resetUrl={url} studentName={studentName} expirationTime={expirationTime} />),
+	});
+};
+
+export const sendChangeEmailConfirmation = async (
+	ctx: ActionCtx,
+	{
+		to,
+		studentName,
+		url,
+		newEmail,
+	}: {
+		to: string;
+		studentName: string;
+		url: string;
+		newEmail: string;
+	}
+) => {
+	await resend.sendEmail(ctx, {
+		from: "EKVI <noreply@ekvilibrijum.rs>",
+		to,
+		subject: "Potvrdite novu email adresu",
+		html: await render(
+			<ChangeEmailTemplate
+				verificationUrl={url}
+				studentName={studentName}
+				newEmail={newEmail}
+			/>
+		),
+	});
+};
+
+
+export const sendChangeEmailVerification = async (
+	ctx: ActionCtx,
+	{
+		to,
+		studentName,
+		url,
+		newEmail,
+	}: {
+		to: string;
+		studentName: string;
+		url: string;
+		newEmail: string;
+	}
+) => {
+	await resend.sendEmail(ctx, {
+		from: "EKVI <noreply@ekvilibrijum.rs>",
+		to,
+		subject: "Potvrdite novu email adresu",
+		html: await render(
+			<ChangeEmailTemplate
+				verificationUrl={url}
+				studentName={studentName}
+				newEmail={newEmail}
+			/>
+		),
 	});
 };

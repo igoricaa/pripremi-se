@@ -1,5 +1,5 @@
 import { useForm } from '@tanstack/react-form';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -23,6 +23,13 @@ import { SignUpFormValues, signUpSchema } from '@/lib/validations/user-schemas';
 
 export const Route = createFileRoute('/sign-up/')({
 	component: RouteComponent,
+	beforeLoad: ({ context }) => {
+		if (context.userId) {
+			throw redirect({
+				to: '/dashboard',
+			});
+		}
+	},
 });
 
 function RouteComponent() {

@@ -1,4 +1,5 @@
-import { Link, useNavigate, useRouteContext } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
+import { Authenticated, Unauthenticated } from 'convex/react';
 import {
 	ChevronDown,
 	ChevronRight,
@@ -7,6 +8,7 @@ import {
 	Home,
 	Menu,
 	Network,
+	Settings,
 	SquareFunction,
 	StickyNote,
 	X,
@@ -25,7 +27,6 @@ export default function Header() {
 	>({});
 	const { theme } = useTheme();
 	const [mounted, setMounted] = useState(false);
-	const { userId } = useRouteContext({ from: '__root__' });
 
 	const handleSignOut = async () => {
 		await authClient.signOut();
@@ -96,9 +97,7 @@ export default function Header() {
 						<Home size={20} />
 						<span className="font-medium">Home</span>
 					</Link>
-
 					{/* Demo Links Start */}
-
 					<Link
 						activeProps={{
 							className:
@@ -111,7 +110,6 @@ export default function Header() {
 						<SquareFunction size={20} />
 						<span className="font-medium">Start - Server Functions</span>
 					</Link>
-
 					<Link
 						activeProps={{
 							className:
@@ -124,7 +122,6 @@ export default function Header() {
 						<Network size={20} />
 						<span className="font-medium">Start - API Request</span>
 					</Link>
-
 					<div className="flex flex-row justify-between">
 						<Link
 							activeProps={{
@@ -197,7 +194,6 @@ export default function Header() {
 							</Link>
 						</div>
 					)}
-
 					<Link
 						activeProps={{
 							className:
@@ -210,7 +206,6 @@ export default function Header() {
 						<Network size={20} />
 						<span className="font-medium">TanStack Query</span>
 					</Link>
-
 					<Link
 						activeProps={{
 							className:
@@ -223,7 +218,6 @@ export default function Header() {
 						<ClipboardType size={20} />
 						<span className="font-medium">Simple Form</span>
 					</Link>
-
 					<Link
 						activeProps={{
 							className:
@@ -236,7 +230,6 @@ export default function Header() {
 						<ClipboardType size={20} />
 						<span className="font-medium">Address Form</span>
 					</Link>
-
 					<Link
 						activeProps={{
 							className:
@@ -249,11 +242,23 @@ export default function Header() {
 						<Globe size={20} />
 						<span className="font-medium">Convex</span>
 					</Link>
-
 					{/* Demo Links End */}
 					<ThemeSwitcher />
-					{/* Sign in / sign out */}
-					{userId ? (
+					{/* Settings & Sign in / sign out */}
+					<Authenticated>
+						<Link
+							activeProps={{
+								className:
+									'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
+							}}
+							className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
+							onClick={() => setIsOpen(false)}
+							search={{}}
+							to="/settings"
+						>
+							<Settings size={20} />
+							<span className="font-medium">Settings</span>
+						</Link>
 						<Button
 							className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
 							onClick={() => {
@@ -263,7 +268,8 @@ export default function Header() {
 						>
 							Odjavi se
 						</Button>
-					) : (
+					</Authenticated>
+					<Unauthenticated>
 						<Link
 							activeProps={{
 								className:
@@ -275,7 +281,7 @@ export default function Header() {
 						>
 							Prijavi se
 						</Link>
-					)}
+					</Unauthenticated>
 				</nav>
 			</aside>
 		</>
