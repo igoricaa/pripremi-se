@@ -26,7 +26,7 @@ import appCss from '../styles.css?url';
 
 // Get auth information for SSR using available cookies
 const fetchAuth = createServerFn({ method: 'GET' }).handler(async () => {
-	const { createAuth } = await import('../../convex/auth');
+	const { createAuth } = await import('@pripremi-se/backend/convex/auth');
 	const { session } = await fetchSession(getRequest());
 	const sessionCookieName = getCookieName(createAuth);
 	const token = getCookie(sessionCookieName);

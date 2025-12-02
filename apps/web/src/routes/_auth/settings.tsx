@@ -1,3 +1,10 @@
+import { api } from '@pripremi-se/backend/convex/_generated/api';
+import {
+	changeEmailSchema,
+	changePasswordSchema,
+	profileNameSchema,
+	profileUpdateSchema,
+} from '@pripremi-se/shared/validators';
 import { useForm } from '@tanstack/react-form';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useMutation, useQuery } from 'convex/react';
@@ -44,13 +51,6 @@ import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { authClient } from '@/lib/auth-client';
-import {
-	changeEmailSchema,
-	changePasswordSchema,
-	profileNameSchema,
-	profileUpdateSchema,
-} from '@/lib/validations/user-schemas';
-import { api } from '../../../convex/_generated/api';
 
 type SettingsTab = 'profile' | 'security' | 'danger';
 

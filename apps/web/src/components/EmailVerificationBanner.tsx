@@ -1,9 +1,9 @@
+import { api } from '@pripremi-se/backend/convex/_generated/api';
 import { useQuery } from 'convex/react';
 import { AlertTriangle, Mail, RefreshCw, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { authClient } from '@/lib/auth-client';
-import { api } from '../../convex/_generated/api';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import { Button } from './ui/button';
 

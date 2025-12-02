@@ -20,6 +20,9 @@ import type * as emails_components_resetPassword from "../emails/components/rese
 import type * as emails_components_verifyEmail from "../emails/components/verifyEmail.js";
 import type * as emails_components_welcome from "../emails/components/welcome.js";
 import type * as http from "../http.js";
+import type * as lib_functions from "../lib/functions.js";
+import type * as lib_index from "../lib/index.js";
+import type * as lib_timestamps from "../lib/timestamps.js";
 import type * as rateLimiter from "../rateLimiter.js";
 import type * as userProfiles from "../userProfiles.js";
 import type * as users from "../users.js";
@@ -43,6 +46,9 @@ declare const fullApi: ApiFromModules<{
   "emails/components/verifyEmail": typeof emails_components_verifyEmail;
   "emails/components/welcome": typeof emails_components_welcome;
   http: typeof http;
+  "lib/functions": typeof lib_functions;
+  "lib/index": typeof lib_index;
+  "lib/timestamps": typeof lib_timestamps;
   rateLimiter: typeof rateLimiter;
   userProfiles: typeof userProfiles;
   users: typeof users;
@@ -214,10 +220,6 @@ export declare const components: {
                   lastRequest?: null | number;
                 };
                 model: "rateLimit";
-              }
-            | {
-                data: { count: number; key: string; lastRequest: number };
-                model: "ratelimit";
               };
           onCreateHandle?: string;
           select?: Array<string>;
@@ -572,32 +574,6 @@ export declare const components: {
               }
             | {
                 model: "rateLimit";
-                where?: Array<{
-                  connector?: "AND" | "OR";
-                  field: "key" | "count" | "lastRequest" | "_id";
-                  operator?:
-                    | "lt"
-                    | "lte"
-                    | "gt"
-                    | "gte"
-                    | "eq"
-                    | "in"
-                    | "not_in"
-                    | "ne"
-                    | "contains"
-                    | "starts_with"
-                    | "ends_with";
-                  value:
-                    | string
-                    | number
-                    | boolean
-                    | Array<string>
-                    | Array<number>
-                    | null;
-                }>;
-              }
-            | {
-                model: "ratelimit";
                 where?: Array<{
                   connector?: "AND" | "OR";
                   field: "key" | "count" | "lastRequest" | "_id";
@@ -1005,32 +981,6 @@ export declare const components: {
                     | Array<number>
                     | null;
                 }>;
-              }
-            | {
-                model: "ratelimit";
-                where?: Array<{
-                  connector?: "AND" | "OR";
-                  field: "key" | "count" | "lastRequest" | "_id";
-                  operator?:
-                    | "lt"
-                    | "lte"
-                    | "gt"
-                    | "gte"
-                    | "eq"
-                    | "in"
-                    | "not_in"
-                    | "ne"
-                    | "contains"
-                    | "starts_with"
-                    | "ends_with";
-                  value:
-                    | string
-                    | number
-                    | boolean
-                    | Array<string>
-                    | Array<number>
-                    | null;
-                }>;
               };
           onDeleteHandle?: string;
         },
@@ -1052,8 +1002,7 @@ export declare const components: {
             | "oauthAccessToken"
             | "oauthConsent"
             | "jwks"
-            | "rateLimit"
-            | "ratelimit";
+            | "rateLimit";
           offset?: number;
           paginationOpts: {
             cursor: string | null;
@@ -1105,8 +1054,7 @@ export declare const components: {
             | "oauthAccessToken"
             | "oauthConsent"
             | "jwks"
-            | "rateLimit"
-            | "ratelimit";
+            | "rateLimit";
           select?: Array<string>;
           where?: Array<{
             connector?: "AND" | "OR";
@@ -1615,33 +1563,6 @@ export declare const components: {
                     | Array<number>
                     | null;
                 }>;
-              }
-            | {
-                model: "ratelimit";
-                update: { count?: number; key?: string; lastRequest?: number };
-                where?: Array<{
-                  connector?: "AND" | "OR";
-                  field: "key" | "count" | "lastRequest" | "_id";
-                  operator?:
-                    | "lt"
-                    | "lte"
-                    | "gt"
-                    | "gte"
-                    | "eq"
-                    | "in"
-                    | "not_in"
-                    | "ne"
-                    | "contains"
-                    | "starts_with"
-                    | "ends_with";
-                  value:
-                    | string
-                    | number
-                    | boolean
-                    | Array<string>
-                    | Array<number>
-                    | null;
-                }>;
               };
           onUpdateHandle?: string;
           paginationOpts: {
@@ -2107,33 +2028,6 @@ export declare const components: {
                   key?: null | string;
                   lastRequest?: null | number;
                 };
-                where?: Array<{
-                  connector?: "AND" | "OR";
-                  field: "key" | "count" | "lastRequest" | "_id";
-                  operator?:
-                    | "lt"
-                    | "lte"
-                    | "gt"
-                    | "gte"
-                    | "eq"
-                    | "in"
-                    | "not_in"
-                    | "ne"
-                    | "contains"
-                    | "starts_with"
-                    | "ends_with";
-                  value:
-                    | string
-                    | number
-                    | boolean
-                    | Array<string>
-                    | Array<number>
-                    | null;
-                }>;
-              }
-            | {
-                model: "ratelimit";
-                update: { count?: number; key?: string; lastRequest?: number };
                 where?: Array<{
                   connector?: "AND" | "OR";
                   field: "key" | "count" | "lastRequest" | "_id";

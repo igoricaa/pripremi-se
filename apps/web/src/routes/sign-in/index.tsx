@@ -1,3 +1,4 @@
+import { SignInFormValues, signInSchema } from '@pripremi-se/shared/validators';
 import { useForm } from '@tanstack/react-form';
 import {
 	createFileRoute,
@@ -24,7 +25,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { authClient } from '@/lib/auth-client';
 import { getAuthErrorMessage } from '@/lib/auth-error-messages';
-import { SignInFormValues, signInSchema } from '@/lib/validations/user-schemas';
 
 export const Route = createFileRoute('/sign-in/')({
 	component: RouteComponent,

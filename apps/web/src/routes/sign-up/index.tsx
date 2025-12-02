@@ -1,3 +1,4 @@
+import { SignUpFormValues, signUpSchema } from '@pripremi-se/shared/validators';
 import { useForm } from '@tanstack/react-form';
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { Loader2 } from 'lucide-react';
@@ -19,7 +20,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { authClient } from '@/lib/auth-client';
 import { getAuthErrorMessage } from '@/lib/auth-error-messages';
-import { SignUpFormValues, signUpSchema } from '@/lib/validations/user-schemas';
 
 export const Route = createFileRoute('/sign-up/')({
 	component: RouteComponent,
