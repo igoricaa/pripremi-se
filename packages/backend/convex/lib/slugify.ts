@@ -36,22 +36,17 @@ export function slugify(text: string): string {
 }
 
 /**
- * Generate a unique slug for the subjects table by appending -2, -3, etc. if it already exists.
+ * Generate a unique slug by appending -2, -3, etc. if it already exists.
  */
-export async function generateUniqueSlug<T extends 'subjects' | 'chapters' | 'sections' | 'lessons'>(
-	db: DatabaseReader,
-	tableName: T,
-	baseSlug: string,
-	excludeId?: Id<T>
-): Promise<string> {
+export async function generateUniqueSlug<
+	T extends 'subjects' | 'chapters' | 'sections' | 'lessons' | 'tests' | 'questions',
+>(db: DatabaseReader, tableName: T, baseSlug: string, excludeId?: Id<T>): Promise<string> {
 	let slug = baseSlug;
 	let counter = 1;
 
 	while (true) {
-		const existing = await db
-			.query(tableName as 'subjects' | 'chapters' | 'sections' | 'lessons')
-			.withIndex('by_slug', (q) => q.eq('slug', slug))
-			.first();
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const existing = await (db.query(tableName) as any).withIndex('by_slug', (q: any) => q.eq('slug', slug)).first();
 
 		if (!existing || (excludeId && existing._id === excludeId)) {
 			return slug;
@@ -70,7 +65,9 @@ export async function generateUniqueSlug<T extends 'subjects' | 'chapters' | 'se
  * 2. If name changed (but no explicit slug) → regenerate from new name
  * 3. Otherwise → no slug update needed
  */
-export async function handleSlugUpdate<T extends 'subjects' | 'chapters' | 'sections' | 'lessons'>(
+export async function handleSlugUpdate<
+	T extends 'subjects' | 'chapters' | 'sections' | 'lessons' | 'tests' | 'questions',
+>(
 	db: DatabaseReader,
 	tableName: T,
 	options: {

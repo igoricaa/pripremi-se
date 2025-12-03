@@ -1,5 +1,5 @@
 import { authedQuery, authedZodMutation } from './lib/functions';
-import { profileUpdateSchema } from '@pripremi-se/shared';
+import { profileUpdateSchema, USER_ROLES } from '@pripremi-se/shared';
 import { createTimestamps, updateTimestamp } from './lib/timestamps';
 import { getOneFrom } from 'convex-helpers/server/relationships';
 
@@ -47,7 +47,7 @@ export const updateMyProfile = authedZodMutation({
 		return await db.insert('userProfiles', {
 			authId: user._id,
 			...args,
-			role: 'user',
+			role: USER_ROLES.USER,
 			...createTimestamps(),
 		});
 	},

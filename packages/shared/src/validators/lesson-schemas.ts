@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { contentTypeEnum } from '../constants';
 
 export const createLessonSchema = z.object({
 	sectionId: z.string().min(1, 'Section ID is required'),
@@ -10,11 +11,12 @@ export const createLessonSchema = z.object({
 		.regex(/^[a-z0-9-]+$/, 'Slug must contain only lowercase letters, numbers, and hyphens')
 		.optional(),
 	content: z.string().min(1, 'Content is required'),
-	contentType: z.enum(['text', 'video', 'interactive']),
+	contentType: contentTypeEnum,
 	estimatedMinutes: z
 		.number()
 		.int('Estimated minutes must be an integer')
 		.min(1, 'Estimated minutes must be at least 1'),
+	practiceTestId: z.string().optional(), // Optional practice test at lesson end
 	order: z.number().int('Order must be an integer').min(0, 'Order must be 0 or greater'),
 	isActive: z.boolean().default(false),
 });
@@ -31,12 +33,13 @@ export const updateLessonSchema = z.object({
 		.regex(/^[a-z0-9-]+$/, 'Slug must contain only lowercase letters, numbers, and hyphens')
 		.optional(),
 	content: z.string().min(1, 'Content is required').optional(),
-	contentType: z.enum(['text', 'video', 'interactive']).optional(),
+	contentType: contentTypeEnum.optional(),
 	estimatedMinutes: z
 		.number()
 		.int('Estimated minutes must be an integer')
 		.min(1, 'Estimated minutes must be at least 1')
 		.optional(),
+	practiceTestId: z.string().optional().nullable(), // Link/unlink practice test
 	order: z.number().int('Order must be an integer').min(0, 'Order must be 0 or greater').optional(),
 	isActive: z.boolean().optional(),
 });

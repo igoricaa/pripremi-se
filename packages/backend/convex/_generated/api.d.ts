@@ -26,9 +26,12 @@ import type * as lib_functions from "../lib/functions.js";
 import type * as lib_index from "../lib/index.js";
 import type * as lib_slugify from "../lib/slugify.js";
 import type * as lib_timestamps from "../lib/timestamps.js";
+import type * as questions from "../questions.js";
 import type * as rateLimiter from "../rateLimiter.js";
 import type * as sections from "../sections.js";
 import type * as subjects from "../subjects.js";
+import type * as testQuestions from "../testQuestions.js";
+import type * as tests from "../tests.js";
 import type * as userProfiles from "../userProfiles.js";
 import type * as users from "../users.js";
 
@@ -57,9 +60,12 @@ declare const fullApi: ApiFromModules<{
   "lib/index": typeof lib_index;
   "lib/slugify": typeof lib_slugify;
   "lib/timestamps": typeof lib_timestamps;
+  questions: typeof questions;
   rateLimiter: typeof rateLimiter;
   sections: typeof sections;
   subjects: typeof subjects;
+  testQuestions: typeof testQuestions;
+  tests: typeof tests;
   userProfiles: typeof userProfiles;
   users: typeof users;
 }>;

@@ -133,6 +133,7 @@ export const createLesson = authedZodMutation({
 			content: args.content,
 			contentType: args.contentType,
 			estimatedMinutes: args.estimatedMinutes,
+			practiceTestId: args.practiceTestId ? (args.practiceTestId as Id<'tests'>) : undefined,
 			order: args.order,
 			isActive: args.isActive,
 			...createTimestamps(),
@@ -152,7 +153,7 @@ export const updateLesson = authedZodMutation({
 	args: updateLessonSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
-		const { id, slug, ...otherUpdates } = args;
+		const { id, slug, practiceTestId, ...otherUpdates } = args;
 		const lessonId = id as Id<'lessons'>;
 
 		const existing = await db.get(lessonId);
@@ -164,6 +165,12 @@ export const updateLesson = authedZodMutation({
 			...updateTimestamp(),
 		};
 
+		// Handle practiceTestId explicitly
+		if (practiceTestId !== undefined) {
+			updateData.practiceTestId = practiceTestId ? (practiceTestId as Id<'tests'>) : undefined;
+		}
+
+		// Handle other fields
 		for (const [key, value] of Object.entries(otherUpdates)) {
 			if (value !== undefined) {
 				updateData[key] = value === null ? undefined : value;
