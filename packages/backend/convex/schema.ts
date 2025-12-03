@@ -28,4 +28,39 @@ export default defineSchema({
 		.index('by_order', ['order'])
 		.index('by_isActive', ['isActive'])
 		.index('by_isActive_order', ['isActive', 'order']),
+
+	chapters: defineTable({
+		subjectId: v.id('subjects'),
+		name: v.string(),
+		slug: v.string(),
+		description: v.string(),
+		order: v.number(),
+		isActive: v.boolean(),
+		createdAt: v.number(),
+		updatedAt: v.number(),
+	})
+		.index('by_subjectId', ['subjectId'])
+		.index('by_slug', ['slug'])
+		.index('by_isActive', ['isActive'])
+		.index('by_isActive_order', ['isActive', 'order'])
+		.index('by_subjectId_order', ['subjectId', 'order'])
+		.index('by_isActive_subjectId_order', ['isActive', 'subjectId', 'order']),
+
+	// Curriculum: Sections (sub-units within chapters)
+	sections: defineTable({
+		chapterId: v.id('chapters'), // Reference to parent chapter
+		name: v.string(), // Section title
+		slug: v.string(), // URL-friendly identifier
+		description: v.optional(v.string()), // Section overview (optional)
+		order: v.number(), // Display order within chapter
+		isActive: v.boolean(), // Whether section is published
+		createdAt: v.number(),
+		updatedAt: v.number(),
+	})
+		.index('by_chapterId', ['chapterId'])
+		.index('by_slug', ['slug'])
+		.index('by_isActive', ['isActive'])
+		.index('by_isActive_order', ['isActive', 'order'])
+		.index('by_chapterId_order', ['chapterId', 'order'])
+		.index('by_isActive_chapterId_order', ['isActive', 'chapterId', 'order']),
 });

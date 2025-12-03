@@ -1,8 +1,29 @@
-import { authedZodMutation } from './lib/functions';
+import { authedQuery, authedZodMutation } from './lib/functions';
 import { profileUpdateSchema } from '@pripremi-se/shared';
 import { createTimestamps, updateTimestamp } from './lib/timestamps';
 import { getOneFrom } from 'convex-helpers/server/relationships';
 
+
+// ============================================================================
+// QUERIES
+// ============================================================================
+
+export const getCurrentUserProfile = authedQuery({
+	args: {},
+	handler: async (ctx) => {
+		const { user, db } = ctx;
+		return await getOneFrom(db, 'userProfiles', 'by_authId', user._id);
+	}
+})
+
+// ============================================================================
+// MUTATIONS
+// ============================================================================
+
+/**
+ * Update the current user's profile.
+ * Requires authentication.
+ */
 export const updateMyProfile = authedZodMutation({
 	args: profileUpdateSchema,
 	handler: async (ctx, args) => {

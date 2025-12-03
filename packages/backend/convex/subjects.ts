@@ -13,6 +13,7 @@ import {
 	authedZodQuery,
 	slugify,
 	generateUniqueSlug,
+	handleSlugUpdate,
 	createTimestamps,
 	updateTimestamp,
 } from './lib';
@@ -122,7 +123,7 @@ export const updateSubject = authedZodMutation({
 	args: updateSubjectSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
-		const { id, ...updates } = args;
+		const { id, slug, ...otherUpdates } = args;
 		const subjectId = id as Id<'subjects'>;
 
 		const existing = await db.get(subjectId);
@@ -130,41 +131,28 @@ export const updateSubject = authedZodMutation({
 			throw new Error('Subject not found');
 		}
 
-		// Build update object
+		// Build update object with only defined fields
 		const updateData: Record<string, unknown> = {
 			...updateTimestamp(),
 		};
 
-		if (updates.name !== undefined) {
-			updateData.name = updates.name;
+		// Add all defined fields (excluding slug, handled separately)
+		for (const [key, value] of Object.entries(otherUpdates)) {
+			if (value !== undefined) {
+				updateData[key] = value === null ? undefined : value;
+			}
 		}
 
-		if (updates.description !== undefined) {
-			updateData.description = updates.description;
-		}
+		// Handle slug update logic
+		const newSlug = await handleSlugUpdate(db, 'subjects', {
+			slug,
+			newName: otherUpdates.name,
+			existingName: existing.name,
+			excludeId: subjectId,
+		});
 
-		if (updates.icon !== undefined) {
-			updateData.icon = updates.icon ?? undefined;
-		}
-
-		if (updates.order !== undefined) {
-			updateData.order = updates.order;
-		}
-
-		if (updates.isActive !== undefined) {
-			updateData.isActive = updates.isActive;
-		}
-
-		// Handle slug update
-		if (updates.slug !== undefined) {
-			// User provided a custom slug - ensure it's unique
-			const uniqueSlug = await generateUniqueSlug(db, 'subjects', updates.slug, subjectId);
-			updateData.slug = uniqueSlug;
-		} else if (updates.name !== undefined && updates.name !== existing.name) {
-			// Name changed but no custom slug - regenerate from new name
-			const baseSlug = slugify(updates.name);
-			const uniqueSlug = await generateUniqueSlug(db, 'subjects', baseSlug, subjectId);
-			updateData.slug = uniqueSlug;
+		if (newSlug !== undefined) {
+			updateData.slug = newSlug;
 		}
 
 		await db.patch(subjectId, updateData);

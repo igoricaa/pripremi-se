@@ -9,6 +9,7 @@
  */
 
 import type * as auth from "../auth.js";
+import type * as chapters from "../chapters.js";
 import type * as email from "../email.js";
 import type * as emails_components_Button from "../emails/components/Button.js";
 import type * as emails_components_Footer from "../emails/components/Footer.js";
@@ -25,6 +26,7 @@ import type * as lib_index from "../lib/index.js";
 import type * as lib_slugify from "../lib/slugify.js";
 import type * as lib_timestamps from "../lib/timestamps.js";
 import type * as rateLimiter from "../rateLimiter.js";
+import type * as sections from "../sections.js";
 import type * as subjects from "../subjects.js";
 import type * as userProfiles from "../userProfiles.js";
 import type * as users from "../users.js";
@@ -37,6 +39,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  chapters: typeof chapters;
   email: typeof email;
   "emails/components/Button": typeof emails_components_Button;
   "emails/components/Footer": typeof emails_components_Footer;
@@ -53,6 +56,7 @@ declare const fullApi: ApiFromModules<{
   "lib/slugify": typeof lib_slugify;
   "lib/timestamps": typeof lib_timestamps;
   rateLimiter: typeof rateLimiter;
+  sections: typeof sections;
   subjects: typeof subjects;
   userProfiles: typeof userProfiles;
   users: typeof users;

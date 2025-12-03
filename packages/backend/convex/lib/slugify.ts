@@ -38,18 +38,18 @@ export function slugify(text: string): string {
 /**
  * Generate a unique slug for the subjects table by appending -2, -3, etc. if it already exists.
  */
-export async function generateUniqueSlug(
+export async function generateUniqueSlug<T extends 'subjects' | 'chapters' | 'sections'>(
 	db: DatabaseReader,
-	tableName: 'subjects',
+	tableName: T,
 	baseSlug: string,
-	excludeId?: Id<'subjects'>
+	excludeId?: Id<T>
 ): Promise<string> {
 	let slug = baseSlug;
 	let counter = 1;
 
 	while (true) {
 		const existing = await db
-			.query(tableName)
+			.query(tableName as 'subjects' | 'chapters' | 'sections')
 			.withIndex('by_slug', (q) => q.eq('slug', slug))
 			.first();
 
@@ -59,4 +59,40 @@ export async function generateUniqueSlug(
 		counter++;
 		slug = `${baseSlug}-${counter}`;
 	}
+}
+
+/**
+ * Handle slug updates for entity update operations.
+ * Returns the new unique slug if an update is needed, or undefined if no change.
+ *
+ * Logic:
+ * 1. If explicit slug provided → use it (ensure uniqueness)
+ * 2. If name changed (but no explicit slug) → regenerate from new name
+ * 3. Otherwise → no slug update needed
+ */
+export async function handleSlugUpdate<T extends 'subjects' | 'chapters' | 'sections'>(
+	db: DatabaseReader,
+	tableName: T,
+	options: {
+		slug?: string; // Explicit slug from user
+		newName?: string; // New name if being updated
+		existingName: string; // Current name of the entity
+		excludeId: Id<T>; // Entity ID to exclude from uniqueness check
+	}
+): Promise<string | undefined> {
+	const { slug, newName, existingName, excludeId } = options;
+
+	// Case 1: Explicit slug provided
+	if (slug !== undefined) {
+		return await generateUniqueSlug(db, tableName, slug, excludeId);
+	}
+
+	// Case 2: Name changed without explicit slug → regenerate
+	if (newName !== undefined && newName !== existingName) {
+		const baseSlug = slugify(newName);
+		return await generateUniqueSlug(db, tableName, baseSlug, excludeId);
+	}
+
+	// Case 3: No slug update needed
+	return undefined;
 }
