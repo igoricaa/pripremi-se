@@ -16,19 +16,17 @@ Successfully migrated from a single-package structure to a Turborepo monorepo wi
 |-------|--------|-------|
 | Phase 1: Monorepo Setup | ✅ Complete | Turborepo + pnpm workspaces |
 | Phase 2: Shared Validators | ✅ Complete | `@pripremi-se/shared` package |
-| Phase 3: convex-helpers | ✅ Complete | With deviation (see below) |
+| Phase 3: convex-helpers | ✅ Complete | Including Zod v4 server validation |
 | Phase 4: Frontend Imports | ✅ Complete | Updated to workspace packages |
 
-### Deviation from Original Plan
+### Zod v4 Server Validation
 
-**Zod server-side validation**: The original plan included using `authedZodMutation` from convex-helpers to validate args with Zod schemas on the server. However, **Zod v4 is not compatible** with convex-helpers' `zodToConvex` converter (error: "Cannot read properties of undefined (reading 'typeName')").
+**Discovery**: convex-helpers has separate import paths for different Zod versions:
+- `convex-helpers/server/zod` - Legacy
+- `convex-helpers/server/zod3` - Zod v3
+- `convex-helpers/server/zod4` - **Zod v4** ✅
 
-**Solution**: Using `authedMutation` with standard Convex validators (`v.string()`, `v.optional()`) instead. Zod validation still happens on the frontend via `@pripremi-se/shared` validators - the backend just uses Convex's native validators.
-
-This is acceptable because:
-- Frontend validation catches most user errors
-- Convex validators still provide type safety
-- Can revisit when convex-helpers adds Zod v4 support
+Using `authedZodMutation` from `convex-helpers/server/zod4` with shared Zod schemas from `@pripremi-se/shared` enables single-source-of-truth validation on both frontend and backend
 
 ---
 
@@ -101,6 +99,7 @@ import {
   customMutation,
   customCtx,
 } from 'convex-helpers/server/customFunctions';
+import { zCustomMutation, zCustomQuery } from 'convex-helpers/server/zod4';
 import { query, mutation } from '../_generated/server';
 import { authComponent } from '../auth';
 
@@ -133,6 +132,24 @@ export const authedMutation = customMutation(
   })
 );
 
+// Zod mutation WITH authentication - validates args with Zod schema
+export const authedZodMutation = zCustomMutation(mutation, {
+  argsValidator: customCtx(async (ctx) => {
+    const user = await authComponent.getAuthUser(ctx);
+    if (!user) throw new Error('Not authenticated');
+    return { user };
+  }),
+});
+
+// Zod query WITH authentication - validates args with Zod schema
+export const authedZodQuery = zCustomQuery(query, {
+  argsValidator: customCtx(async (ctx) => {
+    const user = await authComponent.getAuthUser(ctx);
+    if (!user) throw new Error('Not authenticated');
+    return { user };
+  }),
+});
+
 export { query, mutation };
 ```
 
@@ -148,20 +165,17 @@ export const createTimestamps = () => {
 export const updateTimestamp = () => ({ updatedAt: now() });
 ```
 
-### Example Refactored Mutation
+### Example Refactored Mutation (with Zod validation)
 
 **`packages/backend/convex/userProfiles.ts`**
 ```typescript
-import { v } from 'convex/values';
 import { getOneFrom } from 'convex-helpers/server/relationships';
-import { authedMutation } from './lib/functions';
+import { authedZodMutation } from './lib/functions';
+import { profileUpdateSchema } from '@pripremi-se/shared';
 import { createTimestamps, updateTimestamp } from './lib/timestamps';
 
-export const updateMyProfile = authedMutation({
-  args: {
-    displayName: v.string(),
-    location: v.optional(v.string()),
-  },
+export const updateMyProfile = authedZodMutation({
+  args: profileUpdateSchema, // ← Shared Zod schema!
   handler: async (ctx, args) => {
     const { user, db } = ctx;
 
@@ -215,6 +229,7 @@ pnpm --filter @pripremi-se/backend dev
 - [x] Convex dev server starts successfully
 - [x] Shared validators import correctly in web app
 - [x] Custom auth functions work (`authedMutation`, `optionalAuthQuery`)
+- [x] Zod validation functions work (`authedZodMutation`, `authedZodQuery`)
 - [x] Timestamp utilities work
 - [x] `getOneFrom` helper works for relationships
 - [ ] End-to-end testing of settings page (manual verification needed)
@@ -230,15 +245,16 @@ pnpm --filter @pripremi-se/backend dev
 | Manual `authComponent.getAuthUser(ctx)` everywhere | `authedMutation` auto-injects `ctx.user` |
 | Manual `Date.now()` everywhere | `createTimestamps()` / `updateTimestamp()` |
 | Manual index queries | `getOneFrom()` / `getManyFrom()` |
+| Convex validators only (`v.string()`) | Zod schemas with rich validation |
+| Frontend-only Zod validation | Same Zod schema validates on both frontend and backend |
 
 ---
 
 ## Future Improvements
 
-1. **Zod Server Validation**: When convex-helpers supports Zod v4, migrate to `authedZodMutation`
-2. **Row-Level Security**: Add database access wrappers for ownership enforcement
-3. **Triggers**: Implement automatic timestamp updates on document changes
-4. **Mobile App**: Add `apps/mobile/` using React Native/Expo
+1. **Row-Level Security**: Add database access wrappers for ownership enforcement
+2. **Triggers**: Implement automatic timestamp updates on document changes
+3. **Mobile App**: Add `apps/mobile/` using React Native/Expo
 
 ---
 

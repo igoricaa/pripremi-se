@@ -1,6 +1,6 @@
-import { getOneFrom } from 'convex-helpers/server/relationships';
 import { query, optionalAuthQuery } from './lib/functions';
 import { authComponent } from './auth';
+import { getOneFrom } from 'convex-helpers/server/relationships';
 
 export const getCurrentAuthUser = query({
 	args: {},
@@ -19,6 +19,7 @@ export const getCurrentUser = optionalAuthQuery({
 		if (!user) return null;
 
 		const userProfile = await getOneFrom(db, 'userProfiles', 'by_authId', user._id);
+
 		return { user, userProfile: userProfile ?? null };
 	},
 });

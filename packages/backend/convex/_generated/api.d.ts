@@ -22,8 +22,10 @@ import type * as emails_components_welcome from "../emails/components/welcome.js
 import type * as http from "../http.js";
 import type * as lib_functions from "../lib/functions.js";
 import type * as lib_index from "../lib/index.js";
+import type * as lib_slugify from "../lib/slugify.js";
 import type * as lib_timestamps from "../lib/timestamps.js";
 import type * as rateLimiter from "../rateLimiter.js";
+import type * as subjects from "../subjects.js";
 import type * as userProfiles from "../userProfiles.js";
 import type * as users from "../users.js";
 
@@ -48,8 +50,10 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   "lib/functions": typeof lib_functions;
   "lib/index": typeof lib_index;
+  "lib/slugify": typeof lib_slugify;
   "lib/timestamps": typeof lib_timestamps;
   rateLimiter: typeof rateLimiter;
+  subjects: typeof subjects;
   userProfiles: typeof userProfiles;
   users: typeof users;
 }>;

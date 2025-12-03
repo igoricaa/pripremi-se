@@ -3,6 +3,7 @@ import {
 	customMutation,
 	customCtx,
 } from 'convex-helpers/server/customFunctions';
+import { zCustomMutation, zCustomQuery } from 'convex-helpers/server/zod4';
 import { query, mutation } from '../_generated/server';
 import { authComponent } from '../auth';
 
@@ -28,6 +29,26 @@ export const authedQuery = customQuery(
 // Authenticated mutation - throws if not authenticated
 export const authedMutation = customMutation(
 	mutation,
+	customCtx(async (ctx) => {
+		const user = await authComponent.getAuthUser(ctx);
+		if (!user) throw new Error('Not authenticated');
+		return { user };
+	})
+);
+
+// Zod mutation WITH authentication - validates args with Zod schema
+export const authedZodMutation = zCustomMutation(
+	mutation,
+	customCtx(async (ctx) => {
+		const user = await authComponent.getAuthUser(ctx);
+		if (!user) throw new Error('Not authenticated');
+		return { user };
+	})
+);
+
+// Zod query WITH authentication - validates args with Zod schema
+export const authedZodQuery = zCustomQuery(
+	query,
 	customCtx(async (ctx) => {
 		const user = await authComponent.getAuthUser(ctx);
 		if (!user) throw new Error('Not authenticated');

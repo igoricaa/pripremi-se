@@ -1,13 +1,10 @@
-import { v } from 'convex/values';
-import { getOneFrom } from 'convex-helpers/server/relationships';
-import { authedMutation } from './lib/functions';
+import { authedZodMutation } from './lib/functions';
+import { profileUpdateSchema } from '@pripremi-se/shared';
 import { createTimestamps, updateTimestamp } from './lib/timestamps';
+import { getOneFrom } from 'convex-helpers/server/relationships';
 
-export const updateMyProfile = authedMutation({
-	args: {
-		displayName: v.string(),
-		location: v.optional(v.string()),
-	},
+export const updateMyProfile = authedZodMutation({
+	args: profileUpdateSchema,
 	handler: async (ctx, args) => {
 		const { user, db } = ctx;
 
