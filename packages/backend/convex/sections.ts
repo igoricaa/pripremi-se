@@ -190,7 +190,6 @@ export const updateSection = authedZodMutation({
  * WARNING: This is a hard delete. Consider implications for child entities (lessons).
  * Requires authentication.
  * TODO: Add admin role check when implementing IZA-198
- * TODO: Add cascade warning/check for lessons when IZA-187 is implemented
  */
 export const deleteSection = authedZodMutation({
 	args: deleteSectionSchema,
@@ -201,6 +200,15 @@ export const deleteSection = authedZodMutation({
 		const existing = await db.get(sectionId);
 		if (!existing) {
 			throw new Error('Section not found');
+		}
+
+		// Check for child lessons before deletion
+		const hasChildren = await db
+			.query('lessons')
+			.withIndex('by_sectionId', (q) => q.eq('sectionId', sectionId))
+			.first();
+		if (hasChildren) {
+			throw new Error('Cannot delete section with existing lessons. Delete all lessons first.');
 		}
 
 		await db.delete(sectionId);

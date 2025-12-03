@@ -148,7 +148,7 @@ export const updateChapter = authedZodMutation({
 
 /**
  * Delete a chapter.
- * WARNING: This is a hard delete. Consider implications for child entities.
+ * WARNING: This is a hard delete. Consider implications for child entities (sections).
  * Requires authentication.
  * TODO: Add admin role check when implementing IZA-198
  */
@@ -161,6 +161,15 @@ export const deleteChapter = authedZodMutation({
         const existing = await db.get(chapterId);
         if (!existing) {
             throw new Error('Chapter not found');
+        }
+
+        // Check for child sections before deletion
+        const hasChildren = await db
+            .query('sections')
+            .withIndex('by_chapterId', (q) => q.eq('chapterId', chapterId))
+            .first();
+        if (hasChildren) {
+            throw new Error('Cannot delete chapter with existing sections. Delete all sections first.');
         }
 
         await db.delete(chapterId);

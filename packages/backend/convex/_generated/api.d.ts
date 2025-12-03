@@ -21,6 +21,7 @@ import type * as emails_components_resetPassword from "../emails/components/rese
 import type * as emails_components_verifyEmail from "../emails/components/verifyEmail.js";
 import type * as emails_components_welcome from "../emails/components/welcome.js";
 import type * as http from "../http.js";
+import type * as lessons from "../lessons.js";
 import type * as lib_functions from "../lib/functions.js";
 import type * as lib_index from "../lib/index.js";
 import type * as lib_slugify from "../lib/slugify.js";
@@ -51,6 +52,7 @@ declare const fullApi: ApiFromModules<{
   "emails/components/verifyEmail": typeof emails_components_verifyEmail;
   "emails/components/welcome": typeof emails_components_welcome;
   http: typeof http;
+  lessons: typeof lessons;
   "lib/functions": typeof lib_functions;
   "lib/index": typeof lib_index;
   "lib/slugify": typeof lib_slugify;

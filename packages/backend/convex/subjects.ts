@@ -166,7 +166,6 @@ export const updateSubject = authedZodMutation({
  * WARNING: This is a hard delete. Consider implications for child entities.
  * Requires authentication.
  * TODO: Add admin role check when implementing IZA-198
- * TODO: Add cascade warning/check for chapters when IZA-185 is implemented
  */
 export const deleteSubject = authedZodMutation({
 	args: deleteSubjectSchema,
@@ -179,14 +178,14 @@ export const deleteSubject = authedZodMutation({
 			throw new Error('Subject not found');
 		}
 
-		// TODO: When chapters table exists, check for children and warn/prevent deletion
-		// const hasChildren = await db
-		//   .query('chapters')
-		//   .withIndex('by_subjectId', q => q.eq('subjectId', subjectId))
-		//   .first();
-		// if (hasChildren) {
-		//   throw new Error('Cannot delete subject with existing chapters');
-		// }
+		// Check for child chapters before deletion
+		const hasChildren = await db
+			.query('chapters')
+			.withIndex('by_subjectId', (q) => q.eq('subjectId', subjectId))
+			.first();
+		if (hasChildren) {
+			throw new Error('Cannot delete subject with existing chapters. Delete all chapters first.');
+		}
 
 		await db.delete(subjectId);
 

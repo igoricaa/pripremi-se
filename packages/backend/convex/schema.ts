@@ -63,4 +63,38 @@ export default defineSchema({
 		.index('by_isActive_order', ['isActive', 'order'])
 		.index('by_chapterId_order', ['chapterId', 'order'])
 		.index('by_isActive_chapterId_order', ['isActive', 'chapterId', 'order']),
+
+	// Curriculum: Lessons (learning content within sections)
+	lessons: defineTable({
+		sectionId: v.id('sections'), // Reference to parent section
+		title: v.string(), // Lesson title
+		slug: v.string(), // URL-friendly identifier
+		content: v.string(), // Rich text/markdown content
+		contentType: v.string(), // "text", "video", "interactive"
+		estimatedMinutes: v.number(), // Estimated reading/viewing time
+		order: v.number(), // Display order within section
+		isActive: v.boolean(), // Whether lesson is published
+		createdAt: v.number(),
+		updatedAt: v.number(),
+	})
+		.index('by_sectionId', ['sectionId'])
+		.index('by_slug', ['slug'])
+		.index('by_isActive', ['isActive'])
+		.index('by_isActive_order', ['isActive', 'order'])
+		.index('by_sectionId_order', ['sectionId', 'order'])
+		.index('by_isActive_sectionId_order', ['isActive', 'sectionId', 'order']),
+
+	// Lesson Files: Media and attachments for lessons
+	lessonFiles: defineTable({
+		lessonId: v.id('lessons'), // Reference to parent lesson
+		storageId: v.id('_storage'), // Reference to Convex file storage
+		fileName: v.string(), // Original file name
+		fileType: v.string(), // "image", "video", "pdf", "audio"
+		mimeType: v.string(), // MIME type (e.g., "image/png", "video/mp4")
+		fileSize: v.number(), // File size in bytes
+		altText: v.optional(v.string()), // Alt text for accessibility (mainly for images)
+		createdAt: v.number(),
+	})
+		.index('by_lessonId', ['lessonId'])
+		.index('by_storageId', ['storageId']),
 });
