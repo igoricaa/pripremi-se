@@ -3,13 +3,13 @@ import { z } from 'zod';
 // Slug validation pattern (lowercase alphanumeric with hyphens)
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-// Create test schema - slug is optional (auto-generated from name if not provided)
+// Create test schema - slug is optional (auto-generated from title if not provided)
 export const createTestSchema = z
 	.object({
-		name: z
+		title: z
 			.string()
-			.min(1, 'Name is required')
-			.max(200, 'Name must be less than 200 characters'),
+			.min(1, 'Title is required')
+			.max(200, 'Title must be less than 200 characters'),
 		slug: z
 			.string()
 			.min(1, 'Slug must be at least 1 character')
@@ -33,7 +33,7 @@ export const createTestSchema = z
 			.min(0, 'Passing score must be at least 0')
 			.max(100, 'Passing score must be at most 100'),
 		maxAttempts: z.number().int('Max attempts must be an integer').min(1).optional(),
-		randomizeQuestions: z.boolean().default(false),
+		shuffleQuestions: z.boolean().default(false),
 		showCorrectAnswers: z.boolean().default(true),
 
 		order: z.number().int('Order must be an integer').min(0, 'Order must be 0 or greater'),
@@ -52,10 +52,10 @@ export type CreateTestInput = z.infer<typeof createTestSchema>;
 // Update test schema - all fields optional except id
 export const updateTestSchema = z.object({
 	id: z.string().min(1, 'Test ID is required'),
-	name: z
+	title: z
 		.string()
-		.min(1, 'Name must be at least 1 character')
-		.max(200, 'Name must be less than 200 characters')
+		.min(1, 'Title must be at least 1 character')
+		.max(200, 'Title must be less than 200 characters')
 		.optional(),
 	slug: z
 		.string()
@@ -82,7 +82,7 @@ export const updateTestSchema = z.object({
 		.max(100, 'Passing score must be at most 100')
 		.optional(),
 	maxAttempts: z.number().int('Max attempts must be an integer').min(1).optional().nullable(),
-	randomizeQuestions: z.boolean().optional(),
+	shuffleQuestions: z.boolean().optional(),
 	showCorrectAnswers: z.boolean().optional(),
 
 	order: z.number().int('Order must be an integer').min(0, 'Order must be 0 or greater').optional(),

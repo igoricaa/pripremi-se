@@ -102,7 +102,7 @@ export default defineSchema({
 
 	// Assessment: Tests (quizzes/exams that can be linked to any curriculum level)
 	tests: defineTable({
-		name: v.string(), // Test title
+		title: v.string(), // Test title
 		slug: v.string(), // URL-friendly identifier
 		description: v.string(), // Test description
 
@@ -115,7 +115,7 @@ export default defineSchema({
 		timeLimit: v.optional(v.number()), // Time limit in minutes (null = no limit)
 		passingScore: v.number(), // Passing score percentage (0-100)
 		maxAttempts: v.optional(v.number()), // Maximum attempts allowed (null = unlimited)
-		randomizeQuestions: v.boolean(), // Whether to randomize question order
+		shuffleQuestions: v.boolean(), // Whether to randomize question order
 		showCorrectAnswers: v.boolean(), // Whether to show correct answers after completion
 
 		// Metadata
@@ -146,13 +146,19 @@ export default defineSchema({
 		points: v.number(), // Points for this question
 		allowPartialCredit: v.boolean(), // Whether to allow partial credit (for multiple_choice)
 
+		// Educational linking and categorization
+		lessonId: v.optional(v.id('lessons')), // Link to lesson for "Learn More" when answer is incorrect
+		difficulty: v.optional(v.string()), // Question difficulty: "easy", "medium", "hard"
+
 		// Metadata
 		isActive: v.boolean(), // Whether question is published
 		createdAt: v.number(),
 		updatedAt: v.number(),
 	})
 		.index('by_isActive', ['isActive'])
-		.index('by_type', ['type']),
+		.index('by_type', ['type'])
+		.index('by_lessonId', ['lessonId'])
+		.index('by_difficulty', ['difficulty']),
 
 	// Assessment: Question Options (answer choices for multiple choice/true-false questions)
 	questionOptions: defineTable({

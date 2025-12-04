@@ -172,7 +172,7 @@ export const getTestWithQuestions = authedZodQuery({
 
 /**
  * Create a new test.
- * Slug is auto-generated from name if not provided.
+ * Slug is auto-generated from title if not provided.
  * Requires authentication.
  * TODO: Add admin role check when implementing IZA-198
  */
@@ -181,8 +181,8 @@ export const createTest = authedZodMutation({
 	handler: async (ctx, args) => {
 		const { db } = ctx;
 
-		// Generate slug from name if not provided
-		const baseSlug = args.slug || slugify(args.name);
+		// Generate slug from title if not provided
+		const baseSlug = args.slug || slugify(args.title);
 		const uniqueSlug = await generateUniqueSlug(db, 'tests', baseSlug);
 
 		const { slug, subjectId, chapterId, sectionId, ...data } = args;
@@ -202,7 +202,7 @@ export const createTest = authedZodMutation({
 
 /**
  * Update an existing test.
- * If name is changed and slug is not provided, slug is regenerated.
+ * If title is changed and slug is not provided, slug is regenerated.
  * Requires authentication.
  * TODO: Add admin role check when implementing IZA-198
  */
@@ -243,8 +243,8 @@ export const updateTest = authedZodMutation({
 		// Handle slug update
 		const newSlug = await handleSlugUpdate(db, 'tests', {
 			slug,
-			newName: otherUpdates.name,
-			existingName: existing.name,
+			newName: otherUpdates.title,
+			existingName: existing.title,
 			excludeId: testId,
 		});
 

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { questionTypeEnum } from '../constants';
+import { questionTypeEnum, questionDifficultyEnum } from '../constants';
 
 // Create question schema (simplified - no test linking)
 export const createQuestionSchema = z.object({
@@ -14,6 +14,10 @@ export const createQuestionSchema = z.object({
 	// Scoring
 	points: z.number().min(0, 'Points must be at least 0'),
 	allowPartialCredit: z.boolean().default(false),
+
+	// Educational linking and categorization
+	lessonId: z.string().min(1).optional(),
+	difficulty: questionDifficultyEnum.optional(),
 
 	// Metadata
 	isActive: z.boolean().default(true),
@@ -40,6 +44,10 @@ export const updateQuestionSchema = z.object({
 	// Scoring
 	points: z.number().min(0, 'Points must be at least 0').optional(),
 	allowPartialCredit: z.boolean().optional(),
+
+	// Educational linking and categorization
+	lessonId: z.string().min(1).optional().nullable(),
+	difficulty: questionDifficultyEnum.optional().nullable(),
 
 	// Metadata
 	isActive: z.boolean().optional(),
