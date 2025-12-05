@@ -1,5 +1,5 @@
 import { api } from '@pripremi-se/backend/convex/_generated/api';
-import { useQuery } from 'convex/react';
+import { useQueryWithStatus } from '@/lib/convex';
 import { AlertTriangle, Mail, RefreshCw, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -26,7 +26,7 @@ function setCooldownExpiry(): void {
 }
 
 export function EmailVerificationBanner() {
-	const data = useQuery(api.users.getCurrentUser);
+	const { data, isPending, isError } = useQueryWithStatus(api.users.getCurrentUser);
 	const [dismissed, setDismissed] = useState(false);
 	const [resending, setResending] = useState(false);
 	const [cooldown, setCooldown] = useState(() => getRemainingCooldown());
@@ -71,7 +71,8 @@ export function EmailVerificationBanner() {
 		}
 	};
 
-	if (!data || data.user.emailVerified || dismissed) {
+	// Silent failure: don't show banner while loading, on error, or after verification/dismissal
+	if (isPending || isError || !data || data.user.emailVerified || dismissed) {
 		return null;
 	}
 

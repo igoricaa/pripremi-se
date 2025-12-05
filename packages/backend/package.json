@@ -9,11 +9,14 @@
     "./convex/auth": "./convex/auth.ts"
   },
   "scripts": {
-    "dev": "convex dev"
+    "dev": "convex dev",
+    "seed:generate": "tsx convex/seed/runner.ts",
+    "seed:clear": "npx convex run seed:clearCurriculum"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
-    "@types/react": "^19.2.0"
+    "@types/react": "^19.2.0",
+    "tsx": "^4.19.0"
   },
   "dependencies": {
     "@convex-dev/better-auth": "^0.9.7",

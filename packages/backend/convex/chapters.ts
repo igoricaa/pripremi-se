@@ -1,5 +1,5 @@
 import { createChapterSchema, deleteChapterSchema, getChapterByIdSchema, reorderChaptersSchema, updateChapterSchema } from "@pripremi-se/shared";
-import { authedZodMutation, authedZodQuery, createTimestamps, generateUniqueSlug, handleSlugUpdate, query, slugify, updateTimestamp } from "./lib";
+import { editorZodMutation, editorZodQuery, createTimestamps, generateUniqueSlug, handleSlugUpdate, query, slugify, updateTimestamp } from "./lib";
 import { Id } from "./_generated/dataModel";
 import { v } from "convex/values";
 
@@ -9,9 +9,9 @@ import { v } from "convex/values";
 
 /**
  * List all chapters (admin view), sorted by order.
- * Requires authentication.
+ * Requires editor or admin role.
  */
-export const listChapters = authedZodQuery({
+export const listChapters = editorZodQuery({
     args: {},
     handler: async (ctx) => {
         const { db } = ctx;
@@ -59,9 +59,9 @@ export const getChapterBySlug = query({
 
 /**
  * Get a single chapter by its ID.
- * Requires authentication (admin view).
+ * Requires editor or admin role.
  */
-export const getChapterById = authedZodQuery({
+export const getChapterById = editorZodQuery({
     args: getChapterByIdSchema,
     handler: async (ctx, args) => {
         const chapter = await ctx.db.get(args.id as Id<'chapters'>);
@@ -76,10 +76,9 @@ export const getChapterById = authedZodQuery({
 /**
  * Create a new chapter.
  * Slug is auto-generated from name if not provided.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const createChapter = authedZodMutation({
+export const createChapter = editorZodMutation({
     args: createChapterSchema,
     handler: async (ctx, args) => {
         const { db } = ctx;
@@ -104,10 +103,9 @@ export const createChapter = authedZodMutation({
 /**
  * Update an existing chapter.
  * If name is changed and slug is not provided, slug is regenerated.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const updateChapter = authedZodMutation({
+export const updateChapter = editorZodMutation({
     args: updateChapterSchema,
     handler: async (ctx, args) => {
         const { db } = ctx;
@@ -149,10 +147,9 @@ export const updateChapter = authedZodMutation({
 /**
  * Delete a chapter.
  * WARNING: This is a hard delete. Consider implications for child entities (sections).
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const deleteChapter = authedZodMutation({
+export const deleteChapter = editorZodMutation({
     args: deleteChapterSchema,
     handler: async (ctx, args) => {
         const { db } = ctx;
@@ -181,10 +178,9 @@ export const deleteChapter = authedZodMutation({
 /**
  * Bulk update chapter order values.
  * Used for drag-and-drop reordering in admin UI.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const reorderChapters = authedZodMutation({
+export const reorderChapters = editorZodMutation({
     args: reorderChaptersSchema,
     handler: async (ctx, args) => {
         const { db } = ctx;

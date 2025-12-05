@@ -12,7 +12,7 @@ import {
 import { v } from 'convex/values';
 import type { Id } from './_generated/dataModel';
 import { query } from './_generated/server';
-import { authedZodMutation, authedZodQuery, createTimestamps, updateTimestamp } from './lib';
+import { editorZodMutation, editorZodQuery, createTimestamps, updateTimestamp } from './lib';
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -57,9 +57,9 @@ function validateQuestionOptions(
 
 /**
  * List all questions (for admin panel).
- * Requires authentication (admin view).
+ * Requires editor or admin role.
  */
-export const listAllQuestions = authedZodQuery({
+export const listAllQuestions = editorZodQuery({
 	args: {},
 	handler: async (ctx) => {
 		return await ctx.db.query('questions').withIndex('by_isActive', (q) => q.eq('isActive', true)).collect();
@@ -87,9 +87,9 @@ export const getQuestionWithOptions = query({
 
 /**
  * Get a single question by ID (admin view).
- * Requires authentication.
+ * Requires editor or admin role.
  */
-export const getQuestionById = authedZodQuery({
+export const getQuestionById = editorZodQuery({
 	args: getQuestionByIdSchema,
 	handler: async (ctx, args) => {
 		const question = await ctx.db.get(args.id as Id<'questions'>);
@@ -115,7 +115,7 @@ export const listQuestionOptions = query({
 // MUTATIONS - QUESTIONS
 // ============================================================================
 
-export const createQuestion = authedZodMutation({
+export const createQuestion = editorZodMutation({
 	args: createQuestionSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -132,10 +132,9 @@ export const createQuestion = authedZodMutation({
 /**
  * Create a question with its options in a single transaction.
  * This is the preferred way to create questions.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const createQuestionWithOptions = authedZodMutation({
+export const createQuestionWithOptions = editorZodMutation({
 	args: createQuestionWithOptionsSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -168,10 +167,9 @@ export const createQuestionWithOptions = authedZodMutation({
 
 /**
  * Update an existing question.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const updateQuestion = authedZodMutation({
+export const updateQuestion = editorZodMutation({
 	args: updateQuestionSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -202,10 +200,9 @@ export const updateQuestion = authedZodMutation({
 /**
  * Delete a question and all its options.
  * WARNING: This is a hard delete. Consider implications for linked tests and user answers.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const deleteQuestion = authedZodMutation({
+export const deleteQuestion = editorZodMutation({
 	args: deleteQuestionSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -247,10 +244,9 @@ export const deleteQuestion = authedZodMutation({
 
 /**
  * Create a new option for an existing question.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const createQuestionOption = authedZodMutation({
+export const createQuestionOption = editorZodMutation({
 	args: createQuestionOptionSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -268,10 +264,9 @@ export const createQuestionOption = authedZodMutation({
 
 /**
  * Update an existing question option.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const updateQuestionOption = authedZodMutation({
+export const updateQuestionOption = editorZodMutation({
 	args: updateQuestionOptionSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -299,10 +294,9 @@ export const updateQuestionOption = authedZodMutation({
 
 /**
  * Delete a question option.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const deleteQuestionOption = authedZodMutation({
+export const deleteQuestionOption = editorZodMutation({
 	args: deleteQuestionOptionSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;

@@ -8,8 +8,8 @@ import {
 import { v } from 'convex/values';
 import type { Id } from './_generated/dataModel';
 import {
-	authedZodMutation,
-	authedZodQuery,
+	editorZodMutation,
+	editorZodQuery,
 	query,
 	slugify,
 	generateUniqueSlug,
@@ -24,9 +24,9 @@ import {
 
 /**
  * List all sections (admin view), sorted by order.
- * Requires authentication.
+ * Requires editor or admin role.
  */
-export const listSections = authedZodQuery({
+export const listSections = editorZodQuery({
 	args: {},
 	handler: async (ctx) => {
 		const { db } = ctx;
@@ -98,9 +98,9 @@ export const getSectionBySlug = query({
 
 /**
  * Get a single section by its ID.
- * Requires authentication (admin view).
+ * Requires editor or admin role.
  */
-export const getSectionById = authedZodQuery({
+export const getSectionById = editorZodQuery({
 	args: getSectionByIdSchema,
 	handler: async (ctx, args) => {
 		const section = await ctx.db.get(args.id as Id<'sections'>);
@@ -115,10 +115,9 @@ export const getSectionById = authedZodQuery({
 /**
  * Create a new section.
  * Slug is auto-generated from name if not provided.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const createSection = authedZodMutation({
+export const createSection = editorZodMutation({
 	args: createSectionSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -143,10 +142,9 @@ export const createSection = authedZodMutation({
 /**
  * Update an existing section.
  * If name is changed and slug is not provided, slug is regenerated.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const updateSection = authedZodMutation({
+export const updateSection = editorZodMutation({
 	args: updateSectionSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -188,10 +186,9 @@ export const updateSection = authedZodMutation({
 /**
  * Delete a section.
  * WARNING: This is a hard delete. Consider implications for child entities (lessons).
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const deleteSection = authedZodMutation({
+export const deleteSection = editorZodMutation({
 	args: deleteSectionSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -220,10 +217,9 @@ export const deleteSection = authedZodMutation({
 /**
  * Bulk update section order values.
  * Used for drag-and-drop reordering in admin UI.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const reorderSections = authedZodMutation({
+export const reorderSections = editorZodMutation({
 	args: reorderSectionsSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;

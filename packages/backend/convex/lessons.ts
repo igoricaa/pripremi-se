@@ -8,8 +8,8 @@ import {
 import { v } from 'convex/values';
 import type { Id } from './_generated/dataModel';
 import {
-	authedZodMutation,
-	authedZodQuery,
+	editorZodMutation,
+	editorZodQuery,
 	query,
 	slugify,
 	generateUniqueSlug,
@@ -25,9 +25,9 @@ import { DatabaseWriter } from './_generated/server';
 
 /**
  * List all lessons (admin view), sorted by order.
- * Requires authentication.
+ * Requires editor or admin role.
  */
-export const listLessons = authedZodQuery({
+export const listLessons = editorZodQuery({
 	args: {},
 	handler: async (ctx) => {
 		const { db } = ctx;
@@ -99,9 +99,9 @@ export const getLessonBySlug = query({
 
 /**
  * Get a single lesson by its ID.
- * Requires authentication (admin view).
+ * Requires editor or admin role.
  */
-export const getLessonById = authedZodQuery({
+export const getLessonById = editorZodQuery({
 	args: getLessonByIdSchema,
 	handler: async (ctx, args) => {
 		const lesson = await ctx.db.get(args.id as Id<'lessons'>);
@@ -116,11 +116,10 @@ export const getLessonById = authedZodQuery({
 /**
  * Create a new lesson.
  * Slug is auto-generated from title if not provided.
- * Requires authentication.
+ * Requires editor or admin role.
  * Also updates totalLessons in all affected sectionProgress records.
- * TODO: Add admin role check when implementing IZA-198
  */
-export const createLesson = authedZodMutation({
+export const createLesson = editorZodMutation({
 	args: createLessonSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -154,11 +153,10 @@ export const createLesson = authedZodMutation({
 /**
  * Update an existing lesson.
  * If title is changed and slug is not provided, slug is regenerated.
- * Requires authentication.
+ * Requires editor or admin role.
  * Also syncs totalLessons if isActive changes.
- * TODO: Add admin role check when implementing IZA-198
  */
-export const updateLesson = authedZodMutation({
+export const updateLesson = editorZodMutation({
 	args: updateLessonSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -211,11 +209,10 @@ export const updateLesson = authedZodMutation({
 /**
  * Delete a lesson.
  * WARNING: This is a hard delete.
- * Requires authentication.
+ * Requires editor or admin role.
  * Also updates totalLessons in all affected sectionProgress records.
- * TODO: Add admin role check when implementing IZA-198
  */
-export const deleteLesson = authedZodMutation({
+export const deleteLesson = editorZodMutation({
 	args: deleteLessonSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -243,10 +240,9 @@ export const deleteLesson = authedZodMutation({
 /**
  * Bulk update lesson order values.
  * Used for drag-and-drop reordering in admin UI.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const reorderLessons = authedZodMutation({
+export const reorderLessons = editorZodMutation({
 	args: reorderLessonsSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;

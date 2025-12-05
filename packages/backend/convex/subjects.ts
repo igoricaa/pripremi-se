@@ -9,8 +9,8 @@ import { v } from 'convex/values';
 import type { Id } from './_generated/dataModel';
 import { query } from './_generated/server';
 import {
-	authedZodMutation,
-	authedZodQuery,
+	editorZodMutation,
+	editorZodQuery,
 	slugify,
 	generateUniqueSlug,
 	handleSlugUpdate,
@@ -24,9 +24,9 @@ import {
 
 /**
  * List all subjects (admin view), sorted by order.
- * Requires authentication.
+ * Requires editor or admin role.
  */
-export const listSubjects = authedZodQuery({
+export const listSubjects = editorZodQuery({
 	args: {},
 	handler: async (ctx) => {
 		const subjects = await ctx.db.query('subjects').withIndex('by_order').collect();
@@ -69,9 +69,9 @@ export const getSubjectBySlug = query({
 
 /**
  * Get a single subject by its ID.
- * Requires authentication (admin view).
+ * Requires editor or admin role.
  */
-export const getSubjectById = authedZodQuery({
+export const getSubjectById = editorZodQuery({
 	args: getSubjectByIdSchema,
 	handler: async (ctx, args) => {
 		const subject = await ctx.db.get(args.id as Id<'subjects'>);
@@ -87,10 +87,9 @@ export const getSubjectById = authedZodQuery({
 /**
  * Create a new subject.
  * Slug is auto-generated from name if not provided.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const createSubject = authedZodMutation({
+export const createSubject = editorZodMutation({
 	args: createSubjectSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -116,10 +115,9 @@ export const createSubject = authedZodMutation({
 /**
  * Update an existing subject.
  * If name is changed and slug is not provided, slug is regenerated.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const updateSubject = authedZodMutation({
+export const updateSubject = editorZodMutation({
 	args: updateSubjectSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -164,10 +162,9 @@ export const updateSubject = authedZodMutation({
 /**
  * Delete a subject.
  * WARNING: This is a hard delete. Consider implications for child entities.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const deleteSubject = authedZodMutation({
+export const deleteSubject = editorZodMutation({
 	args: deleteSubjectSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -196,10 +193,9 @@ export const deleteSubject = authedZodMutation({
 /**
  * Bulk update subject order values.
  * Used for drag-and-drop reordering in admin UI.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const reorderSubjects = authedZodMutation({
+export const reorderSubjects = editorZodMutation({
 	args: reorderSubjectsSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;

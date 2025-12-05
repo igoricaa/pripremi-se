@@ -18,7 +18,7 @@ import {
 	Shield,
 	User,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Activity, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
@@ -49,7 +49,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { authClient } from '@/lib/auth-client';
 
 type SettingsTab = 'profile' | 'security' | 'danger';
@@ -92,17 +92,17 @@ function SettingsPage() {
 					</TabsTrigger>
 				</TabsList>
 
-				<TabsContent value="profile">
+				<Activity mode={(tab || 'profile') === 'profile' ? 'visible' : 'hidden'}>
 					<ProfileTab />
-				</TabsContent>
+				</Activity>
 
-				<TabsContent value="security">
+				<Activity mode={tab === 'security' ? 'visible' : 'hidden'}>
 					<SecurityTab />
-				</TabsContent>
+				</Activity>
 
-				<TabsContent value="danger">
+				<Activity mode={tab === 'danger' ? 'visible' : 'hidden'}>
 					<DangerTab />
-				</TabsContent>
+				</Activity>
 			</Tabs>
 		</div>
 	);

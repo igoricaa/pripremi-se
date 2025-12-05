@@ -16,6 +16,45 @@ export const getCurrentUserProfile = authedQuery({
 	}
 })
 
+/**
+ * Check if the current user has admin role.
+ * Returns true if user is admin, false otherwise.
+ */
+export const isAdmin = authedQuery({
+	args: {},
+	handler: async (ctx) => {
+		const { user, db } = ctx;
+		const profile = await getOneFrom(db, 'userProfiles', 'by_userId', user._id);
+		return profile?.role === USER_ROLES.ADMIN;
+	}
+})
+
+/**
+ * Check if the current user can access curriculum (editor or admin).
+ * Returns true if user is editor or admin, false otherwise.
+ */
+export const canAccessCurriculum = authedQuery({
+	args: {},
+	handler: async (ctx) => {
+		const { user, db } = ctx;
+		const profile = await getOneFrom(db, 'userProfiles', 'by_userId', user._id);
+		return profile?.role === USER_ROLES.ADMIN || profile?.role === USER_ROLES.EDITOR;
+	}
+})
+
+/**
+ * Get the current user's role.
+ * Returns the role string or null if profile doesn't exist.
+ */
+export const getCurrentUserRole = authedQuery({
+	args: {},
+	handler: async (ctx) => {
+		const { user, db } = ctx;
+		const profile = await getOneFrom(db, 'userProfiles', 'by_userId', user._id);
+		return profile?.role ?? null;
+	}
+})
+
 // ============================================================================
 // MUTATIONS
 // ============================================================================

@@ -1,11 +1,14 @@
 import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
-import { requireActionCtx } from "@convex-dev/better-auth/utils";
+import { requireActionCtx, requireMutationCtx } from "@convex-dev/better-auth/utils";
+import { getOneFrom } from "convex-helpers/server/relationships";
 import { betterAuth } from "better-auth";
+import { USER_ROLES } from "@pripremi-se/shared";
 import { components } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
 import authSchema from "./betterAuth/schema";
 import { sendChangeEmailVerification, sendEmailVerification, sendResetPassword } from "./email";
+import { createTimestamps } from "./lib/timestamps";
 
 const siteUrl = process.env.SITE_URL || "http://localhost:3000";
 
@@ -44,6 +47,40 @@ export const createAuth = (
 				httpOnly: true,
 				secure: process.env.NODE_ENV === "production",
 				sameSite: "lax",
+			},
+		},
+		databaseHooks: {
+			user: {
+				create: {
+					after: async (user) => {
+						if (optionsOnly) return;
+
+						try {
+							const mutationCtx = requireMutationCtx(ctx);
+
+							// Defensive check - skip if profile already exists
+							const existingProfile = await getOneFrom(
+								mutationCtx.db,
+								"userProfiles",
+								"by_userId",
+								user.id
+							);
+
+							if (existingProfile) return;
+
+							// Create user profile with default USER role
+							await mutationCtx.db.insert("userProfiles", {
+								userId: user.id,
+								displayName: user.name || "User",
+								role: USER_ROLES.USER,
+								...createTimestamps(),
+							});
+						} catch (error) {
+							// Log but don't throw - profile can be created lazily later via updateMyProfile
+							console.error(`Failed to create profile for user ${user.id}:`, error);
+						}
+					},
+				},
 			},
 		},
 		emailAndPassword: {

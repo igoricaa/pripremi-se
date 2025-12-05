@@ -6,7 +6,8 @@ import { z } from 'zod';
  */
 export const USER_ROLES = {
 	USER: 'user',
-	// ADMIN: 'admin', // Add when admin role is implemented (IZA-198)
+	EDITOR: 'editor',
+	ADMIN: 'admin',
 } as const;
 
 /**
@@ -22,4 +23,4 @@ export const USER_ROLE_VALUES = Object.values(USER_ROLES);
 /**
  * Zod enum schema for user roles
  */
-export const userRoleEnum = z.enum([USER_ROLES.USER]);
+export const userRoleEnum = z.enum([USER_ROLES.USER, USER_ROLES.EDITOR, USER_ROLES.ADMIN]);

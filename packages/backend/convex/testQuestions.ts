@@ -7,7 +7,7 @@ import {
 import { v } from 'convex/values';
 import type { Id } from './_generated/dataModel';
 import { query } from './_generated/server';
-import { authedZodMutation, authedZodQuery } from './lib';
+import { editorZodMutation, editorZodQuery } from './lib';
 
 // ============================================================================
 // QUERIES
@@ -54,9 +54,9 @@ export const listQuestionsByTest = query({
 
 /**
  * List all tests that contain a specific question (via junction table).
- * Requires authentication (admin view).
+ * Requires editor or admin role.
  */
-export const listTestsForQuestion = authedZodQuery({
+export const listTestsForQuestion = editorZodQuery({
 	args: listTestsForQuestionSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -91,10 +91,9 @@ export const listTestsForQuestion = authedZodQuery({
 
 /**
  * Link an existing question to a test with a specific order.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const linkQuestionToTest = authedZodMutation({
+export const linkQuestionToTest = editorZodMutation({
 	args: linkQuestionToTestSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -141,10 +140,9 @@ export const linkQuestionToTest = authedZodMutation({
 
 /**
  * Unlink a question from a test.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const unlinkQuestionFromTest = authedZodMutation({
+export const unlinkQuestionFromTest = editorZodMutation({
 	args: unlinkQuestionFromTestSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -170,10 +168,9 @@ export const unlinkQuestionFromTest = authedZodMutation({
 /**
  * Bulk update question order values within a test.
  * Used for drag-and-drop reordering in admin UI.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const reorderQuestionsInTest = authedZodMutation({
+export const reorderQuestionsInTest = editorZodMutation({
 	args: reorderTestQuestionsSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;

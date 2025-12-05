@@ -9,8 +9,8 @@ import { v } from 'convex/values';
 import type { Id } from './_generated/dataModel';
 import { query } from './_generated/server';
 import {
-	authedZodMutation,
-	authedZodQuery,
+	editorZodMutation,
+	editorZodQuery,
 	slugify,
 	generateUniqueSlug,
 	handleSlugUpdate,
@@ -24,9 +24,9 @@ import {
 
 /**
  * List all tests (admin view), sorted by order.
- * Requires authentication.
+ * Requires editor or admin role.
  */
-export const listTests = authedZodQuery({
+export const listTests = editorZodQuery({
 	args: {},
 	handler: async (ctx) => {
 		const tests = await ctx.db.query('tests').withIndex('by_order').collect();
@@ -105,9 +105,9 @@ export const getTestBySlug = query({
 
 /**
  * Get a single test by its ID.
- * Requires authentication (admin view).
+ * Requires editor or admin role.
  */
-export const getTestById = authedZodQuery({
+export const getTestById = editorZodQuery({
 	args: getTestByIdSchema,
 	handler: async (ctx, args) => {
 		const test = await ctx.db.get(args.id as Id<'tests'>);
@@ -117,10 +117,10 @@ export const getTestById = authedZodQuery({
 
 /**
  * Get a test with all its linked questions (via junction table).
- * Requires authentication (admin view).
+ * Requires editor or admin role.
  */
 // TODO: Check if this can be optimized using some convex-helpers functions or generally be better written.
-export const getTestWithQuestions = authedZodQuery({
+export const getTestWithQuestions = editorZodQuery({
 	args: getTestByIdSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -173,10 +173,9 @@ export const getTestWithQuestions = authedZodQuery({
 /**
  * Create a new test.
  * Slug is auto-generated from title if not provided.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const createTest = authedZodMutation({
+export const createTest = editorZodMutation({
 	args: createTestSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -203,10 +202,9 @@ export const createTest = authedZodMutation({
 /**
  * Update an existing test.
  * If title is changed and slug is not provided, slug is regenerated.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const updateTest = authedZodMutation({
+export const updateTest = editorZodMutation({
 	args: updateTestSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -261,10 +259,9 @@ export const updateTest = authedZodMutation({
 /**
  * Delete a test.
  * WARNING: This is a hard delete. Consider implications for linked questions.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const deleteTest = authedZodMutation({
+export const deleteTest = editorZodMutation({
 	args: deleteTestSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -291,10 +288,9 @@ export const deleteTest = authedZodMutation({
 /**
  * Bulk update test order values.
  * Used for drag-and-drop reordering in admin UI.
- * Requires authentication.
- * TODO: Add admin role check when implementing IZA-198
+ * Requires editor or admin role.
  */
-export const reorderTests = authedZodMutation({
+export const reorderTests = editorZodMutation({
 	args: reorderTestsSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
