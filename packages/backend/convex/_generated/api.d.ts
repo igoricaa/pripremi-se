@@ -11,6 +11,7 @@
 import type * as answerResponses from "../answerResponses.js";
 import type * as auth from "../auth.js";
 import type * as chapters from "../chapters.js";
+import type * as dashboard from "../dashboard.js";
 import type * as email from "../email.js";
 import type * as emails_components_Button from "../emails/components/Button.js";
 import type * as emails_components_Footer from "../emails/components/Footer.js";
@@ -22,6 +23,7 @@ import type * as emails_components_resetPassword from "../emails/components/rese
 import type * as emails_components_verifyEmail from "../emails/components/verifyEmail.js";
 import type * as emails_components_welcome from "../emails/components/welcome.js";
 import type * as http from "../http.js";
+import type * as lessonFiles from "../lessonFiles.js";
 import type * as lessonProgress from "../lessonProgress.js";
 import type * as lessons from "../lessons.js";
 import type * as lib_functions from "../lib/functions.js";
@@ -57,6 +59,7 @@ declare const fullApi: ApiFromModules<{
   answerResponses: typeof answerResponses;
   auth: typeof auth;
   chapters: typeof chapters;
+  dashboard: typeof dashboard;
   email: typeof email;
   "emails/components/Button": typeof emails_components_Button;
   "emails/components/Footer": typeof emails_components_Footer;
@@ -68,6 +71,7 @@ declare const fullApi: ApiFromModules<{
   "emails/components/verifyEmail": typeof emails_components_verifyEmail;
   "emails/components/welcome": typeof emails_components_welcome;
   http: typeof http;
+  lessonFiles: typeof lessonFiles;
   lessonProgress: typeof lessonProgress;
   lessons: typeof lessons;
   "lib/functions": typeof lib_functions;

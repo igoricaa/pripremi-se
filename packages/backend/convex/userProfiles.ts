@@ -43,6 +43,24 @@ export const canAccessCurriculum = authedQuery({
 })
 
 /**
+ * Get admin access info for the current user.
+ * Returns canAccess (editor or admin) and isAdmin flags.
+ * Combined query to reduce multiple permission checks to one.
+ */
+export const getAdminAccess = authedQuery({
+	args: {},
+	handler: async (ctx) => {
+		const { user, db } = ctx;
+		const profile = await getOneFrom(db, 'userProfiles', 'by_userId', user._id);
+
+		return {
+			canAccess: profile?.role === USER_ROLES.ADMIN || profile?.role === USER_ROLES.EDITOR,
+			isAdmin: profile?.role === USER_ROLES.ADMIN,
+		};
+	}
+})
+
+/**
  * Get the current user's role.
  * Returns the role string or null if profile doesn't exist.
  */

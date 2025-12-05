@@ -3,6 +3,7 @@ import { useMutation } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import { useQueryWithStatus } from '@/lib/convex';
 import { QueryError } from '@/components/QueryError';
+import { TableSkeleton } from '@/components/admin/skeletons';
 import { Plus, Pencil, Trash2, GripVertical } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -65,8 +66,12 @@ function SubjectsPage() {
 
 	if (isPending) {
 		return (
-			<div className="flex items-center justify-center py-8">
-				<div className="text-muted-foreground">Loading subjects...</div>
+			<div className="space-y-6">
+				<div>
+					<h1 className="font-bold text-3xl tracking-tight">Subjects</h1>
+					<p className="text-muted-foreground">Manage curriculum subjects</p>
+				</div>
+				<TableSkeleton />
 			</div>
 		);
 	}

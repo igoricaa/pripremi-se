@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import {
 	createFileRoute,
 	Navigate,
@@ -7,7 +8,7 @@ import {
 import { Authenticated, AuthLoading, Unauthenticated } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
-import { QueryError } from '@/components/QueryError';
+import { PageSkeleton } from '@/components/admin/skeletons';
 import { useQueryWithStatus } from '@/lib/convex';
 import {
 	SidebarInset,
@@ -25,6 +26,9 @@ export const Route = createFileRoute('/admin')({
 			});
 		}
 	},
+	// Preload stays fresh for 60 seconds
+	// TODO: Check how this actually works
+	preloadStaleTime: 60_000,
 	component: AdminLayout,
 });
 
@@ -47,44 +51,30 @@ function AdminLayout() {
 }
 
 function AdminLayoutContent() {
-	const accessQuery = useQueryWithStatus(api.userProfiles.canAccessCurriculum);
-	const adminQuery = useQueryWithStatus(api.userProfiles.isAdmin);
+	// Single combined query instead of 2 separate
+	const accessQuery = useQueryWithStatus(api.userProfiles.getAdminAccess);
 
-	// Show loading state while checking permissions
-	if (accessQuery.isPending) {
-		return (
-			<div className="flex h-screen items-center justify-center">
-				<div className="text-muted-foreground">Loading...</div>
-			</div>
-		);
-	}
-
-	// Show error if permission check failed
+	// Only block for errors (unauthorized) - don't block on isPending
 	if (accessQuery.isError) {
-		return (
-			<div className="flex h-screen items-center justify-center p-4">
-				<QueryError
-					error={accessQuery.error}
-					title="Failed to verify permissions"
-				/>
-			</div>
-		);
+		return <Navigate to="/" />;
 	}
 
-	// Redirect to home if not editor or admin
-	if (!accessQuery.data) {
+	// Access denied - redirect
+	if (accessQuery.data && !accessQuery.data.canAccess) {
 		return <Navigate to="/" />;
 	}
 
 	return (
 		<SidebarProvider>
-			<AdminSidebar isAdmin={adminQuery.data ?? false} />
+			<AdminSidebar isAdmin={accessQuery.data?.isAdmin ?? false} />
 			<SidebarInset>
 				<header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
 					<SidebarTrigger className="-ml-1" />
 				</header>
 				<main className="flex-1 overflow-auto p-6">
-					<Outlet />
+					<Suspense fallback={<PageSkeleton />}>
+						<Outlet />
+					</Suspense>
 				</main>
 			</SidebarInset>
 		</SidebarProvider>

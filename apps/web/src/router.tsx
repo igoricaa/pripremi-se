@@ -32,6 +32,8 @@ export function getRouter() {
 		createRouter({
 			routeTree,
 			defaultPreload: 'intent',
+			// TODO: Check what this does and how it works
+			// defaultPreloadStaleTime: 30_000, // Keep preloaded data fresh for 30s
 			defaultErrorComponent: DefaultCatchBoundary,
 			defaultNotFoundComponent: () => <NotFound />,
 			scrollRestoration: true,
