@@ -1,16 +1,9 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { Authenticated, Unauthenticated } from 'convex/react';
 import {
-	ChevronDown,
-	ChevronRight,
-	ClipboardType,
-	Globe,
 	Home,
 	Menu,
-	Network,
 	Settings,
-	SquareFunction,
-	StickyNote,
 	X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -22,9 +15,6 @@ import { Button } from './ui/button';
 export default function Header() {
 	const navigate = useNavigate();
 	const [isOpen, setIsOpen] = useState(false);
-	const [groupedExpanded, setGroupedExpanded] = useState<
-		Record<string, boolean>
-	>({});
 	const { theme } = useTheme();
 	const [mounted, setMounted] = useState(false);
 
@@ -97,152 +87,7 @@ export default function Header() {
 						<Home size={20} />
 						<span className="font-medium">Home</span>
 					</Link>
-					{/* Demo Links Start */}
-					<Link
-						activeProps={{
-							className:
-								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-						}}
-						className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
-						onClick={() => setIsOpen(false)}
-						to="/demo/start/server-funcs"
-					>
-						<SquareFunction size={20} />
-						<span className="font-medium">Start - Server Functions</span>
-					</Link>
-					<Link
-						activeProps={{
-							className:
-								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-						}}
-						className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
-						onClick={() => setIsOpen(false)}
-						to="/demo/start/api-request"
-					>
-						<Network size={20} />
-						<span className="font-medium">Start - API Request</span>
-					</Link>
-					<div className="flex flex-row justify-between">
-						<Link
-							activeProps={{
-								className:
-									'flex-1 flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-							}}
-							className="mb-2 flex flex-1 items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
-							onClick={() => setIsOpen(false)}
-							to="/demo/start/ssr"
-						>
-							<StickyNote size={20} />
-							<span className="font-medium">Start - SSR Demos</span>
-						</Link>
-						<button
-							className="rounded-lg p-2 transition-colors hover:bg-gray-800"
-							onClick={() =>
-								setGroupedExpanded((prev) => ({
-									...prev,
-									StartSSRDemo: !prev.StartSSRDemo,
-								}))
-							}
-							type="button"
-						>
-							{groupedExpanded.StartSSRDemo ? (
-								<ChevronDown size={20} />
-							) : (
-								<ChevronRight size={20} />
-							)}
-						</button>
-					</div>
-					{groupedExpanded.StartSSRDemo && (
-						<div className="ml-4 flex flex-col">
-							<Link
-								activeProps={{
-									className:
-										'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-								}}
-								className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
-								onClick={() => setIsOpen(false)}
-								to="/demo/start/ssr/spa-mode"
-							>
-								<StickyNote size={20} />
-								<span className="font-medium">SPA Mode</span>
-							</Link>
-
-							<Link
-								activeProps={{
-									className:
-										'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-								}}
-								className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
-								onClick={() => setIsOpen(false)}
-								to="/demo/start/ssr/full-ssr"
-							>
-								<StickyNote size={20} />
-								<span className="font-medium">Full SSR</span>
-							</Link>
-
-							<Link
-								activeProps={{
-									className:
-										'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-								}}
-								className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
-								onClick={() => setIsOpen(false)}
-								to="/demo/start/ssr/data-only"
-							>
-								<StickyNote size={20} />
-								<span className="font-medium">Data Only</span>
-							</Link>
-						</div>
-					)}
-					<Link
-						activeProps={{
-							className:
-								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-						}}
-						className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
-						onClick={() => setIsOpen(false)}
-						to="/demo/tanstack-query"
-					>
-						<Network size={20} />
-						<span className="font-medium">TanStack Query</span>
-					</Link>
-					<Link
-						activeProps={{
-							className:
-								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-						}}
-						className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
-						onClick={() => setIsOpen(false)}
-						to="/demo/form/simple"
-					>
-						<ClipboardType size={20} />
-						<span className="font-medium">Simple Form</span>
-					</Link>
-					<Link
-						activeProps={{
-							className:
-								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-						}}
-						className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
-						onClick={() => setIsOpen(false)}
-						to="/demo/form/address"
-					>
-						<ClipboardType size={20} />
-						<span className="font-medium">Address Form</span>
-					</Link>
-					<Link
-						activeProps={{
-							className:
-								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-						}}
-						className="mb-2 flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-800"
-						onClick={() => setIsOpen(false)}
-						to="/demo/convex"
-					>
-						<Globe size={20} />
-						<span className="font-medium">Convex</span>
-					</Link>
-					{/* Demo Links End */}
+					
 					<ThemeSwitcher />
 					{/* Settings & Sign in / sign out */}
 					<Authenticated>
