@@ -1,0 +1,397 @@
+{
+  "name": "Geometrija u prostoru",
+  "slug": "geometrija-u-prostoru",
+  "description": "Geometrijska tela: prizme, piramide, valjak, kupa i lopta.",
+  "sections": [
+    {
+      "name": "Prizme",
+      "slug": "prizme",
+      "description": "Kvadar, kocka i druge prizme.",
+      "lessons": [
+        {
+          "title": "Kocka",
+          "slug": "kocka",
+          "content": "# Kocka\n\n## Definicija\n\nKocka je geometrijsko telo ograničeno sa 6 jednakih kvadrata.\n\n## Elementi kocke\n\n- **Stranice (ivice)**: 12 jednakih ivica dužine a\n- **Temena**: 8 temena\n- **Strane**: 6 kvadratnih strana\n\n## Površina kocke\n\n**P = 6a²**\n\nPovršina = 6 × površina jednog kvadrata\n\n## Zapremina kocke\n\n**V = a³**\n\n## Dijagonala kocke\n\n**d = a√3**\n\n## Primer\n\nKocka sa ivicom a = 4 cm:\n\nP = 6 × 4² = 6 × 16 = 96 cm²\nV = 4³ = 64 cm³\nd = 4√3 ≈ 6,93 cm",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Kvadar",
+          "slug": "kvadar",
+          "content": "# Kvadar\n\n## Definicija\n\nKvadar je geometrijsko telo ograničeno sa 6 pravougaonika.\n\n## Elementi kvadra\n\n- Tri različite dimenzije: a, b, c (dužina, širina, visina)\n- 12 ivica (po 4 od svake dužine)\n- 8 temena\n- 6 strana (3 para jednakih pravougaonika)\n\n## Površina kvadra\n\n**P = 2(ab + bc + ac)**\n\n## Zapremina kvadra\n\n**V = a × b × c**\n\n## Dijagonala kvadra\n\n**d = √(a² + b² + c²)**\n\n## Primer\n\nKvadar sa a = 5 cm, b = 4 cm, c = 3 cm:\n\nP = 2(5×4 + 4×3 + 5×3) = 2(20 + 12 + 15) = 2 × 47 = 94 cm²\nV = 5 × 4 × 3 = 60 cm³\nd = √(25 + 16 + 9) = √50 ≈ 7,07 cm",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        },
+        {
+          "title": "Pravilne prizme",
+          "slug": "pravilne-prizme",
+          "content": "# Pravilne prizme\n\n## Definicija\n\nPrizma je geometrijsko telo sa dve paralelne i podudarne osnove povezane bočnim stranama.\n\n## Vrste prizmi po osnovi\n\n- Trougaona prizma (osnova je trougao)\n- Četvorougaona prizma (kvadar, kocka)\n- Petougaona, šestougaona...\n\n## Pravilna prizma\n\nPrizma čija je osnova pravilan mnogougao i bočne strane su pravougaonici.\n\n## Površina prizme\n\n**P = 2B + M**\n\ngde je:\n- B - površina osnove\n- M - površina omotača (zbir bočnih strana)\n\n**M = O × h**\n\ngde je O obim osnove, h visina prizme.\n\n## Zapremina prizme\n\n**V = B × h**\n\n## Primer: Trougaona prizma\n\nOsnova: jednakostranični trougao sa a = 6 cm\nVisina prizme: h = 10 cm\n\nB = (a² × √3) / 4 = (36 × √3) / 4 ≈ 15,59 cm²\nM = 3 × 6 × 10 = 180 cm²\nP = 2 × 15,59 + 180 ≈ 211,18 cm²\nV = 15,59 × 10 ≈ 155,9 cm³",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        }
+      ],
+      "test": {
+        "title": "Test: Prizme",
+        "slug": "test-prizme",
+        "description": "Proveri znanje o prizmama.",
+        "timeLimit": 15,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Koliko strana ima kocka?",
+            "type": "single_choice",
+            "explanation": "Kocka ima 6 kvadratnih strana.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "kocka",
+            "options": [
+              { "text": "4", "isCorrect": false, "order": 1 },
+              { "text": "6", "isCorrect": true, "order": 2 },
+              { "text": "8", "isCorrect": false, "order": 3 },
+              { "text": "12", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj zapreminu kocke sa ivicom 3 cm.",
+            "type": "single_choice",
+            "explanation": "V = a³ = 3³ = 27 cm³",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "kocka",
+            "options": [
+              { "text": "9 cm³", "isCorrect": false, "order": 1 },
+              { "text": "18 cm³", "isCorrect": false, "order": 2 },
+              { "text": "27 cm³", "isCorrect": true, "order": 3 },
+              { "text": "54 cm³", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj površinu kocke sa ivicom 5 cm.",
+            "type": "single_choice",
+            "explanation": "P = 6a² = 6 × 25 = 150 cm²",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "kocka",
+            "options": [
+              { "text": "25 cm²", "isCorrect": false, "order": 1 },
+              { "text": "125 cm²", "isCorrect": false, "order": 2 },
+              { "text": "150 cm²", "isCorrect": true, "order": 3 },
+              { "text": "750 cm²", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj zapreminu kvadra sa dimenzijama 4 cm × 3 cm × 2 cm.",
+            "type": "single_choice",
+            "explanation": "V = a × b × c = 4 × 3 × 2 = 24 cm³",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "kvadar",
+            "options": [
+              { "text": "9 cm³", "isCorrect": false, "order": 1 },
+              { "text": "24 cm³", "isCorrect": true, "order": 2 },
+              { "text": "48 cm³", "isCorrect": false, "order": 3 },
+              { "text": "72 cm³", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Kolika je površina kvadra sa dimenzijama 6 cm × 4 cm × 2 cm?",
+            "type": "single_choice",
+            "explanation": "P = 2(ab + bc + ac) = 2(24 + 8 + 12) = 2 × 44 = 88 cm²",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "kvadar",
+            "options": [
+              { "text": "44 cm²", "isCorrect": false, "order": 1 },
+              { "text": "48 cm²", "isCorrect": false, "order": 2 },
+              { "text": "88 cm²", "isCorrect": true, "order": 3 },
+              { "text": "96 cm²", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Ako je zapremina kocke 64 cm³, kolika je dužina ivice?",
+            "type": "single_choice",
+            "explanation": "V = a³ = 64, a = ∛64 = 4 cm",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "kocka",
+            "options": [
+              { "text": "4 cm", "isCorrect": true, "order": 1 },
+              { "text": "8 cm", "isCorrect": false, "order": 2 },
+              { "text": "16 cm", "isCorrect": false, "order": 3 },
+              { "text": "32 cm", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Kako se računa zapremina prizme?",
+            "type": "single_choice",
+            "explanation": "Zapremina prizme = površina osnove × visina (V = B × h)",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "pravilne-prizme",
+            "options": [
+              { "text": "V = obim osnove × visina", "isCorrect": false, "order": 1 },
+              { "text": "V = površina osnove × visina", "isCorrect": true, "order": 2 },
+              { "text": "V = 2 × površina osnove + omotač", "isCorrect": false, "order": 3 },
+              { "text": "V = ivica³", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Piramide",
+      "slug": "piramide",
+      "description": "Pravilne piramide i njihove osobine.",
+      "lessons": [
+        {
+          "title": "Pojam piramide",
+          "slug": "pojam-piramide",
+          "content": "# Piramida\n\n## Definicija\n\nPiramida je geometrijsko telo čija je jedna strana (osnova) mnogougao, a bočne strane su trouglovi sa zajedničkim temenom (vrhom).\n\n## Elementi piramide\n\n- **Osnova (B)** - mnogougao\n- **Vrh (V)** - zajedničko teme bočnih strana\n- **Bočne strane** - trouglovi\n- **Visina (h)** - rastojanje od vrha do osnove\n- **Apotema (a)** - visina bočne strane (kod pravilnih piramida)\n\n## Vrste piramida\n\nPo osnovi:\n- Trougaona (tetraedar)\n- Četvorougaona\n- Petougaona...\n\n## Pravilna piramida\n\nPiramida čija je osnova pravilan mnogougao i visina pada u centar osnove.\n\n## Broj elemenata\n\n- Strana = n + 1\n- Ivica = 2n\n- Temena = n + 1\n\ngde je n broj stranica osnove.",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Površina i zapremina piramide",
+          "slug": "povrsina-zapremina-piramide",
+          "content": "# Površina i zapremina piramide\n\n## Površina piramide\n\n**P = B + M**\n\ngde je:\n- B - površina osnove\n- M - površina omotača (zbir bočnih strana)\n\n### Pravilna piramida\n\n**M = (O × a) / 2**\n\ngde je O obim osnove, a apotema.\n\n## Zapremina piramide\n\n**V = (B × h) / 3**\n\nZapremina piramide je trećina zapremine prizme iste osnove i visine.\n\n## Primer: Kvadratna piramida\n\nOsnova: kvadrat sa a = 6 cm\nVisina: h = 8 cm\nApotema: a = 10 cm\n\nB = 6² = 36 cm²\nM = (4 × 6 × 10) / 2 = 120 cm²\nP = 36 + 120 = 156 cm²\nV = (36 × 8) / 3 = 288 / 3 = 96 cm³",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        }
+      ],
+      "test": {
+        "title": "Test: Piramide",
+        "slug": "test-piramide",
+        "description": "Proveri znanje o piramidama.",
+        "timeLimit": 12,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Koliko bočnih strana ima četvorougaona piramida?",
+            "type": "single_choice",
+            "explanation": "Četvorougaona piramida ima 4 bočne strane (trougle).",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "pojam-piramide",
+            "options": [
+              { "text": "3", "isCorrect": false, "order": 1 },
+              { "text": "4", "isCorrect": true, "order": 2 },
+              { "text": "5", "isCorrect": false, "order": 3 },
+              { "text": "6", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Kakvog oblika su bočne strane piramide?",
+            "type": "single_choice",
+            "explanation": "Bočne strane piramide su uvek trouglovi.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "pojam-piramide",
+            "options": [
+              { "text": "Kvadrati", "isCorrect": false, "order": 1 },
+              { "text": "Pravougaonici", "isCorrect": false, "order": 2 },
+              { "text": "Trouglovi", "isCorrect": true, "order": 3 },
+              { "text": "Krugovi", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koja je formula za zapreminu piramide?",
+            "type": "single_choice",
+            "explanation": "V = (B × h) / 3, gde je B površina osnove a h visina.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "povrsina-zapremina-piramide",
+            "options": [
+              { "text": "V = B × h", "isCorrect": false, "order": 1 },
+              { "text": "V = (B × h) / 2", "isCorrect": false, "order": 2 },
+              { "text": "V = (B × h) / 3", "isCorrect": true, "order": 3 },
+              { "text": "V = B × h × 3", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj zapreminu piramide ako je površina osnove 48 cm² a visina 10 cm.",
+            "type": "single_choice",
+            "explanation": "V = (B × h) / 3 = (48 × 10) / 3 = 480 / 3 = 160 cm³",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "povrsina-zapremina-piramide",
+            "options": [
+              { "text": "160 cm³", "isCorrect": true, "order": 1 },
+              { "text": "240 cm³", "isCorrect": false, "order": 2 },
+              { "text": "480 cm³", "isCorrect": false, "order": 3 },
+              { "text": "1440 cm³", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koliko temena ima šestougaona piramida?",
+            "type": "single_choice",
+            "explanation": "Broj temena = n + 1 = 6 + 1 = 7 (6 na osnovi + 1 vrh).",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "pojam-piramide",
+            "options": [
+              { "text": "6", "isCorrect": false, "order": 1 },
+              { "text": "7", "isCorrect": true, "order": 2 },
+              { "text": "12", "isCorrect": false, "order": 3 },
+              { "text": "13", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Obla tela",
+      "slug": "obla-tela",
+      "description": "Valjak, kupa i lopta.",
+      "lessons": [
+        {
+          "title": "Valjak",
+          "slug": "valjak",
+          "content": "# Valjak\n\n## Definicija\n\nValjak je geometrijsko telo sa dve paralelne kružne osnove povezane zakrivljenom površinom (omotačem).\n\n## Elementi valjka\n\n- **r** - poluprečnik osnove\n- **h** - visina\n- **M** - omotač\n\n## Površina valjka\n\n### Površina omotača\n\n**M = 2πrh**\n\nOmotač razvijen je pravougaonik: širina = obim kruga, visina = h.\n\n### Ukupna površina\n\n**P = 2B + M = 2πr² + 2πrh = 2πr(r + h)**\n\n## Zapremina valjka\n\n**V = B × h = πr²h**\n\n## Primer\n\nValjak sa r = 3 cm i h = 7 cm (π = 3,14):\n\nM = 2 × 3,14 × 3 × 7 = 131,88 cm²\nP = 2 × 3,14 × 3 × (3 + 7) = 188,4 cm²\nV = 3,14 × 9 × 7 = 197,82 cm³",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        },
+        {
+          "title": "Kupa",
+          "slug": "kupa",
+          "content": "# Kupa\n\n## Definicija\n\nKupa je geometrijsko telo sa kružnom osnovom i vrhom koji nije u ravni osnove.\n\n## Elementi kupe\n\n- **r** - poluprečnik osnove\n- **h** - visina (od vrha do centra osnove)\n- **s** - izvodnica (od vrha do oboda osnove)\n\n**s² = r² + h²** (Pitagorina teorema)\n\n## Površina kupe\n\n### Površina omotača\n\n**M = πrs**\n\n### Ukupna površina\n\n**P = B + M = πr² + πrs = πr(r + s)**\n\n## Zapremina kupe\n\n**V = (πr²h) / 3**\n\nZapremina kupe je trećina zapremine valjka iste osnove i visine.\n\n## Primer\n\nKupa sa r = 4 cm i h = 3 cm:\n\ns = √(16 + 9) = √25 = 5 cm\nM = 3,14 × 4 × 5 = 62,8 cm²\nP = 3,14 × 4 × (4 + 5) = 113,04 cm²\nV = (3,14 × 16 × 3) / 3 = 50,24 cm³",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        },
+        {
+          "title": "Lopta",
+          "slug": "lopta",
+          "content": "# Lopta (sfera)\n\n## Definicija\n\nLopta je skup svih tačaka prostora na istom rastojanju od jedne tačke (centra).\n\n## Elementi lopte\n\n- **r** - poluprečnik\n- **d** - prečnik (d = 2r)\n\n## Površina lopte\n\n**P = 4πr²**\n\nPovršina lopte je 4 puta veća od površine najvećeg kruga.\n\n## Zapremina lopte\n\n**V = (4/3)πr³**\n\n## Primer\n\nLopta sa r = 6 cm (π = 3,14):\n\nP = 4 × 3,14 × 36 = 452,16 cm²\nV = (4/3) × 3,14 × 216 = 904,32 cm³\n\n## Polulopta\n\nPovršina polulopte (sa krugom na preseku):\nP = 2πr² + πr² = 3πr²\n\nZapremina polulopte:\nV = (2/3)πr³",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        }
+      ],
+      "test": {
+        "title": "Test: Obla tela",
+        "slug": "test-obla-tela",
+        "description": "Proveri znanje o oblim telima.",
+        "timeLimit": 15,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Koja je formula za zapreminu valjka?",
+            "type": "single_choice",
+            "explanation": "V = πr²h (površina osnove × visina)",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "valjak",
+            "options": [
+              { "text": "V = 2πrh", "isCorrect": false, "order": 1 },
+              { "text": "V = πr²h", "isCorrect": true, "order": 2 },
+              { "text": "V = (πr²h) / 3", "isCorrect": false, "order": 3 },
+              { "text": "V = (4/3)πr³", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj zapreminu valjka sa r = 5 cm i h = 10 cm (π = 3,14).",
+            "type": "single_choice",
+            "explanation": "V = πr²h = 3,14 × 25 × 10 = 785 cm³",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "valjak",
+            "options": [
+              { "text": "157 cm³", "isCorrect": false, "order": 1 },
+              { "text": "314 cm³", "isCorrect": false, "order": 2 },
+              { "text": "785 cm³", "isCorrect": true, "order": 3 },
+              { "text": "1570 cm³", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koja je formula za zapreminu kupe?",
+            "type": "single_choice",
+            "explanation": "V = (πr²h) / 3 (trećina zapremine valjka)",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "kupa",
+            "options": [
+              { "text": "V = πr²h", "isCorrect": false, "order": 1 },
+              { "text": "V = (πr²h) / 2", "isCorrect": false, "order": 2 },
+              { "text": "V = (πr²h) / 3", "isCorrect": true, "order": 3 },
+              { "text": "V = πrs", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koja je formula za površinu lopte?",
+            "type": "single_choice",
+            "explanation": "P = 4πr²",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "lopta",
+            "options": [
+              { "text": "P = πr²", "isCorrect": false, "order": 1 },
+              { "text": "P = 2πr²", "isCorrect": false, "order": 2 },
+              { "text": "P = 4πr²", "isCorrect": true, "order": 3 },
+              { "text": "P = (4/3)πr³", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj površinu lopte sa r = 7 cm (π = 22/7).",
+            "type": "single_choice",
+            "explanation": "P = 4πr² = 4 × (22/7) × 49 = 4 × 22 × 7 = 616 cm²",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "lopta",
+            "options": [
+              { "text": "154 cm²", "isCorrect": false, "order": 1 },
+              { "text": "308 cm²", "isCorrect": false, "order": 2 },
+              { "text": "616 cm²", "isCorrect": true, "order": 3 },
+              { "text": "1232 cm²", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Kupa ima poluprečnik osnove 3 cm i visinu 4 cm. Kolika je izvodnica?",
+            "type": "single_choice",
+            "explanation": "s² = r² + h² = 9 + 16 = 25, s = 5 cm",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "kupa",
+            "options": [
+              { "text": "3,5 cm", "isCorrect": false, "order": 1 },
+              { "text": "5 cm", "isCorrect": true, "order": 2 },
+              { "text": "7 cm", "isCorrect": false, "order": 3 },
+              { "text": "12 cm", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj zapreminu lopte sa prečnikom d = 6 cm (π = 3,14).",
+            "type": "single_choice",
+            "explanation": "r = 3 cm. V = (4/3)πr³ = (4/3) × 3,14 × 27 = 113,04 cm³",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "lopta",
+            "options": [
+              { "text": "56,52 cm³", "isCorrect": false, "order": 1 },
+              { "text": "113,04 cm³", "isCorrect": true, "order": 2 },
+              { "text": "226,08 cm³", "isCorrect": false, "order": 3 },
+              { "text": "904,32 cm³", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Površina omotača valjka sa r = 4 cm i h = 6 cm (π = 3,14) je:",
+            "type": "single_choice",
+            "explanation": "M = 2πrh = 2 × 3,14 × 4 × 6 = 150,72 cm²",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "valjak",
+            "options": [
+              { "text": "75,36 cm²", "isCorrect": false, "order": 1 },
+              { "text": "150,72 cm²", "isCorrect": true, "order": 2 },
+              { "text": "200,96 cm²", "isCorrect": false, "order": 3 },
+              { "text": "301,44 cm²", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,617 @@
+{
+  "name": "Prirodni brojevi",
+  "slug": "prirodni-brojevi",
+  "description": "Uvod u prirodne brojeve, njihove osobine, operacije, deljivost i primene u svakodnevnom životu.",
+  "sections": [
+    {
+      "name": "Pojam prirodnih brojeva",
+      "slug": "pojam-prirodnih-brojeva",
+      "description": "Osnovni pojmovi o prirodnim brojevima, brojevna prava i poređenje brojeva.",
+      "lessons": [
+        {
+          "title": "Šta su prirodni brojevi",
+          "slug": "sta-su-prirodni-brojevi",
+          "content": "# Prirodni brojevi\n\nPrirodni brojevi su brojevi koje koristimo za brojanje: 1, 2, 3, 4, 5, ...\n\n## Skup prirodnih brojeva\n\nSkup svih prirodnih brojeva označavamo slovom **N**:\n\nN = {1, 2, 3, 4, 5, ...}\n\n## Najmanji prirodni broj\n\nNajmanji prirodni broj je **1**. Ne postoji najveći prirodni broj - uvek možemo dodati 1 i dobiti veći broj.\n\n## Primeri\n\n- Broj učenika u razredu (npr. 25)\n- Broj stranica u knjizi (npr. 150)\n- Broj godina (npr. 14)",
+          "contentType": "text",
+          "estimatedMinutes": 5
+        },
+        {
+          "title": "Brojevna prava",
+          "slug": "brojevna-prava",
+          "content": "# Brojevna prava\n\nBrojevna prava je prava linija na kojoj su označeni brojevi.\n\n## Crtanje brojevne prave\n\n1. Nacrtaj pravu liniju\n2. Označi početnu tačku (0 ili 1)\n3. Podeli pravu na jednake delove\n4. Označi brojeve redom\n\n## Osobine brojevne prave\n\n- Brojevi rastu sleva nadesno\n- Rastojanje između susednih brojeva je uvek isto\n- Svakom tačkom na pravoj odgovara tačno jedan broj\n\n## Primena\n\nBrojevnu pravu koristimo za:\n- Poređenje brojeva\n- Sabiranje i oduzimanje\n- Vizuelno predstavljanje broja",
+          "contentType": "text",
+          "estimatedMinutes": 7
+        },
+        {
+          "title": "Poređenje prirodnih brojeva",
+          "slug": "poredjenje-prirodnih-brojeva",
+          "content": "# Poređenje prirodnih brojeva\n\nPrirodne brojeve možemo porediti - utvrditi koji je veći, manji ili su jednaki.\n\n## Znaci za poređenje\n\n- **>** - veće od (5 > 3 čitamo: pet je veće od tri)\n- **<** - manje od (2 < 7 čitamo: dva je manje od sedam)\n- **=** - jednako (4 = 4 čitamo: četiri je jednako četiri)\n\n## Pravila poređenja\n\n1. Broj sa više cifara je uvek veći\n   - 123 > 99\n2. Ako brojevi imaju isti broj cifara, poredimo cifru po cifru sleva\n   - 456 > 423 (jer je 5 > 2 na mestu desetica)\n\n## Niz nejednakosti\n\nMožemo povezati više poređenja:\n- 2 < 5 < 8 < 10",
+          "contentType": "text",
+          "estimatedMinutes": 8
+        }
+      ],
+      "test": {
+        "title": "Test: Pojam prirodnih brojeva",
+        "slug": "test-pojam-prirodnih-brojeva",
+        "description": "Proveri svoje znanje o prirodnim brojevima, brojevnoj pravoj i poređenju brojeva.",
+        "timeLimit": 10,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Koji je najmanji prirodni broj?",
+            "type": "single_choice",
+            "explanation": "Najmanji prirodni broj je 1. Skup prirodnih brojeva počinje od 1 i nastavlja se beskonačno: N = {1, 2, 3, 4, ...}. Nula nije prirodni broj.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "sta-su-prirodni-brojevi",
+            "options": [
+              { "text": "0", "isCorrect": false, "order": 1 },
+              { "text": "1", "isCorrect": true, "order": 2 },
+              { "text": "2", "isCorrect": false, "order": 3 },
+              { "text": "Ne postoji najmanji", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koji znak treba staviti umesto ☐: 15 ☐ 21",
+            "type": "single_choice",
+            "explanation": "15 < 21 jer je 15 manje od 21. Na brojevnoj pravoj, 15 se nalazi levo od 21.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "poredjenje-prirodnih-brojeva",
+            "options": [
+              { "text": ">", "isCorrect": false, "order": 1 },
+              { "text": "<", "isCorrect": true, "order": 2 },
+              { "text": "=", "isCorrect": false, "order": 3 }
+            ]
+          },
+          {
+            "text": "Koliko prirodnih brojeva ima između 5 i 10 (ne računajući 5 i 10)?",
+            "type": "single_choice",
+            "explanation": "Između 5 i 10 nalaze se brojevi: 6, 7, 8, 9. To su 4 broja.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "brojevna-prava",
+            "options": [
+              { "text": "3", "isCorrect": false, "order": 1 },
+              { "text": "4", "isCorrect": true, "order": 2 },
+              { "text": "5", "isCorrect": false, "order": 3 },
+              { "text": "6", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Poređaj brojeve od najmanjeg do najvećeg: 45, 54, 44, 55",
+            "type": "single_choice",
+            "explanation": "Poredimo dvocifrene brojeve. Prvo gledamo cifru desetica: 44 i 45 imaju 4 desetice, a 54 i 55 imaju 5 desetica. Zatim poredimo jedinice. Redosled: 44 < 45 < 54 < 55.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "poredjenje-prirodnih-brojeva",
+            "options": [
+              { "text": "44, 45, 54, 55", "isCorrect": true, "order": 1 },
+              { "text": "45, 44, 55, 54", "isCorrect": false, "order": 2 },
+              { "text": "55, 54, 45, 44", "isCorrect": false, "order": 3 },
+              { "text": "44, 54, 45, 55", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Na brojevnoj pravoj, koji broj se nalazi 3 mesta desno od broja 7?",
+            "type": "single_choice",
+            "explanation": "Ako krenemo od broja 7 i pomerimo se 3 mesta udesno na brojevnoj pravoj, dobijamo: 7 → 8 → 9 → 10. Odgovor je 10.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "brojevna-prava",
+            "options": [
+              { "text": "4", "isCorrect": false, "order": 1 },
+              { "text": "9", "isCorrect": false, "order": 2 },
+              { "text": "10", "isCorrect": true, "order": 3 },
+              { "text": "11", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koji od navedenih zapisa je tačan?",
+            "type": "single_choice",
+            "explanation": "123 > 98 je tačno jer je 123 trocifren broj, a 98 dvocifren. Trocifreni brojevi su uvek veći od dvocifrenih.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "poredjenje-prirodnih-brojeva",
+            "options": [
+              { "text": "123 < 98", "isCorrect": false, "order": 1 },
+              { "text": "123 > 98", "isCorrect": true, "order": 2 },
+              { "text": "123 = 98", "isCorrect": false, "order": 3 },
+              { "text": "Ne mogu se porediti", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Sabiranje i oduzimanje",
+      "slug": "sabiranje-i-oduzimanje",
+      "description": "Operacije sabiranja i oduzimanja prirodnih brojeva sa primenama.",
+      "lessons": [
+        {
+          "title": "Sabiranje prirodnih brojeva",
+          "slug": "sabiranje-prirodnih-brojeva",
+          "content": "# Sabiranje prirodnih brojeva\n\nSabiranje je osnovna matematička operacija kojom od dva ili više brojeva dobijamo njihov zbir.\n\n## Osnovni pojmovi\n\n- **Sabirci** - brojevi koje sabiramo\n- **Zbir** - rezultat sabiranja\n\nPrimer: 5 + 3 = 8\n- 5 i 3 su sabirci\n- 8 je zbir\n\n## Osobine sabiranja\n\n### Komutativnost\nRedosled sabiraka ne utiče na zbir:\n**a + b = b + a**\n\nPrimer: 7 + 4 = 4 + 7 = 11\n\n### Asocijativnost\nGrupisanje sabiraka ne utiče na zbir:\n**(a + b) + c = a + (b + c)**\n\nPrimer: (3 + 5) + 2 = 3 + (5 + 2) = 10\n\n### Neutralni element\nKad sabiramo bilo koji broj sa 0, dobijamo isti broj:\n**a + 0 = a**",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Oduzimanje prirodnih brojeva",
+          "slug": "oduzimanje-prirodnih-brojeva",
+          "content": "# Oduzimanje prirodnih brojeva\n\nOduzimanje je inverzna operacija sabiranju.\n\n## Osnovni pojmovi\n\n- **Umanjenik** - broj od koga oduzimamo\n- **Umanjilac** - broj koji oduzimamo\n- **Razlika** - rezultat oduzimanja\n\nPrimer: 9 - 4 = 5\n- 9 je umanjenik\n- 4 je umanjilac\n- 5 je razlika\n\n## Važno pravilo\n\nKod prirodnih brojeva važi:\n**Umanjenik mora biti veći ili jednak umanjiocu!**\n\nNe možemo izračunati 3 - 7 u skupu prirodnih brojeva.\n\n## Provera oduzimanja\n\nOduzimanje proveravamo sabiranjem:\nAko je a - b = c, onda je c + b = a\n\nPrimer: 15 - 8 = 7, provera: 7 + 8 = 15 ✓",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Sabiranje i oduzimanje višecifrenih brojeva",
+          "slug": "sabiranje-oduzimanje-visecifrenih",
+          "content": "# Sabiranje i oduzimanje višecifrenih brojeva\n\n## Pismeno sabiranje\n\n1. Napiši brojeve jedan ispod drugog tako da se poklapaju jedinice, desetice, stotine...\n2. Sabiraj cifru po cifru, počevši od jedinica\n3. Ako je zbir veći od 9, prenesi deseticu\n\nPrimer:\n```\n  347\n+ 285\n-----\n  632\n```\n\n## Pismeno oduzimanje\n\n1. Napiši umanjenik iznad umanjioca\n2. Oduzimaj cifru po cifru, od jedinica\n3. Ako je potrebno, pozajmi od sledeće cifre\n\nPrimer:\n```\n  523\n- 167\n-----\n  356\n```\n\n## Saveti\n\n- Uvek proveravaj rezultat\n- Pazi na prenos i pozajmicu\n- Vežbaj redovno!",
+          "contentType": "text",
+          "estimatedMinutes": 15
+        }
+      ],
+      "test": {
+        "title": "Test: Sabiranje i oduzimanje",
+        "slug": "test-sabiranje-oduzimanje",
+        "description": "Proveri svoje znanje o sabiranju i oduzimanju prirodnih brojeva.",
+        "timeLimit": 15,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Izračunaj: 25 + 37",
+            "type": "single_choice",
+            "explanation": "25 + 37 = 62. Sabiramo jedinice: 5 + 7 = 12 (pišemo 2, prenosimo 1). Zatim desetice: 2 + 3 + 1 = 6.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "sabiranje-prirodnih-brojeva",
+            "options": [
+              { "text": "52", "isCorrect": false, "order": 1 },
+              { "text": "62", "isCorrect": true, "order": 2 },
+              { "text": "63", "isCorrect": false, "order": 3 },
+              { "text": "72", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: 83 - 29",
+            "type": "single_choice",
+            "explanation": "83 - 29 = 54. Pošto ne možemo oduzeti 9 od 3, pozajmljujemo od desetica: 13 - 9 = 4, zatim 7 - 2 = 5.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "oduzimanje-prirodnih-brojeva",
+            "options": [
+              { "text": "44", "isCorrect": false, "order": 1 },
+              { "text": "54", "isCorrect": true, "order": 2 },
+              { "text": "64", "isCorrect": false, "order": 3 },
+              { "text": "56", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koja osobina sabiranja je prikazana: 8 + 5 = 5 + 8?",
+            "type": "single_choice",
+            "explanation": "Ovo je komutativnost sabiranja - redosled sabiraka ne utiče na zbir.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "sabiranje-prirodnih-brojeva",
+            "options": [
+              { "text": "Komutativnost", "isCorrect": true, "order": 1 },
+              { "text": "Asocijativnost", "isCorrect": false, "order": 2 },
+              { "text": "Distributivnost", "isCorrect": false, "order": 3 },
+              { "text": "Neutralni element", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: 456 + 287",
+            "type": "single_choice",
+            "explanation": "456 + 287 = 743. Sabiramo redom: 6+7=13 (3, prenos 1), 5+8+1=14 (4, prenos 1), 4+2+1=7.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "sabiranje-oduzimanje-visecifrenih",
+            "options": [
+              { "text": "633", "isCorrect": false, "order": 1 },
+              { "text": "733", "isCorrect": false, "order": 2 },
+              { "text": "743", "isCorrect": true, "order": 3 },
+              { "text": "753", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: 702 - 358",
+            "type": "single_choice",
+            "explanation": "702 - 358 = 344. Pozajmljujemo: 12-8=4, 9-5=4 (jer smo pozajmili od 0, pa od 7), 6-3=3.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "sabiranje-oduzimanje-visecifrenih",
+            "options": [
+              { "text": "344", "isCorrect": true, "order": 1 },
+              { "text": "354", "isCorrect": false, "order": 2 },
+              { "text": "444", "isCorrect": false, "order": 3 },
+              { "text": "346", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "U vozu je bilo 145 putnika. Na stanici je ušlo 67, a izašlo 38 putnika. Koliko je sada putnika u vozu?",
+            "type": "single_choice",
+            "explanation": "Početno: 145, ušlo: +67, izašlo: -38. Računamo: 145 + 67 = 212, zatim 212 - 38 = 174.",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "sabiranje-oduzimanje-visecifrenih",
+            "options": [
+              { "text": "164", "isCorrect": false, "order": 1 },
+              { "text": "174", "isCorrect": true, "order": 2 },
+              { "text": "184", "isCorrect": false, "order": 3 },
+              { "text": "194", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Množenje i deljenje",
+      "slug": "mnozenje-i-deljenje",
+      "description": "Operacije množenja i deljenja prirodnih brojeva sa primenama.",
+      "lessons": [
+        {
+          "title": "Množenje prirodnih brojeva",
+          "slug": "mnozenje-prirodnih-brojeva",
+          "content": "# Množenje prirodnih brojeva\n\nMnoženje je skraćeno sabiranje istih sabiraka.\n\n## Osnovni pojmovi\n\n- **Činioci** - brojevi koje množimo\n- **Proizvod** - rezultat množenja\n\nPrimer: 4 × 3 = 12\n- 4 i 3 su činioci\n- 12 je proizvod\n\nMožemo zapisati: 4 × 3 = 4 + 4 + 4 = 12\n\n## Tablica množenja\n\nTablicu množenja treba znati napamet!\n\n| × | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n|---|---|---|---|---|---|---|---|---|---|----|\n| 1 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n| 2 | 2 | 4 | 6 | 8 | 10| 12| 14| 16| 18| 20 |\n| ... |\n\n## Osobine množenja\n\n- **Komutativnost**: a × b = b × a\n- **Asocijativnost**: (a × b) × c = a × (b × c)\n- **Neutralni element**: a × 1 = a\n- **Množenje nulom**: a × 0 = 0",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        },
+        {
+          "title": "Deljenje prirodnih brojeva",
+          "slug": "deljenje-prirodnih-brojeva",
+          "content": "# Deljenje prirodnih brojeva\n\nDeljenje je inverzna operacija množenju.\n\n## Osnovni pojmovi\n\n- **Deljenik** - broj koji delimo\n- **Delilac** - broj kojim delimo\n- **Količnik** - rezultat deljenja\n\nPrimer: 15 ÷ 3 = 5\n- 15 je deljenik\n- 3 je delilac\n- 5 je količnik\n\n## Važna pravila\n\n1. **Deljenje nulom nije dozvoljeno!**\n   - Ne možemo deliti sa 0\n\n2. **Nula deljena bilo čim je 0**\n   - 0 ÷ 5 = 0\n\n3. **Broj deljen sam sobom je 1**\n   - 7 ÷ 7 = 1\n\n## Provera deljenja\n\nDeljenje proveravamo množenjem:\nAko je a ÷ b = c, onda je c × b = a\n\nPrimer: 24 ÷ 6 = 4, provera: 4 × 6 = 24 ✓",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        },
+        {
+          "title": "Deljenje sa ostatkom",
+          "slug": "deljenje-sa-ostatkom",
+          "content": "# Deljenje sa ostatkom\n\nKada delimo dva broja, ponekad ne možemo dobiti ceo broj kao količnik. Tada imamo deljenje sa ostatkom.\n\n## Formula\n\n**Deljenik = Delilac × Količnik + Ostatak**\n\nOznake:\n- D = deljenik\n- d = delilac\n- q = količnik\n- r = ostatak\n\nD = d × q + r, pri čemu je 0 ≤ r < d\n\n## Primer\n\n17 ÷ 5 = 3 (ostatak 2)\n\nProvera: 5 × 3 + 2 = 15 + 2 = 17 ✓\n\n## Važno\n\n- Ostatak mora biti manji od delioca\n- Ako je ostatak 0, kažemo da je deljenje „bez ostatka“\n\n## Primena\n\n- Raspodela predmeta na grupe\n- Računanje vremena (sati, minuti)\n- Novčani računi",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        }
+      ],
+      "test": {
+        "title": "Test: Množenje i deljenje",
+        "slug": "test-mnozenje-deljenje",
+        "description": "Proveri svoje znanje o množenju i deljenju prirodnih brojeva.",
+        "timeLimit": 15,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Izračunaj: 7 × 8",
+            "type": "single_choice",
+            "explanation": "7 × 8 = 56. Ovo je osnovni rezultat iz tablice množenja koji treba znati napamet.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "mnozenje-prirodnih-brojeva",
+            "options": [
+              { "text": "54", "isCorrect": false, "order": 1 },
+              { "text": "56", "isCorrect": true, "order": 2 },
+              { "text": "58", "isCorrect": false, "order": 3 },
+              { "text": "64", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: 63 ÷ 9",
+            "type": "single_choice",
+            "explanation": "63 ÷ 9 = 7. Provera: 7 × 9 = 63.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "deljenje-prirodnih-brojeva",
+            "options": [
+              { "text": "6", "isCorrect": false, "order": 1 },
+              { "text": "7", "isCorrect": true, "order": 2 },
+              { "text": "8", "isCorrect": false, "order": 3 },
+              { "text": "9", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koliki je ostatak pri deljenju 29 sa 4?",
+            "type": "single_choice",
+            "explanation": "29 ÷ 4 = 7 ostatak 1. Provera: 4 × 7 + 1 = 28 + 1 = 29.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "deljenje-sa-ostatkom",
+            "options": [
+              { "text": "0", "isCorrect": false, "order": 1 },
+              { "text": "1", "isCorrect": true, "order": 2 },
+              { "text": "2", "isCorrect": false, "order": 3 },
+              { "text": "3", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: 125 × 8",
+            "type": "single_choice",
+            "explanation": "125 × 8 = 1000. Savet: 125 × 8 = 125 × 2 × 4 = 250 × 4 = 1000.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "mnozenje-prirodnih-brojeva",
+            "options": [
+              { "text": "900", "isCorrect": false, "order": 1 },
+              { "text": "1000", "isCorrect": true, "order": 2 },
+              { "text": "1100", "isCorrect": false, "order": 3 },
+              { "text": "1125", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Pri deljenju broja 47 nekim brojem, dobijen je količnik 5 i ostatak 2. Koji je delilac?",
+            "type": "single_choice",
+            "explanation": "Koristimo formulu: D = d × q + r, tj. 47 = d × 5 + 2. Odavde: d × 5 = 45, pa je d = 9.",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "deljenje-sa-ostatkom",
+            "options": [
+              { "text": "7", "isCorrect": false, "order": 1 },
+              { "text": "8", "isCorrect": false, "order": 2 },
+              { "text": "9", "isCorrect": true, "order": 3 },
+              { "text": "10", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Škola je kupila 24 knjige po 350 dinara. Koliko je ukupno plaćeno?",
+            "type": "single_choice",
+            "explanation": "24 × 350 = 8400 dinara. Računamo: 24 × 350 = 24 × 35 × 10 = 840 × 10 = 8400.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "mnozenje-prirodnih-brojeva",
+            "options": [
+              { "text": "7400", "isCorrect": false, "order": 1 },
+              { "text": "8000", "isCorrect": false, "order": 2 },
+              { "text": "8400", "isCorrect": true, "order": 3 },
+              { "text": "8800", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Deljivost brojeva",
+      "slug": "deljivost-brojeva",
+      "description": "Kriterijumi deljivosti i primene u računanju.",
+      "lessons": [
+        {
+          "title": "Deljivost sa 2, 5 i 10",
+          "slug": "deljivost-sa-2-5-10",
+          "content": "# Deljivost sa 2, 5 i 10\n\nDa ne bismo uvek morali da delimo, postoje pravila (kriterijumi) po kojima možemo brzo zaključiti da li je broj deljiv.\n\n## Deljivost sa 2\n\nBroj je deljiv sa 2 ako mu je poslednja cifra **parna** (0, 2, 4, 6 ili 8).\n\nPrimeri:\n- 124 je deljivo sa 2 (završava se na 4)\n- 357 nije deljivo sa 2 (završava se na 7)\n\n## Deljivost sa 5\n\nBroj je deljiv sa 5 ako mu je poslednja cifra **0 ili 5**.\n\nPrimeri:\n- 125 je deljivo sa 5\n- 340 je deljivo sa 5\n- 123 nije deljivo sa 5\n\n## Deljivost sa 10\n\nBroj je deljiv sa 10 ako mu je poslednja cifra **0**.\n\nPrimeri:\n- 120 je deljivo sa 10\n- 125 nije deljivo sa 10",
+          "contentType": "text",
+          "estimatedMinutes": 8
+        },
+        {
+          "title": "Deljivost sa 3 i 9",
+          "slug": "deljivost-sa-3-9",
+          "content": "# Deljivost sa 3 i 9\n\n## Deljivost sa 3\n\nBroj je deljiv sa 3 ako je **zbir njegovih cifara** deljiv sa 3.\n\nPrimer: Da li je 243 deljivo sa 3?\n- Zbir cifara: 2 + 4 + 3 = 9\n- 9 je deljivo sa 3\n- Dakle, 243 je deljivo sa 3 ✓\n\nPrimer: Da li je 325 deljivo sa 3?\n- Zbir cifara: 3 + 2 + 5 = 10\n- 10 nije deljivo sa 3\n- Dakle, 325 nije deljivo sa 3\n\n## Deljivost sa 9\n\nBroj je deljiv sa 9 ako je **zbir njegovih cifara** deljiv sa 9.\n\nPrimer: Da li je 738 deljivo sa 9?\n- Zbir cifara: 7 + 3 + 8 = 18\n- 18 je deljivo sa 9\n- Dakle, 738 je deljivo sa 9 ✓\n\n## Važno\n\nAko je broj deljiv sa 9, onda je sigurno deljiv i sa 3!",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Deljivost sa 4 i 6",
+          "slug": "deljivost-sa-4-6",
+          "content": "# Deljivost sa 4 i 6\n\n## Deljivost sa 4\n\nBroj je deljiv sa 4 ako je broj od **poslednje dve cifre** deljiv sa 4.\n\nPrimer: Da li je 1524 deljivo sa 4?\n- Poslednje dve cifre: 24\n- 24 ÷ 4 = 6 (deljivo!)\n- Dakle, 1524 je deljivo sa 4 ✓\n\nPrimer: Da li je 2350 deljivo sa 4?\n- Poslednje dve cifre: 50\n- 50 ÷ 4 = 12 ostatak 2 (nije deljivo)\n- Dakle, 2350 nije deljivo sa 4\n\n## Deljivost sa 6\n\nBroj je deljiv sa 6 ako je deljiv **i sa 2 i sa 3**.\n\nPrimer: Da li je 234 deljivo sa 6?\n1. Deljivost sa 2: završava se na 4 (parno) ✓\n2. Deljivost sa 3: 2 + 3 + 4 = 9, deljivo sa 3 ✓\n3. Dakle, 234 je deljivo sa 6 ✓\n\n## Savet\n\nZa deljivost sa 6, uvek proveri oba uslova!",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        }
+      ],
+      "test": {
+        "title": "Test: Deljivost brojeva",
+        "slug": "test-deljivost",
+        "description": "Proveri svoje znanje o kriterijumima deljivosti.",
+        "timeLimit": 12,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Koji od ovih brojeva je deljiv sa 5?",
+            "type": "single_choice",
+            "explanation": "Broj je deljiv sa 5 ako se završava na 0 ili 5. Broj 245 se završava na 5, pa je deljiv sa 5.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "deljivost-sa-2-5-10",
+            "options": [
+              { "text": "123", "isCorrect": false, "order": 1 },
+              { "text": "234", "isCorrect": false, "order": 2 },
+              { "text": "245", "isCorrect": true, "order": 3 },
+              { "text": "347", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Da li je broj 462 deljiv sa 3?",
+            "type": "true_false",
+            "explanation": "Zbir cifara broja 462 je: 4 + 6 + 2 = 12. Pošto je 12 deljivo sa 3, i broj 462 je deljiv sa 3.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "deljivost-sa-3-9",
+            "options": [
+              { "text": "Tačno", "isCorrect": true, "order": 1 },
+              { "text": "Netačno", "isCorrect": false, "order": 2 }
+            ]
+          },
+          {
+            "text": "Koji broj je deljiv sa 9?",
+            "type": "single_choice",
+            "explanation": "Broj je deljiv sa 9 ako je zbir cifara deljiv sa 9. Za 378: 3+7+8=18, a 18 je deljivo sa 9.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "deljivost-sa-3-9",
+            "options": [
+              { "text": "234", "isCorrect": false, "order": 1 },
+              { "text": "345", "isCorrect": false, "order": 2 },
+              { "text": "378", "isCorrect": true, "order": 3 },
+              { "text": "457", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Da li je broj 2316 deljiv sa 4?",
+            "type": "true_false",
+            "explanation": "Broj je deljiv sa 4 ako je broj od poslednje dve cifre deljiv sa 4. Poslednje dve cifre su 16, a 16 ÷ 4 = 4. Dakle, 2316 jeste deljivo sa 4.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "deljivost-sa-4-6",
+            "options": [
+              { "text": "Tačno", "isCorrect": true, "order": 1 },
+              { "text": "Netačno", "isCorrect": false, "order": 2 }
+            ]
+          },
+          {
+            "text": "Kojim brojevima od 2, 3, 5 i 10 je deljiv broj 150?",
+            "type": "single_choice",
+            "explanation": "150: završava se na 0, pa je deljiv sa 2, 5 i 10. Zbir cifara: 1+5+0=6, deljivo sa 3. Dakle, deljiv je sa svim navedenim brojevima.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "deljivost-sa-2-5-10",
+            "options": [
+              { "text": "Samo sa 2 i 5", "isCorrect": false, "order": 1 },
+              { "text": "Samo sa 5 i 10", "isCorrect": false, "order": 2 },
+              { "text": "Sa 2, 3, 5 i 10", "isCorrect": true, "order": 3 },
+              { "text": "Samo sa 2 i 10", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koji je najmanji trocifreni broj deljiv sa 6?",
+            "type": "single_choice",
+            "explanation": "Broj mora biti deljiv i sa 2 i sa 3. Najmanji trocifreni je 100, ali nije deljiv sa 3 (1+0+0=1). Sledeći parni: 102, zbir cifara 3, deljivo sa 3. Dakle, 102 je najmanji trocifreni broj deljiv sa 6.",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "deljivost-sa-4-6",
+            "options": [
+              { "text": "100", "isCorrect": false, "order": 1 },
+              { "text": "102", "isCorrect": true, "order": 2 },
+              { "text": "104", "isCorrect": false, "order": 3 },
+              { "text": "108", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Prosti i složeni brojevi",
+      "slug": "prosti-slozeni-brojevi",
+      "description": "Pojam prostih i složenih brojeva, NZD i NZS.",
+      "lessons": [
+        {
+          "title": "Prosti brojevi",
+          "slug": "prosti-brojevi",
+          "content": "# Prosti brojevi\n\n**Prost broj** je prirodni broj veći od 1 koji je deljiv samo sa 1 i samim sobom.\n\n## Primeri prostih brojeva\n\n2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, ...\n\n## Broj 1 nije prost!\n\nBroj 1 ima samo jedan delilac (samog sebe), pa nije prost broj po definiciji.\n\n## Broj 2 je jedini parni prosti broj\n\nSvi ostali parni brojevi su deljivi sa 2, pa imaju bar tri delioca.\n\n## Kako proveriti da li je broj prost?\n\n1. Ako je broj paran i veći od 2 → nije prost\n2. Proveriti deljivost sa prostim brojevima do √n\n3. Ako nije deljiv ni sa jednim → prost je\n\nPrimer: Da li je 17 prost?\n- √17 ≈ 4.1\n- Proveravamo deljivost sa 2 i 3\n- 17 nije deljivo ni sa 2 ni sa 3\n- Dakle, 17 je prost broj ✓",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Složeni brojevi i rastavljanje",
+          "slug": "slozeni-brojevi-rastavljanje",
+          "content": "# Složeni brojevi\n\n**Složen broj** je prirodni broj veći od 1 koji ima bar tri delioca (nije prost).\n\n## Primeri složenih brojeva\n\n4, 6, 8, 9, 10, 12, 14, 15, 16, ...\n\n## Rastavljanje na proste činioce\n\nSvaki složen broj možemo zapisati kao proizvod prostih brojeva.\n\nPrimer: Rastavi 60 na proste činioce.\n\n```\n60 | 2\n30 | 2\n15 | 3\n 5 | 5\n 1\n```\n\n60 = 2 × 2 × 3 × 5 = 2² × 3 × 5\n\n## Postupak rastavljanja\n\n1. Deli broj najmanjim prostim brojem kojim je deljiv\n2. Ponavljaj dok ne dobiješ 1\n3. Zapiši rezultat kao proizvod\n\n## Kanoniči oblik\n\nKada iste proste činioce zapišemo sa stepenima:\n72 = 2³ × 3²",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        },
+        {
+          "title": "NZD i NZS",
+          "slug": "nzd-nzs",
+          "content": "# Najveći zajednički delilac (NZD)\n\nNZD dva ili više brojeva je najveći broj koji deli sve te brojeve.\n\n## Računanje NZD\n\n1. Rastavi brojeve na proste činioce\n2. Uzmi **zajedničke** proste činioce\n3. Od svakog uzmi **najmanji** stepen\n\nPrimer: NZD(24, 36)\n- 24 = 2³ × 3\n- 36 = 2² × 3²\n- Zajednički: 2 i 3\n- NZD = 2² × 3 = 4 × 3 = 12\n\n# Najmanji zajednički sadržalac (NZS)\n\nNZS dva ili više brojeva je najmanji broj koji je deljiv svim tim brojevima.\n\n## Računanje NZS\n\n1. Rastavi brojeve na proste činioce\n2. Uzmi **sve** proste činioce (zajedničke i nezajedničke)\n3. Od svakog uzmi **najveći** stepen\n\nPrimer: NZS(24, 36)\n- 24 = 2³ × 3\n- 36 = 2² × 3²\n- NZS = 2³ × 3² = 8 × 9 = 72\n\n## Korisna veza\n\nZa dva broja a i b važi:\na × b = NZD(a, b) × NZS(a, b)",
+          "contentType": "text",
+          "estimatedMinutes": 15
+        }
+      ],
+      "test": {
+        "title": "Test: Prosti i složeni brojevi",
+        "slug": "test-prosti-slozeni",
+        "description": "Proveri znanje o prostim brojevima, rastavljanju na proste činioce, NZD i NZS.",
+        "timeLimit": 15,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Koji od navedenih brojeva je prost?",
+            "type": "single_choice",
+            "explanation": "23 je prost broj jer je deljiv samo sa 1 i 23. Brojevi 21 (3×7), 25 (5×5) i 27 (3³) su složeni.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "prosti-brojevi",
+            "options": [
+              { "text": "21", "isCorrect": false, "order": 1 },
+              { "text": "23", "isCorrect": true, "order": 2 },
+              { "text": "25", "isCorrect": false, "order": 3 },
+              { "text": "27", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koliko prostih brojeva ima između 10 i 20?",
+            "type": "single_choice",
+            "explanation": "Prosti brojevi između 10 i 20 su: 11, 13, 17, 19. To su 4 prosta broja.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "prosti-brojevi",
+            "options": [
+              { "text": "3", "isCorrect": false, "order": 1 },
+              { "text": "4", "isCorrect": true, "order": 2 },
+              { "text": "5", "isCorrect": false, "order": 3 },
+              { "text": "6", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Rastavi broj 48 na proste činioce:",
+            "type": "single_choice",
+            "explanation": "48 = 2 × 24 = 2 × 2 × 12 = 2 × 2 × 2 × 6 = 2 × 2 × 2 × 2 × 3 = 2⁴ × 3",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "slozeni-brojevi-rastavljanje",
+            "options": [
+              { "text": "2³ × 6", "isCorrect": false, "order": 1 },
+              { "text": "2⁴ × 3", "isCorrect": true, "order": 2 },
+              { "text": "2² × 12", "isCorrect": false, "order": 3 },
+              { "text": "4 × 12", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Odredi NZD(18, 24).",
+            "type": "single_choice",
+            "explanation": "18 = 2 × 3², 24 = 2³ × 3. Zajednički: 2¹ × 3¹ = 6. NZD(18, 24) = 6.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "nzd-nzs",
+            "options": [
+              { "text": "3", "isCorrect": false, "order": 1 },
+              { "text": "6", "isCorrect": true, "order": 2 },
+              { "text": "9", "isCorrect": false, "order": 3 },
+              { "text": "12", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Odredi NZS(12, 15).",
+            "type": "single_choice",
+            "explanation": "12 = 2² × 3, 15 = 3 × 5. NZS = 2² × 3 × 5 = 4 × 3 × 5 = 60.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "nzd-nzs",
+            "options": [
+              { "text": "30", "isCorrect": false, "order": 1 },
+              { "text": "45", "isCorrect": false, "order": 2 },
+              { "text": "60", "isCorrect": true, "order": 3 },
+              { "text": "180", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Ako je NZD(a, b) = 8 i NZS(a, b) = 96, a jedan broj je 24, koji je drugi broj?",
+            "type": "single_choice",
+            "explanation": "Koristimo vezu: a × b = NZD × NZS. Dakle: 24 × b = 8 × 96 = 768. Odatle b = 768 ÷ 24 = 32.",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "nzd-nzs",
+            "options": [
+              { "text": "24", "isCorrect": false, "order": 1 },
+              { "text": "32", "isCorrect": true, "order": 2 },
+              { "text": "48", "isCorrect": false, "order": 3 },
+              { "text": "64", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

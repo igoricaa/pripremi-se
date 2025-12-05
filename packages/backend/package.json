@@ -10,8 +10,9 @@
   },
   "scripts": {
     "dev": "convex dev",
-    "seed:generate": "tsx convex/seed/runner.ts",
-    "seed:clear": "npx convex run seed:clearCurriculum"
+    "seed:generate": "tsx scripts/seed-runner.ts",
+    "seed:run": "tsx scripts/run-seed.ts",
+    "seed:clear": "npx convex run seed/index:runClear"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

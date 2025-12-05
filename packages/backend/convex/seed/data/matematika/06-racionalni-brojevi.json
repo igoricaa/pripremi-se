@@ -1,0 +1,223 @@
+{
+  "name": "Racionalni brojevi",
+  "slug": "racionalni-brojevi",
+  "description": "Skup racionalnih brojeva, operacije i primene.",
+  "sections": [
+    {
+      "name": "Pojam racionalnog broja",
+      "slug": "pojam-racionalnog-broja",
+      "description": "Definicija i predstavljanje racionalnih brojeva.",
+      "lessons": [
+        {
+          "title": "Šta su racionalni brojevi",
+          "slug": "sta-su-racionalni-brojevi",
+          "content": "# Racionalni brojevi\n\nRacionalni brojevi su svi brojevi koji se mogu zapisati kao razlomak p/q, gde su p i q celi brojevi i q ≠ 0.\n\n## Oznaka\n\nSkup racionalnih brojeva označavamo slovom **Q**.\n\n## Primeri racionalnih brojeva\n\n- Celi brojevi: 3 = 3/1, -5 = -5/1\n- Razlomci: 2/3, -4/5, 7/8\n- Decimalni: 0,5 = 1/2, 0,333... = 1/3\n\n## Odnosi skupova\n\nN ⊂ Z ⊂ Q\n- Prirodni brojevi (N) su podskup celih (Z)\n- Celi brojevi (Z) su podskup racionalnih (Q)\n\n## Negativni razlomci\n\n-3/4 = (-3)/4 = 3/(-4)\n\nSvi zapisi označavaju isti broj.",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Racionalni brojevi na brojevnoj pravoj",
+          "slug": "racionalni-brojevna-prava",
+          "content": "# Racionalni brojevi na brojevnoj pravoj\n\n## Predstavljanje\n\nSvaki racionalni broj može se prikazati kao tačka na brojevnoj pravoj.\n\n## Postupak\n\n1. Nađi cele brojeve između kojih se nalazi razlomak\n2. Podeli taj interval na onoliko delova koliki je imenilac\n3. Označi odgovarajuću tačku\n\n## Primer: 5/4\n\n5/4 = 1,25 (između 1 i 2)\n1. Interval [1, 2]\n2. Podeli na 4 dela\n3. Označi tačku posle prvog dela\n\n## Gustina racionalnih brojeva\n\nIzmeđu bilo koja dva racionalna broja postoji beskonačno mnogo racionalnih brojeva!\n\nIzmeđu 0 i 1: 1/2, 1/3, 1/4, 2/3, 3/4...\n\n## Poređenje\n\nNa brojevnoj pravoj, broj koji je desnije je veći.\n-2 < -1 < 0 < 1/2 < 1 < 3/2",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        }
+      ],
+      "test": {
+        "title": "Test: Pojam racionalnog broja",
+        "slug": "test-pojam-racionalnog-broja",
+        "description": "Proveri znanje o racionalnim brojevima.",
+        "timeLimit": 10,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Koji od sledećih brojeva je racionalan?",
+            "type": "single_choice",
+            "explanation": "Svi navedeni brojevi su racionalni jer se mogu zapisati kao razlomak: -3 = -3/1, 0,5 = 1/2, 2/7 je razlomak, 4 = 4/1.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "sta-su-racionalni-brojevi",
+            "options": [
+              { "text": "Samo 2/7", "isCorrect": false, "order": 1 },
+              { "text": "Samo 0,5 i 2/7", "isCorrect": false, "order": 2 },
+              { "text": "Svi navedeni", "isCorrect": true, "order": 3 },
+              { "text": "Nijedan", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Ceo broj -7 može se zapisati kao razlomak:",
+            "type": "single_choice",
+            "explanation": "-7 = -7/1 = -14/2 = 7/(-1). Svi ovi zapisi su tačni.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "sta-su-racionalni-brojevi",
+            "options": [
+              { "text": "-7/1", "isCorrect": true, "order": 1 },
+              { "text": "7/0", "isCorrect": false, "order": 2 },
+              { "text": "-7/0", "isCorrect": false, "order": 3 },
+              { "text": "0/-7", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koji broj se nalazi između -1 i 0 na brojevnoj pravoj?",
+            "type": "single_choice",
+            "explanation": "-1/2 = -0,5 je između -1 i 0. Ostali: 1/2 > 0, -3/2 < -1, 2 > 0.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "racionalni-brojevna-prava",
+            "options": [
+              { "text": "1/2", "isCorrect": false, "order": 1 },
+              { "text": "-1/2", "isCorrect": true, "order": 2 },
+              { "text": "-3/2", "isCorrect": false, "order": 3 },
+              { "text": "2", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Poređaj od najmanjeg do najvećeg: -2/3, 0, 1/4, -1",
+            "type": "single_choice",
+            "explanation": "-1 < -2/3 < 0 < 1/4",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "racionalni-brojevna-prava",
+            "options": [
+              { "text": "-1, -2/3, 0, 1/4", "isCorrect": true, "order": 1 },
+              { "text": "-2/3, -1, 0, 1/4", "isCorrect": false, "order": 2 },
+              { "text": "0, 1/4, -2/3, -1", "isCorrect": false, "order": 3 },
+              { "text": "-1, 0, -2/3, 1/4", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Da li je tačno: N ⊂ Z ⊂ Q?",
+            "type": "true_false",
+            "explanation": "Da, prirodni brojevi su podskup celih, a celi su podskup racionalnih.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "sta-su-racionalni-brojevi",
+            "options": [
+              { "text": "Tačno", "isCorrect": true, "order": 1 },
+              { "text": "Netačno", "isCorrect": false, "order": 2 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Operacije sa racionalnim brojevima",
+      "slug": "operacije-racionalni",
+      "description": "Sabiranje, oduzimanje, množenje i deljenje racionalnih brojeva.",
+      "lessons": [
+        {
+          "title": "Sabiranje i oduzimanje racionalnih brojeva",
+          "slug": "sabiranje-oduzimanje-racionalni",
+          "content": "# Sabiranje i oduzimanje racionalnih brojeva\n\n## Pravila predznaka pri sabiranju\n\n- (+) + (+) = +\n- (-) + (-) = - (sabiramo apsolutne vrednosti)\n- (+) + (-) = znak većeg, oduzimamo apsolutne vrednosti\n\n## Primeri\n\n3/4 + 1/4 = 4/4 = 1\n-2/5 + (-3/5) = -5/5 = -1\n5/6 + (-1/6) = 4/6 = 2/3\n\n## Oduzimanje\n\nOduzimanje = sabiranje sa suprotnim brojem:\na - b = a + (-b)\n\n## Primer\n\n3/4 - 5/4 = 3/4 + (-5/4) = -2/4 = -1/2\n\n## Različiti imenioci\n\n1/2 + (-1/3) = 3/6 + (-2/6) = 1/6",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        },
+        {
+          "title": "Množenje i deljenje racionalnih brojeva",
+          "slug": "mnozenje-deljenje-racionalni",
+          "content": "# Množenje i deljenje racionalnih brojeva\n\n## Pravila predznaka pri množenju\n\n- (+) × (+) = +\n- (-) × (-) = +\n- (+) × (-) = -\n- (-) × (+) = -\n\n## Primeri množenja\n\n2/3 × 3/4 = 6/12 = 1/2\n(-2/5) × 3/4 = -6/20 = -3/10\n(-3/4) × (-2/3) = 6/12 = 1/2\n\n## Deljenje\n\nDeljenje = množenje recipročnom vrednošću:\na/b ÷ c/d = a/b × d/c\n\n## Pravila predznaka pri deljenju\n\nIsta kao za množenje!\n\n## Primeri deljenja\n\n3/4 ÷ 1/2 = 3/4 × 2/1 = 6/4 = 3/2\n(-5/6) ÷ 2/3 = (-5/6) × 3/2 = -15/12 = -5/4",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        }
+      ],
+      "test": {
+        "title": "Test: Operacije sa racionalnim brojevima",
+        "slug": "test-operacije-racionalni",
+        "description": "Proveri znanje o operacijama sa racionalnim brojevima.",
+        "timeLimit": 15,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Izračunaj: -3/4 + 1/4",
+            "type": "single_choice",
+            "explanation": "-3/4 + 1/4 = (-3+1)/4 = -2/4 = -1/2",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "sabiranje-oduzimanje-racionalni",
+            "options": [
+              { "text": "-1/2", "isCorrect": true, "order": 1 },
+              { "text": "1/2", "isCorrect": false, "order": 2 },
+              { "text": "-1", "isCorrect": false, "order": 3 },
+              { "text": "-2/4", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: (-2/3) × (-3/4)",
+            "type": "single_choice",
+            "explanation": "Minus × minus = plus. 2×3/3×4 = 6/12 = 1/2",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "mnozenje-deljenje-racionalni",
+            "options": [
+              { "text": "-1/2", "isCorrect": false, "order": 1 },
+              { "text": "1/2", "isCorrect": true, "order": 2 },
+              { "text": "-6/12", "isCorrect": false, "order": 3 },
+              { "text": "6/7", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: 1/2 - 3/4",
+            "type": "single_choice",
+            "explanation": "1/2 - 3/4 = 2/4 - 3/4 = -1/4",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "sabiranje-oduzimanje-racionalni",
+            "options": [
+              { "text": "1/4", "isCorrect": false, "order": 1 },
+              { "text": "-1/4", "isCorrect": true, "order": 2 },
+              { "text": "1/2", "isCorrect": false, "order": 3 },
+              { "text": "-1/2", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: (-4/5) ÷ 2/3",
+            "type": "single_choice",
+            "explanation": "(-4/5) ÷ 2/3 = (-4/5) × 3/2 = -12/10 = -6/5",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "mnozenje-deljenje-racionalni",
+            "options": [
+              { "text": "-6/5", "isCorrect": true, "order": 1 },
+              { "text": "6/5", "isCorrect": false, "order": 2 },
+              { "text": "-8/15", "isCorrect": false, "order": 3 },
+              { "text": "-12/10", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: 2/3 + (-1/2) - 1/6",
+            "type": "single_choice",
+            "explanation": "NZS=6. 4/6 + (-3/6) - 1/6 = (4-3-1)/6 = 0/6 = 0",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "sabiranje-oduzimanje-racionalni",
+            "options": [
+              { "text": "0", "isCorrect": true, "order": 1 },
+              { "text": "1/6", "isCorrect": false, "order": 2 },
+              { "text": "-1/6", "isCorrect": false, "order": 3 },
+              { "text": "1/3", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: (-1/2)² × 4",
+            "type": "single_choice",
+            "explanation": "(-1/2)² = 1/4. Zatim 1/4 × 4 = 4/4 = 1",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "mnozenje-deljenje-racionalni",
+            "options": [
+              { "text": "-1", "isCorrect": false, "order": 1 },
+              { "text": "1", "isCorrect": true, "order": 2 },
+              { "text": "-2", "isCorrect": false, "order": 3 },
+              { "text": "2", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,376 @@
+{
+  "name": "Razlomci",
+  "slug": "razlomci",
+  "description": "Pojam razlomka, operacije sa razlomcima, proširivanje, skraćivanje i primene.",
+  "sections": [
+    {
+      "name": "Pojam razlomka",
+      "slug": "pojam-razlomka",
+      "description": "Osnovni pojmovi o razlomcima, vrste razlomaka i njihovo predstavljanje.",
+      "lessons": [
+        {
+          "title": "Šta je razlomak",
+          "slug": "sta-je-razlomak",
+          "content": "# Razlomak\n\nRazlomak je broj koji predstavlja deo celine.\n\n## Delovi razlomka\n\n- **Brojilac** - broj iznad razlomačke crte (koliko delova uzimamo)\n- **Imenilac** - broj ispod razlomačke crte (na koliko delova delimo)\n\nPrimer: 3/4\n- Brojilac: 3\n- Imenilac: 4\n- Čitamo: tri četvrtine\n\n## Značenje razlomka\n\nRazlomak a/b znači:\n- Celinu smo podelili na b jednakih delova\n- Uzeli smo a takvih delova\n\n## Primeri iz života\n\n- Polovina pice: 1/2\n- Četvrtina sata: 1/4 (15 minuta)\n- Tri petine razreda: 3/5",
+          "contentType": "text",
+          "estimatedMinutes": 8
+        },
+        {
+          "title": "Vrste razlomaka",
+          "slug": "vrste-razlomaka",
+          "content": "# Vrste razlomaka\n\n## Pravi razlomci\n\nBrojilac je manji od imenoca.\nVrednost je manja od 1.\n\nPrimeri: 1/2, 3/4, 5/8\n\n## Nepravi razlomci\n\nBrojilac je veći ili jednak imenocu.\nVrednost je veća ili jednaka 1.\n\nPrimeri: 5/3, 7/4, 9/9\n\n## Mešoviti brojevi\n\nSastoje se od celog broja i pravog razlomka.\n\nPrimer: 2 3/4 (dva i tri četvrtine)\n\n## Pretvaranje\n\n### Nepravi u mešoviti:\n7/3 = 2 1/3 (7÷3 = 2 ostatak 1)\n\n### Mešoviti u nepravi:\n2 1/3 = (2×3+1)/3 = 7/3",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Razlomačka prava",
+          "slug": "razlomacka-prava",
+          "content": "# Razlomci na brojevnoj pravoj\n\n## Predstavljanje razlomaka\n\nRazlomke možemo predstaviti na brojevnoj pravoj:\n\n1. Podelimo jedinični interval na onoliko delova koliki je imenilac\n2. Označimo onoliko delova koliki je brojilac\n\n## Primer\n\nZa 3/4:\n1. Podelimo [0,1] na 4 jednaka dela\n2. Označimo tačku posle 3 dela\n\n## Poređenje razlomaka na pravoj\n\n- Razlomak koji je desnije je veći\n- 3/4 > 1/2 jer je 3/4 desnije od 1/2\n\n## Ekvivalentni razlomci\n\nNa istoj tački mogu biti različiti razlomci:\n1/2 = 2/4 = 3/6 = 4/8",
+          "contentType": "text",
+          "estimatedMinutes": 8
+        }
+      ],
+      "test": {
+        "title": "Test: Pojam razlomka",
+        "slug": "test-pojam-razlomka",
+        "description": "Proveri svoje znanje o osnovnim pojmovima vezanim za razlomke.",
+        "timeLimit": 10,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "U razlomku 5/8, koji broj je imenilac?",
+            "type": "single_choice",
+            "explanation": "Imenilac je broj ispod razlomačke crte. U razlomku 5/8, imenilac je 8.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "sta-je-razlomak",
+            "options": [
+              { "text": "5", "isCorrect": false, "order": 1 },
+              { "text": "8", "isCorrect": true, "order": 2 },
+              { "text": "13", "isCorrect": false, "order": 3 },
+              { "text": "3", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koji od navedenih razlomaka je pravi?",
+            "type": "single_choice",
+            "explanation": "Pravi razlomak ima brojilac manji od imenoca. 3/5 je pravi jer je 3 < 5.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "vrste-razlomaka",
+            "options": [
+              { "text": "5/3", "isCorrect": false, "order": 1 },
+              { "text": "3/5", "isCorrect": true, "order": 2 },
+              { "text": "7/7", "isCorrect": false, "order": 3 },
+              { "text": "9/4", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Pretvori mešoviti broj 3 1/4 u nepravi razlomak.",
+            "type": "single_choice",
+            "explanation": "3 1/4 = (3×4+1)/4 = 13/4",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "vrste-razlomaka",
+            "options": [
+              { "text": "7/4", "isCorrect": false, "order": 1 },
+              { "text": "13/4", "isCorrect": true, "order": 2 },
+              { "text": "12/4", "isCorrect": false, "order": 3 },
+              { "text": "4/13", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Pretvori nepravi razlomak 11/3 u mešoviti broj.",
+            "type": "single_choice",
+            "explanation": "11 ÷ 3 = 3 ostatak 2, pa je 11/3 = 3 2/3",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "vrste-razlomaka",
+            "options": [
+              { "text": "3 1/3", "isCorrect": false, "order": 1 },
+              { "text": "3 2/3", "isCorrect": true, "order": 2 },
+              { "text": "2 2/3", "isCorrect": false, "order": 3 },
+              { "text": "4 1/3", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koji razlomak je najbliži tački 0 na brojevnoj pravoj?",
+            "type": "single_choice",
+            "explanation": "1/8 = 0.125, 1/4 = 0.25, 1/3 ≈ 0.33, 1/2 = 0.5. Najmanji je 1/8, pa je najbliži nuli.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "razlomacka-prava",
+            "options": [
+              { "text": "1/2", "isCorrect": false, "order": 1 },
+              { "text": "1/3", "isCorrect": false, "order": 2 },
+              { "text": "1/4", "isCorrect": false, "order": 3 },
+              { "text": "1/8", "isCorrect": true, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koliko osmina ima u jednoj celoj?",
+            "type": "single_choice",
+            "explanation": "Jedna cela = 8/8 = osam osmina.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "sta-je-razlomak",
+            "options": [
+              { "text": "4", "isCorrect": false, "order": 1 },
+              { "text": "6", "isCorrect": false, "order": 2 },
+              { "text": "8", "isCorrect": true, "order": 3 },
+              { "text": "16", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Proširivanje i skraćivanje",
+      "slug": "prosirivanje-skracivanje",
+      "description": "Proširivanje i skraćivanje razlomaka, ekvivalentni razlomci.",
+      "lessons": [
+        {
+          "title": "Proširivanje razlomaka",
+          "slug": "prosirivanje-razlomaka",
+          "content": "# Proširivanje razlomaka\n\nProširivanje je množenje brojioca i imenoca istim brojem različitim od nule.\n\n## Pravilo\n\na/b = (a×n)/(b×n), gde je n ≠ 0\n\n## Primeri\n\n1/2 = 2/4 = 3/6 = 4/8 = 5/10\n\nSvi ovi razlomci su jednaki (ekvivalentni)!\n\n## Zašto proširujemo?\n\n1. Da bismo dobili iste imenioce za sabiranje/oduzimanje\n2. Da bismo uporedili razlomke\n3. Da bismo predstavili razlomak u traženom obliku\n\n## Primer\n\nProširi 2/3 tako da imenilac bude 15:\n2/3 = ?/15\n15 ÷ 3 = 5, množimo sa 5:\n2/3 = (2×5)/(3×5) = 10/15",
+          "contentType": "text",
+          "estimatedMinutes": 8
+        },
+        {
+          "title": "Skraćivanje razlomaka",
+          "slug": "skracivanje-razlomaka",
+          "content": "# Skraćivanje razlomaka\n\nSkraćivanje je deljenje brojioca i imenoca istim brojem različitim od nule i jedinice.\n\n## Pravilo\n\na/b = (a÷n)/(b÷n), gde n deli i a i b\n\n## Primeri\n\n6/8 = 3/4 (delimo sa 2)\n15/25 = 3/5 (delimo sa 5)\n\n## Nesvodljiv razlomak\n\nRazlomak je nesvodljiv ako se ne može dalje skratiti (NZD brojioca i imenoca je 1).\n\nPrimer: 3/4 je nesvodljiv\n\n## Postupak skraćivanja\n\n1. Naći NZD brojioca i imenoca\n2. Podeliti oboje sa NZD\n\nPrimer: 24/36\nNZD(24, 36) = 12\n24/36 = (24÷12)/(36÷12) = 2/3",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Svođenje na zajednički imenilac",
+          "slug": "zajednicki-imenilac",
+          "content": "# Svođenje na zajednički imenilac\n\n## Zašto je potrebno?\n\nDa bismo sabirali, oduzimali ili poredili razlomke, moraju imati isti imenilac.\n\n## Postupak\n\n1. Naći NZS imenilaca\n2. Proširiti svaki razlomak do tog imenoca\n\n## Primer\n\nSvedi 2/3 i 3/4 na isti imenilac:\n\n1. NZS(3, 4) = 12\n2. 2/3 = 8/12 (množimo sa 4)\n3. 3/4 = 9/12 (množimo sa 3)\n\n## Savet\n\nKad su imenioci mali, NZS se lako odredi. Za veće brojeve, koristi rastavljanje na proste činioce.\n\n## Primer sa tri razlomka\n\n1/2, 1/3, 1/4 → NZS(2,3,4) = 12\n1/2 = 6/12\n1/3 = 4/12\n1/4 = 3/12",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        }
+      ],
+      "test": {
+        "title": "Test: Proširivanje i skraćivanje",
+        "slug": "test-prosirivanje-skracivanje",
+        "description": "Proveri znanje o proširivanju, skraćivanju i svođenju razlomaka.",
+        "timeLimit": 12,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Proširi razlomak 3/4 tako da imenilac bude 20.",
+            "type": "single_choice",
+            "explanation": "20 ÷ 4 = 5, pa množimo sa 5: 3/4 = 15/20",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "prosirivanje-razlomaka",
+            "options": [
+              { "text": "12/20", "isCorrect": false, "order": 1 },
+              { "text": "15/20", "isCorrect": true, "order": 2 },
+              { "text": "6/20", "isCorrect": false, "order": 3 },
+              { "text": "9/20", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Skrati razlomak 18/24 do nesvodljivog oblika.",
+            "type": "single_choice",
+            "explanation": "NZD(18, 24) = 6. Delimo: 18/24 = 3/4",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "skracivanje-razlomaka",
+            "options": [
+              { "text": "9/12", "isCorrect": false, "order": 1 },
+              { "text": "6/8", "isCorrect": false, "order": 2 },
+              { "text": "3/4", "isCorrect": true, "order": 3 },
+              { "text": "2/3", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koji je najmanji zajednički imenilac za 1/6 i 1/8?",
+            "type": "single_choice",
+            "explanation": "NZS(6, 8) = 24. To je najmanji zajednički imenilac.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "zajednicki-imenilac",
+            "options": [
+              { "text": "14", "isCorrect": false, "order": 1 },
+              { "text": "24", "isCorrect": true, "order": 2 },
+              { "text": "48", "isCorrect": false, "order": 3 },
+              { "text": "12", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koji razlomak je ekvivalentan sa 4/6?",
+            "type": "single_choice",
+            "explanation": "4/6 = 2/3 posle skraćivanja. 10/15 = 2/3 posle skraćivanja. Dakle, 4/6 = 10/15.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "prosirivanje-razlomaka",
+            "options": [
+              { "text": "8/10", "isCorrect": false, "order": 1 },
+              { "text": "6/9", "isCorrect": false, "order": 2 },
+              { "text": "10/15", "isCorrect": true, "order": 3 },
+              { "text": "12/16", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Skrati razlomak 45/60 do nesvodljivog oblika.",
+            "type": "single_choice",
+            "explanation": "NZD(45, 60) = 15. Delimo: 45/60 = 3/4",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "skracivanje-razlomaka",
+            "options": [
+              { "text": "3/4", "isCorrect": true, "order": 1 },
+              { "text": "9/12", "isCorrect": false, "order": 2 },
+              { "text": "15/20", "isCorrect": false, "order": 3 },
+              { "text": "5/6", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Svedi 2/5 i 3/7 na najmanji zajednički imenilac i odredi koji je veći.",
+            "type": "single_choice",
+            "explanation": "NZS(5,7)=35. 2/5=14/35, 3/7=15/35. Pošto je 15>14, to je 3/7 > 2/5.",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "zajednicki-imenilac",
+            "options": [
+              { "text": "2/5 > 3/7", "isCorrect": false, "order": 1 },
+              { "text": "3/7 > 2/5", "isCorrect": true, "order": 2 },
+              { "text": "2/5 = 3/7", "isCorrect": false, "order": 3 },
+              { "text": "Ne mogu se porediti", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Operacije sa razlomcima",
+      "slug": "operacije-razlomcima",
+      "description": "Sabiranje, oduzimanje, množenje i deljenje razlomaka.",
+      "lessons": [
+        {
+          "title": "Sabiranje i oduzimanje razlomaka",
+          "slug": "sabiranje-oduzimanje-razlomaka",
+          "content": "# Sabiranje i oduzimanje razlomaka\n\n## Sa istim imeniocem\n\nSabiramo/oduzimamo brojioce, imenilac ostaje isti.\n\na/c + b/c = (a+b)/c\na/c - b/c = (a-b)/c\n\nPrimer: 3/7 + 2/7 = 5/7\n\n## Sa različitim imeniocem\n\n1. Svesti na zajednički imenilac\n2. Sabrati/oduzeti brojioce\n3. Skratiti ako je moguće\n\n## Primer\n\n2/3 + 1/4 = ?\n\n1. NZS(3,4) = 12\n2. 2/3 = 8/12, 1/4 = 3/12\n3. 8/12 + 3/12 = 11/12\n\n## Sa mešovitim brojevima\n\n2 1/2 + 1 1/3 = ?\n- Cele: 2 + 1 = 3\n- Razlomci: 1/2 + 1/3 = 3/6 + 2/6 = 5/6\n- Ukupno: 3 5/6",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        },
+        {
+          "title": "Množenje razlomaka",
+          "slug": "mnozenje-razlomaka",
+          "content": "# Množenje razlomaka\n\n## Pravilo\n\nMnožimo brojilac sa brojiocem i imenilac sa imeniocem:\n\na/b × c/d = (a×c)/(b×d)\n\n## Primeri\n\n2/3 × 4/5 = 8/15\n\n3/4 × 2/7 = 6/28 = 3/14\n\n## Saveti\n\n1. Skrati pre množenja ako je moguće (unakrsno skraćivanje)\n2. Rezultat uvek skrati do nesvodljivog oblika\n\n## Unakrsno skraćivanje\n\n3/4 × 8/9 = ?\nMožemo skratiti 3 i 9 (delimo sa 3), i 4 i 8 (delimo sa 4):\n= 1/1 × 2/3 = 2/3\n\n## Množenje celog broja i razlomka\n\n5 × 2/3 = 5/1 × 2/3 = 10/3 = 3 1/3",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Deljenje razlomaka",
+          "slug": "deljenje-razlomaka",
+          "content": "# Deljenje razlomaka\n\n## Recipročna vrednost\n\nRecipročna vrednost razlomka a/b je b/a.\n\nPrimer: Recipročno od 3/4 je 4/3.\n\n## Pravilo deljenja\n\nDeljenje sa razlomkom = množenje sa njegovom recipročnom vrednošću:\n\na/b ÷ c/d = a/b × d/c\n\n## Primeri\n\n2/3 ÷ 4/5 = 2/3 × 5/4 = 10/12 = 5/6\n\n5/6 ÷ 2/3 = 5/6 × 3/2 = 15/12 = 5/4 = 1 1/4\n\n## Deljenje celog broja razlomkom\n\n6 ÷ 2/3 = 6 × 3/2 = 18/2 = 9\n\n## Deljenje razlomka celim brojem\n\n3/4 ÷ 6 = 3/4 × 1/6 = 3/24 = 1/8",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        }
+      ],
+      "test": {
+        "title": "Test: Operacije sa razlomcima",
+        "slug": "test-operacije-razlomcima",
+        "description": "Proveri znanje o računskim operacijama sa razlomcima.",
+        "timeLimit": 15,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Izračunaj: 2/5 + 1/5",
+            "type": "single_choice",
+            "explanation": "Imenioci su isti, sabiramo brojioce: 2/5 + 1/5 = 3/5",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "sabiranje-oduzimanje-razlomaka",
+            "options": [
+              { "text": "3/10", "isCorrect": false, "order": 1 },
+              { "text": "3/5", "isCorrect": true, "order": 2 },
+              { "text": "2/10", "isCorrect": false, "order": 3 },
+              { "text": "1/5", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: 3/4 × 2/5",
+            "type": "single_choice",
+            "explanation": "Množimo brojioce i imenioce: 3/4 × 2/5 = 6/20 = 3/10",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "mnozenje-razlomaka",
+            "options": [
+              { "text": "6/9", "isCorrect": false, "order": 1 },
+              { "text": "5/9", "isCorrect": false, "order": 2 },
+              { "text": "3/10", "isCorrect": true, "order": 3 },
+              { "text": "6/20", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: 1/2 + 1/3",
+            "type": "single_choice",
+            "explanation": "NZS(2,3)=6. 1/2=3/6, 1/3=2/6. 3/6+2/6=5/6",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "sabiranje-oduzimanje-razlomaka",
+            "options": [
+              { "text": "2/5", "isCorrect": false, "order": 1 },
+              { "text": "5/6", "isCorrect": true, "order": 2 },
+              { "text": "1/6", "isCorrect": false, "order": 3 },
+              { "text": "2/6", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: 3/4 ÷ 1/2",
+            "type": "single_choice",
+            "explanation": "Delimo množenjem recipročnom: 3/4 ÷ 1/2 = 3/4 × 2/1 = 6/4 = 3/2 = 1 1/2",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "deljenje-razlomaka",
+            "options": [
+              { "text": "3/8", "isCorrect": false, "order": 1 },
+              { "text": "3/2", "isCorrect": true, "order": 2 },
+              { "text": "2/3", "isCorrect": false, "order": 3 },
+              { "text": "6/8", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: 2 1/3 - 1 1/2",
+            "type": "single_choice",
+            "explanation": "2 1/3 = 7/3, 1 1/2 = 3/2. NZS(3,2)=6. 14/6 - 9/6 = 5/6",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "sabiranje-oduzimanje-razlomaka",
+            "options": [
+              { "text": "1 1/6", "isCorrect": false, "order": 1 },
+              { "text": "5/6", "isCorrect": true, "order": 2 },
+              { "text": "1/6", "isCorrect": false, "order": 3 },
+              { "text": "11/6", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: 2/3 × 3/4 × 4/5",
+            "type": "single_choice",
+            "explanation": "Množimo redom: (2×3×4)/(3×4×5) = 24/60 = 2/5. Ili skrati unakrsno: 2/5.",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "mnozenje-razlomaka",
+            "options": [
+              { "text": "24/60", "isCorrect": false, "order": 1 },
+              { "text": "2/5", "isCorrect": true, "order": 2 },
+              { "text": "3/5", "isCorrect": false, "order": 3 },
+              { "text": "1/5", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

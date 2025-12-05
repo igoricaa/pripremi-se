@@ -1,0 +1,390 @@
+{
+  "name": "Statistika i verovatnoća",
+  "slug": "statistika-verovatnoca",
+  "description": "Osnove statistike, srednje vrednosti, grafički prikazi i verovatnoća.",
+  "sections": [
+    {
+      "name": "Deskriptivna statistika",
+      "slug": "deskriptivna-statistika",
+      "description": "Srednja vrednost, medijana, modus i raspon.",
+      "lessons": [
+        {
+          "title": "Srednja vrednost (aritmetička sredina)",
+          "slug": "srednja-vrednost",
+          "content": "# Srednja vrednost\n\n## Definicija\n\nSrednja vrednost (aritmetička sredina) je zbir svih podataka podeljen brojem podataka.\n\n## Formula\n\n**x̄ = (x₁ + x₂ + ... + xₙ) / n**\n\nili\n\n**x̄ = Σxᵢ / n**\n\n## Primer 1\n\nOcene: 4, 5, 3, 4, 4\n\nx̄ = (4 + 5 + 3 + 4 + 4) / 5 = 20 / 5 = 4\n\n## Primer 2\n\nVisine učenika (cm): 165, 170, 168, 172, 175\n\nx̄ = (165 + 170 + 168 + 172 + 175) / 5 = 850 / 5 = 170 cm\n\n## Svojstva\n\n- Zbir odstupanja od srednje vrednosti je 0\n- Osetljiva je na ekstremne vrednosti",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Medijana i modus",
+          "slug": "medijana-modus",
+          "content": "# Medijana i modus\n\n## Medijana\n\nMedijana je vrednost koja deli uređeni niz podataka na dva jednaka dela.\n\n### Za neparan broj podataka\n\nMedijana je središnji član.\n\n**Primer**: 2, 5, 7, 9, 12\nMedijana = 7\n\n### Za paran broj podataka\n\nMedijana je srednja vrednost dva središnja člana.\n\n**Primer**: 3, 5, 8, 10\nMedijana = (5 + 8) / 2 = 6,5\n\n## Modus\n\nModus je vrednost koja se najčešće ponavlja.\n\n**Primer**: 2, 3, 3, 4, 5, 3, 7\nModus = 3 (pojavljuje se 3 puta)\n\n## Primena\n\n- **Srednja vrednost**: kada nema ekstremnih vrednosti\n- **Medijana**: kada ima ekstremnih vrednosti\n- **Modus**: za kategorijske podatke",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        },
+        {
+          "title": "Raspon i varijansa",
+          "slug": "raspon-varijansa",
+          "content": "# Raspon i varijansa\n\n## Raspon\n\nRaspon je razlika između najveće i najmanje vrednosti.\n\n**R = xₘₐₓ - xₘᵢₙ**\n\n### Primer\n\nPodaci: 12, 5, 18, 8, 15\nR = 18 - 5 = 13\n\n## Varijansa\n\nVarijansa meri rasipanje podataka oko srednje vrednosti.\n\n**σ² = Σ(xᵢ - x̄)² / n**\n\n## Standardna devijacija\n\nStandardna devijacija je koren varijanse.\n\n**σ = √(σ²)**\n\n### Primer\n\nPodaci: 2, 4, 6\nx̄ = 4\n\nOdstupanja: (2-4)² = 4, (4-4)² = 0, (6-4)² = 4\nσ² = (4 + 0 + 4) / 3 = 8/3 ≈ 2,67\nσ = √2,67 ≈ 1,63\n\n## Značenje\n\n- Manja varijansa → podaci bliže srednjoj vrednosti\n- Veća varijansa → podaci rasuti",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        }
+      ],
+      "test": {
+        "title": "Test: Deskriptivna statistika",
+        "slug": "test-deskriptivna-statistika",
+        "description": "Proveri znanje o statističkim merama.",
+        "timeLimit": 12,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Izračunaj srednju vrednost podataka: 6, 8, 10, 12, 14",
+            "type": "single_choice",
+            "explanation": "x̄ = (6 + 8 + 10 + 12 + 14) / 5 = 50 / 5 = 10",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "srednja-vrednost",
+            "options": [
+              { "text": "8", "isCorrect": false, "order": 1 },
+              { "text": "10", "isCorrect": true, "order": 2 },
+              { "text": "12", "isCorrect": false, "order": 3 },
+              { "text": "50", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Nađi medijanu niza: 3, 7, 2, 9, 5",
+            "type": "single_choice",
+            "explanation": "Uređeni niz: 2, 3, 5, 7, 9. Medijana je središnji član = 5.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "medijana-modus",
+            "options": [
+              { "text": "3", "isCorrect": false, "order": 1 },
+              { "text": "5", "isCorrect": true, "order": 2 },
+              { "text": "7", "isCorrect": false, "order": 3 },
+              { "text": "9", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koji je modus niza: 4, 2, 4, 7, 4, 8, 2?",
+            "type": "single_choice",
+            "explanation": "4 se pojavljuje 3 puta, 2 se pojavljuje 2 puta. Modus = 4.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "medijana-modus",
+            "options": [
+              { "text": "2", "isCorrect": false, "order": 1 },
+              { "text": "4", "isCorrect": true, "order": 2 },
+              { "text": "7", "isCorrect": false, "order": 3 },
+              { "text": "8", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koliki je raspon podataka: 15, 23, 8, 31, 19?",
+            "type": "single_choice",
+            "explanation": "R = xₘₐₓ - xₘᵢₙ = 31 - 8 = 23",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "raspon-varijansa",
+            "options": [
+              { "text": "8", "isCorrect": false, "order": 1 },
+              { "text": "16", "isCorrect": false, "order": 2 },
+              { "text": "23", "isCorrect": true, "order": 3 },
+              { "text": "31", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Nađi medijanu niza: 2, 4, 6, 8",
+            "type": "single_choice",
+            "explanation": "Paran broj podataka. Medijana = (4 + 6) / 2 = 5.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "medijana-modus",
+            "options": [
+              { "text": "4", "isCorrect": false, "order": 1 },
+              { "text": "5", "isCorrect": true, "order": 2 },
+              { "text": "6", "isCorrect": false, "order": 3 },
+              { "text": "10", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Ako je srednja vrednost 5 brojeva 12, a zbir prva 4 broja je 44, koliki je peti broj?",
+            "type": "single_choice",
+            "explanation": "Zbir svih = 5 × 12 = 60. Peti broj = 60 - 44 = 16.",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "srednja-vrednost",
+            "options": [
+              { "text": "12", "isCorrect": false, "order": 1 },
+              { "text": "14", "isCorrect": false, "order": 2 },
+              { "text": "16", "isCorrect": true, "order": 3 },
+              { "text": "20", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Grafički prikazi",
+      "slug": "graficki-prikazi",
+      "description": "Tabele, dijagrami i grafikoni.",
+      "lessons": [
+        {
+          "title": "Tabele frekvencija",
+          "slug": "tabele-frekvencija",
+          "content": "# Tabele frekvencija\n\n## Definicija\n\nTabela frekvencija prikazuje koliko puta se svaka vrednost pojavljuje.\n\n## Primeri elemenata\n\n- **Vrednost (xᵢ)**: pojedinačni podaci\n- **Frekvencija (fᵢ)**: broj ponavljanja\n- **Relativna frekvencija**: fᵢ / n\n- **Kumulativna frekvencija**: zbir svih prethodnih\n\n## Primer\n\nOcene: 3, 4, 5, 4, 4, 3, 5, 4, 3, 4\n\n| Ocena | Frekvencija | Rel. frek. |\n|-------|-------------|------------|\n| 3     | 3           | 0,3        |\n| 4     | 5           | 0,5        |\n| 5     | 2           | 0,2        |\n| Ukupno| 10          | 1,0        |\n\n## Srednja vrednost iz tabele\n\n**x̄ = Σ(xᵢ × fᵢ) / n**\n\nx̄ = (3×3 + 4×5 + 5×2) / 10 = (9 + 20 + 10) / 10 = 3,9",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        },
+        {
+          "title": "Stubičasti i kružni dijagrami",
+          "slug": "stubicasti-kruzni-dijagrami",
+          "content": "# Stubičasti i kružni dijagrami\n\n## Stubičasti (bar) dijagram\n\nPrikazuje podatke pomoću pravougaonih stubova.\n\n### Karakteristike\n\n- Visina stuba = frekvencija\n- Širina svih stubova je ista\n- Koristi se za upoređivanje kategorija\n\n### Kada koristiti\n\n- Broj učenika po razredima\n- Prodaja po mesecima\n- Rezultati ankete\n\n## Kružni (pita) dijagram\n\nPrikazuje udeo delova u celini.\n\n### Računanje ugla\n\n**ugao = (frekvencija / ukupno) × 360°**\n\n### Primer\n\n- Crveno: 25% → 90°\n- Plavo: 50% → 180°\n- Zeleno: 25% → 90°\n\n### Kada koristiti\n\n- Struktura budžeta\n- Udeo glasova\n- Procentualna raspodela",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Linijski grafikoni i histogrami",
+          "slug": "linijski-grafikon-histogram",
+          "content": "# Linijski grafikoni i histogrami\n\n## Linijski grafikon\n\nPokazuje promene vrednosti tokom vremena.\n\n### Karakteristike\n\n- x-osa: vreme (dani, meseci, godine)\n- y-osa: vrednost koja se meri\n- Tačke se povezuju linijama\n\n### Primena\n\n- Temperatura tokom dana\n- Rast populacije\n- Kretanje cena\n\n## Histogram\n\nSličan stubičastom dijagramu, ali za kontinualne podatke grupisane u intervale.\n\n### Karakteristike\n\n- Stubovi su spojeni (bez razmaka)\n- Širina stuba = širina intervala\n- Površina stuba = frekvencija\n\n### Primer\n\nVisine učenika grupisane:\n- 150-155 cm: 5 učenika\n- 155-160 cm: 12 učenika\n- 160-165 cm: 8 učenika\n- 165-170 cm: 5 učenika",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        }
+      ],
+      "test": {
+        "title": "Test: Grafički prikazi",
+        "slug": "test-graficki-prikazi",
+        "description": "Proveri znanje o grafičkim prikazima podataka.",
+        "timeLimit": 10,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Koji dijagram je najpogodniji za prikaz udela u celini?",
+            "type": "single_choice",
+            "explanation": "Kružni (pita) dijagram najbolje prikazuje udeo delova u celini.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "stubicasti-kruzni-dijagrami",
+            "options": [
+              { "text": "Stubičasti dijagram", "isCorrect": false, "order": 1 },
+              { "text": "Kružni dijagram", "isCorrect": true, "order": 2 },
+              { "text": "Linijski grafikon", "isCorrect": false, "order": 3 },
+              { "text": "Histogram", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Za praćenje temperature tokom nedelje, najbolje je koristiti:",
+            "type": "single_choice",
+            "explanation": "Linijski grafikon je idealan za prikaz promene vrednosti tokom vremena.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "linijski-grafikon-histogram",
+            "options": [
+              { "text": "Kružni dijagram", "isCorrect": false, "order": 1 },
+              { "text": "Histogram", "isCorrect": false, "order": 2 },
+              { "text": "Linijski grafikon", "isCorrect": true, "order": 3 },
+              { "text": "Tabela", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Ako 40% učenika voli fudbal, koliki ugao u kružnom dijagramu predstavlja tu grupu?",
+            "type": "single_choice",
+            "explanation": "Ugao = 40% × 360° = 0,4 × 360° = 144°",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "stubicasti-kruzni-dijagrami",
+            "options": [
+              { "text": "40°", "isCorrect": false, "order": 1 },
+              { "text": "90°", "isCorrect": false, "order": 2 },
+              { "text": "144°", "isCorrect": true, "order": 3 },
+              { "text": "180°", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Po čemu se histogram razlikuje od stubičastog dijagrama?",
+            "type": "single_choice",
+            "explanation": "U histogramu su stubovi spojeni (bez razmaka) jer prikazuju kontinualne podatke.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "linijski-grafikon-histogram",
+            "options": [
+              { "text": "Histogram ima kruglove umesto stubova", "isCorrect": false, "order": 1 },
+              { "text": "U histogramu su stubovi spojeni", "isCorrect": true, "order": 2 },
+              { "text": "Histogram prikazuje samo procente", "isCorrect": false, "order": 3 },
+              { "text": "Histogram se crta samo na računaru", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Iz tabele: ocena 4 ima frekvenciju 8, ocena 5 ima frekvenciju 2. Ako je ukupno 20 učenika, kolika je relativna frekvencija ocene 4?",
+            "type": "single_choice",
+            "explanation": "Relativna frekvencija = 8 / 20 = 0,4 (ili 40%)",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "tabele-frekvencija",
+            "options": [
+              { "text": "0,2", "isCorrect": false, "order": 1 },
+              { "text": "0,4", "isCorrect": true, "order": 2 },
+              { "text": "0,8", "isCorrect": false, "order": 3 },
+              { "text": "4", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Verovatnoća",
+      "slug": "verovatnoca",
+      "description": "Osnovni pojmovi verovatnoće i računanje.",
+      "lessons": [
+        {
+          "title": "Osnovni pojmovi verovatnoće",
+          "slug": "osnovni-pojmovi-verovatnoce",
+          "content": "# Osnovni pojmovi verovatnoće\n\n## Slučajan eksperiment\n\nEksperiment čiji ishod ne možemo predvideti unapred.\n\nPrimeri:\n- Bacanje novčića\n- Bacanje kockice\n- Izvlačenje karte\n\n## Skup elementarnih događaja (Ω)\n\nSkup svih mogućih ishoda.\n\n### Primeri\n\n- Novčić: Ω = {glava, pismo}\n- Kockica: Ω = {1, 2, 3, 4, 5, 6}\n\n## Događaj\n\nPodskup skupa Ω.\n\n### Primeri (kockica)\n\n- A = \"pao paran broj\" = {2, 4, 6}\n- B = \"pao broj veći od 4\" = {5, 6}\n\n## Siguran i nemoguć događaj\n\n- **Siguran**: uvek se dešava (Ω)\n- **Nemoguć**: nikad se ne dešava (∅)",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Klasična definicija verovatnoće",
+          "slug": "klasicna-definicija-verovatnoce",
+          "content": "# Klasična definicija verovatnoće\n\n## Formula\n\n**P(A) = broj povoljnih ishoda / broj svih ishoda**\n\n**P(A) = |A| / |Ω|**\n\n## Svojstva\n\n- 0 ≤ P(A) ≤ 1\n- P(Ω) = 1 (siguran događaj)\n- P(∅) = 0 (nemoguć događaj)\n\n## Primeri\n\n### Bacanje kockice\n\nP(pao 3) = 1/6\nP(paran broj) = 3/6 = 1/2\nP(broj > 4) = 2/6 = 1/3\n\n### Izvlačenje karte (špil od 52)\n\nP(as) = 4/52 = 1/13\nP(herc) = 13/52 = 1/4\nP(crvena boja) = 26/52 = 1/2\n\n## Suprotni događaj\n\nP(ne A) = 1 - P(A)\n\nPrimer: P(nije 6) = 1 - 1/6 = 5/6",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        },
+        {
+          "title": "Sabiranje i množenje verovatnoća",
+          "slug": "sabiranje-mnozenje-verovatnoca",
+          "content": "# Sabiranje i množenje verovatnoća\n\n## Sabiranje (ili)\n\nZa dva međusobno isključiva događaja:\n\n**P(A ili B) = P(A) + P(B)**\n\n### Primer\n\nBacanje kockice:\nP(1 ili 6) = 1/6 + 1/6 = 2/6 = 1/3\n\n## Množenje (i)\n\nZa dva nezavisna događaja:\n\n**P(A i B) = P(A) × P(B)**\n\n### Primer\n\nDva bacanja novčića:\nP(glava i glava) = 1/2 × 1/2 = 1/4\n\n### Primer: Dva bacanja kockice\n\nP(oba puta 6) = 1/6 × 1/6 = 1/36\nP(prvi put 6, drugi put paran) = 1/6 × 1/2 = 1/12\n\n## Napomena\n\nOva pravila važe samo ako su događaji:\n- Međusobno isključivi (za sabiranje)\n- Nezavisni (za množenje)",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        }
+      ],
+      "test": {
+        "title": "Test: Verovatnoća",
+        "slug": "test-verovatnoca",
+        "description": "Proveri znanje o verovatnoći.",
+        "timeLimit": 12,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Kolika je verovatnoća da pri bacanju kockice padne 5?",
+            "type": "single_choice",
+            "explanation": "P(5) = 1/6 (jedan povoljan od šest mogućih ishoda)",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "klasicna-definicija-verovatnoce",
+            "options": [
+              { "text": "1/5", "isCorrect": false, "order": 1 },
+              { "text": "1/6", "isCorrect": true, "order": 2 },
+              { "text": "5/6", "isCorrect": false, "order": 3 },
+              { "text": "1", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Pri bacanju novčića, verovatnoća da padne glava je:",
+            "type": "single_choice",
+            "explanation": "Novčić ima dva jednako verovatna ishoda: P(glava) = 1/2",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "klasicna-definicija-verovatnoce",
+            "options": [
+              { "text": "1/4", "isCorrect": false, "order": 1 },
+              { "text": "1/3", "isCorrect": false, "order": 2 },
+              { "text": "1/2", "isCorrect": true, "order": 3 },
+              { "text": "1", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Kolika je verovatnoća da pri bacanju kockice padne paran broj?",
+            "type": "single_choice",
+            "explanation": "Parni brojevi su 2, 4, 6. P = 3/6 = 1/2",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "klasicna-definicija-verovatnoce",
+            "options": [
+              { "text": "1/3", "isCorrect": false, "order": 1 },
+              { "text": "1/2", "isCorrect": true, "order": 2 },
+              { "text": "2/3", "isCorrect": false, "order": 3 },
+              { "text": "3/6", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Ako je P(A) = 0,3, kolika je verovatnoća suprotnog događaja?",
+            "type": "single_choice",
+            "explanation": "P(ne A) = 1 - P(A) = 1 - 0,3 = 0,7",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "klasicna-definicija-verovatnoce",
+            "options": [
+              { "text": "0,3", "isCorrect": false, "order": 1 },
+              { "text": "0,7", "isCorrect": true, "order": 2 },
+              { "text": "0,03", "isCorrect": false, "order": 3 },
+              { "text": "1,3", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Kolika je verovatnoća da pri bacanju kockice padne 1 ili 6?",
+            "type": "single_choice",
+            "explanation": "P(1 ili 6) = P(1) + P(6) = 1/6 + 1/6 = 2/6 = 1/3",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "sabiranje-mnozenje-verovatnoca",
+            "options": [
+              { "text": "1/6", "isCorrect": false, "order": 1 },
+              { "text": "1/3", "isCorrect": true, "order": 2 },
+              { "text": "1/36", "isCorrect": false, "order": 3 },
+              { "text": "2/12", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Pri dva nezavisna bacanja novčića, verovatnoća da oba puta padne glava je:",
+            "type": "single_choice",
+            "explanation": "P(G i G) = P(G) × P(G) = 1/2 × 1/2 = 1/4",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "sabiranje-mnozenje-verovatnoca",
+            "options": [
+              { "text": "1/2", "isCorrect": false, "order": 1 },
+              { "text": "1/4", "isCorrect": true, "order": 2 },
+              { "text": "1/8", "isCorrect": false, "order": 3 },
+              { "text": "1", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Pri dva bacanja kockice, kolika je verovatnoća da oba puta padne 6?",
+            "type": "single_choice",
+            "explanation": "P(6 i 6) = 1/6 × 1/6 = 1/36",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "sabiranje-mnozenje-verovatnoca",
+            "options": [
+              { "text": "1/6", "isCorrect": false, "order": 1 },
+              { "text": "1/12", "isCorrect": false, "order": 2 },
+              { "text": "1/36", "isCorrect": true, "order": 3 },
+              { "text": "2/6", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "U kutiji je 5 crvenih i 3 plave lopte. Koja je verovatnoća izvlačenja plave lopte?",
+            "type": "single_choice",
+            "explanation": "Ukupno 8 lopti. P(plava) = 3/8",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "klasicna-definicija-verovatnoce",
+            "options": [
+              { "text": "3/5", "isCorrect": false, "order": 1 },
+              { "text": "3/8", "isCorrect": true, "order": 2 },
+              { "text": "5/8", "isCorrect": false, "order": 3 },
+              { "text": "1/3", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

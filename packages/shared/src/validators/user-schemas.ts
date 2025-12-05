@@ -83,10 +83,7 @@ export const profileUpdateSchema = z.object({
 		.string()
 		.min(2, 'Display name must be at least 2 characters')
 		.max(50, 'Display name must be less than 50 characters'),
-	location: z
-		.string()
-		.max(100, 'Location must be less than 100 characters')
-		.optional(),
+	location: z.string().max(100, 'Location must be less than 100 characters'),
 });
 
 export type ProfileUpdateFormValues = z.infer<typeof profileUpdateSchema>;

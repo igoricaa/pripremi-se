@@ -1,0 +1,334 @@
+{
+  "name": "Procenti",
+  "slug": "procenti",
+  "description": "Pojam procenta, računanje procenata, primene u svakodnevnom životu.",
+  "sections": [
+    {
+      "name": "Pojam procenta",
+      "slug": "pojam-procenta",
+      "description": "Osnovni pojmovi o procentima i njihovo pretvaranje.",
+      "lessons": [
+        {
+          "title": "Šta je procenat",
+          "slug": "sta-je-procenat",
+          "content": "# Procenat\n\nProcenat (%) znači „na sto“ ili „od sto“.\n\n## Definicija\n\np% = p/100\n\n## Primeri\n\n- 50% = 50/100 = 1/2 (polovina)\n- 25% = 25/100 = 1/4 (četvrtina)\n- 10% = 10/100 = 1/10 (desetina)\n- 100% = 100/100 = 1 (cela)\n\n## Upotreba u životu\n\n- Popusti: 20% popusta\n- Kamate: 5% godišnja kamata\n- Statistika: 60% učenika\n- Porezi: PDV 20%\n\n## Važni procenti\n\n- 100% = cela vrednost\n- 50% = polovina\n- 25% = četvrtina\n- 10% = desetina\n- 1% = stotinka",
+          "contentType": "text",
+          "estimatedMinutes": 8
+        },
+        {
+          "title": "Pretvaranje procenata",
+          "slug": "pretvaranje-procenata",
+          "content": "# Pretvaranje procenata\n\n## Procenat u razlomak\n\np% = p/100\n\nPrimeri:\n- 75% = 75/100 = 3/4\n- 40% = 40/100 = 2/5\n- 5% = 5/100 = 1/20\n\n## Procenat u decimalan broj\n\np% = p ÷ 100 (pomeri tačku ulevo za 2 mesta)\n\nPrimeri:\n- 35% = 0,35\n- 7% = 0,07\n- 125% = 1,25\n\n## Razlomak/decimalan broj u procenat\n\nPomnoži sa 100%:\n- 0,45 = 0,45 × 100% = 45%\n- 3/4 = 0,75 = 75%\n- 2/5 = 0,4 = 40%\n\n## Tabela pretvaranja\n\n| Razlomak | Decimalan | Procenat |\n|----------|-----------|----------|\n| 1/2 | 0,5 | 50% |\n| 1/4 | 0,25 | 25% |\n| 1/5 | 0,2 | 20% |\n| 3/4 | 0,75 | 75% |",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        }
+      ],
+      "test": {
+        "title": "Test: Pojam procenta",
+        "slug": "test-pojam-procenta",
+        "description": "Proveri znanje o osnovnim pojmovima vezanim za procente.",
+        "timeLimit": 10,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Koliko je 50% izraženo kao razlomak?",
+            "type": "single_choice",
+            "explanation": "50% = 50/100 = 1/2",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "sta-je-procenat",
+            "options": [
+              { "text": "1/4", "isCorrect": false, "order": 1 },
+              { "text": "1/2", "isCorrect": true, "order": 2 },
+              { "text": "1/5", "isCorrect": false, "order": 3 },
+              { "text": "2/3", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Pretvori 75% u decimalan broj.",
+            "type": "single_choice",
+            "explanation": "75% = 75 ÷ 100 = 0,75",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "pretvaranje-procenata",
+            "options": [
+              { "text": "7,5", "isCorrect": false, "order": 1 },
+              { "text": "0,75", "isCorrect": true, "order": 2 },
+              { "text": "0,075", "isCorrect": false, "order": 3 },
+              { "text": "75", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Pretvori 0,35 u procenat.",
+            "type": "single_choice",
+            "explanation": "0,35 × 100% = 35%",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "pretvaranje-procenata",
+            "options": [
+              { "text": "3,5%", "isCorrect": false, "order": 1 },
+              { "text": "35%", "isCorrect": true, "order": 2 },
+              { "text": "350%", "isCorrect": false, "order": 3 },
+              { "text": "0,35%", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koji procenat odgovara razlomku 3/5?",
+            "type": "single_choice",
+            "explanation": "3/5 = 0,6 = 60%",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "pretvaranje-procenata",
+            "options": [
+              { "text": "35%", "isCorrect": false, "order": 1 },
+              { "text": "53%", "isCorrect": false, "order": 2 },
+              { "text": "60%", "isCorrect": true, "order": 3 },
+              { "text": "65%", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koliko procenata je 150% izraženo kao decimalan broj?",
+            "type": "single_choice",
+            "explanation": "150% = 150 ÷ 100 = 1,5",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "pretvaranje-procenata",
+            "options": [
+              { "text": "0,15", "isCorrect": false, "order": 1 },
+              { "text": "1,5", "isCorrect": true, "order": 2 },
+              { "text": "15", "isCorrect": false, "order": 3 },
+              { "text": "0,015", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Računanje procenata",
+      "slug": "racunanje-procenata",
+      "description": "Izračunavanje procenta od broja, broja od procenta i procentnog odnosa.",
+      "lessons": [
+        {
+          "title": "Procenat od broja",
+          "slug": "procenat-od-broja",
+          "content": "# Procenat od broja\n\n## Formula\n\np% od broja a = (p/100) × a\n\n## Primeri\n\n### 20% od 150\n20% od 150 = (20/100) × 150 = 0,2 × 150 = 30\n\n### 15% od 80\n15% od 80 = (15/100) × 80 = 0,15 × 80 = 12\n\n## Brze metode\n\n### Za 10%\nPodeli broj sa 10:\n10% od 250 = 25\n\n### Za 50%\nPodeli broj sa 2:\n50% od 84 = 42\n\n### Za 25%\nPodeli broj sa 4:\n25% od 120 = 30\n\n### Za 1%\nPodeli broj sa 100:\n1% od 500 = 5",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Broj od procenta",
+          "slug": "broj-od-procenta",
+          "content": "# Nalaženje broja kada je poznat procenat\n\n## Pitanje\n\nAko je p% od nepoznatog broja jednako a, koliki je taj broj?\n\n## Formula\n\nNepoznati broj = a × (100/p) = a ÷ (p/100)\n\n## Primeri\n\n### 25% od broja je 40. Koliki je broj?\n40 = 25% × broj\nbroj = 40 × (100/25) = 40 × 4 = 160\n\n### 15% od broja je 30. Koliki je broj?\nbroj = 30 × (100/15) = 30 × (20/3) = 200\n\n## Provera\n\n25% od 160 = 0,25 × 160 = 40 ✓\n15% od 200 = 0,15 × 200 = 30 ✓\n\n## Primena\n\nAko znamo da je popust 20% i iznosi 50 dinara, možemo izračunati prvobitnu cenu.",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Procentni odnos",
+          "slug": "procentni-odnos",
+          "content": "# Procentni odnos\n\n## Pitanje\n\nKoliki procenat broja a predstavlja broj b?\n\n## Formula\n\np% = (b/a) × 100%\n\n## Primeri\n\n### Koliki procenat od 80 je 20?\np = (20/80) × 100% = 0,25 × 100% = 25%\n\n### Koliki procenat od 150 je 45?\np = (45/150) × 100% = 0,3 × 100% = 30%\n\n## Primene\n\n### Uspeh na testu\nOd 25 pitanja, 20 tačnih odgovora:\n(20/25) × 100% = 80%\n\n### Udeo u budžetu\nOd 50.000 din plate, 10.000 na hranu:\n(10.000/50.000) × 100% = 20%",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        }
+      ],
+      "test": {
+        "title": "Test: Računanje procenata",
+        "slug": "test-racunanje-procenata",
+        "description": "Proveri znanje o računanju procenata.",
+        "timeLimit": 15,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Koliko je 20% od 150?",
+            "type": "single_choice",
+            "explanation": "20% od 150 = 0,2 × 150 = 30",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "procenat-od-broja",
+            "options": [
+              { "text": "20", "isCorrect": false, "order": 1 },
+              { "text": "30", "isCorrect": true, "order": 2 },
+              { "text": "35", "isCorrect": false, "order": 3 },
+              { "text": "25", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koliko je 10% od 450?",
+            "type": "single_choice",
+            "explanation": "10% od 450 = 450 ÷ 10 = 45",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "procenat-od-broja",
+            "options": [
+              { "text": "4,5", "isCorrect": false, "order": 1 },
+              { "text": "45", "isCorrect": true, "order": 2 },
+              { "text": "450", "isCorrect": false, "order": 3 },
+              { "text": "40", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "30% od broja je 60. Koliki je taj broj?",
+            "type": "single_choice",
+            "explanation": "broj = 60 × (100/30) = 60 × (10/3) = 200",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "broj-od-procenta",
+            "options": [
+              { "text": "180", "isCorrect": false, "order": 1 },
+              { "text": "200", "isCorrect": true, "order": 2 },
+              { "text": "150", "isCorrect": false, "order": 3 },
+              { "text": "20", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koliki procenat broja 80 je broj 24?",
+            "type": "single_choice",
+            "explanation": "p = (24/80) × 100% = 0,3 × 100% = 30%",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "procentni-odnos",
+            "options": [
+              { "text": "20%", "isCorrect": false, "order": 1 },
+              { "text": "25%", "isCorrect": false, "order": 2 },
+              { "text": "30%", "isCorrect": true, "order": 3 },
+              { "text": "35%", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Učenik je od 40 pitanja na testu tačno odgovorio na 32. Koliki je njegov uspeh u procentima?",
+            "type": "single_choice",
+            "explanation": "(32/40) × 100% = 0,8 × 100% = 80%",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "procentni-odnos",
+            "options": [
+              { "text": "70%", "isCorrect": false, "order": 1 },
+              { "text": "75%", "isCorrect": false, "order": 2 },
+              { "text": "80%", "isCorrect": true, "order": 3 },
+              { "text": "85%", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "25% od broja je 75. Koliko je 40% istog broja?",
+            "type": "single_choice",
+            "explanation": "Broj = 75 × 4 = 300. Zatim: 40% od 300 = 0,4 × 300 = 120",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "procenat-od-broja",
+            "options": [
+              { "text": "100", "isCorrect": false, "order": 1 },
+              { "text": "120", "isCorrect": true, "order": 2 },
+              { "text": "150", "isCorrect": false, "order": 3 },
+              { "text": "90", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Primene procenata",
+      "slug": "primene-procenata",
+      "description": "Praktične primene procenata - popusti, povećanja, kamate.",
+      "lessons": [
+        {
+          "title": "Popusti i povećanja cena",
+          "slug": "popusti-povecanja",
+          "content": "# Popusti i povećanja cena\n\n## Popust (sniženje)\n\nNova cena = Stara cena - Popust\nNova cena = Stara cena × (1 - p/100)\n\n### Primer\nArtikal od 2000 din ima popust 25%.\nPopust = 25% od 2000 = 500 din\nNova cena = 2000 - 500 = 1500 din\n\nIli direktno:\n2000 × (1 - 0,25) = 2000 × 0,75 = 1500 din\n\n## Povećanje cene\n\nNova cena = Stara cena × (1 + p/100)\n\n### Primer\nCena od 500 din je povećana za 20%.\nNova cena = 500 × 1,2 = 600 din\n\n## Sukcesivni popusti\n\nDva popusta od 10% nisu isto što i 20%!\n1000 × 0,9 × 0,9 = 810 din (nije 800)",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        },
+        {
+          "title": "Kamate",
+          "slug": "kamate",
+          "content": "# Kamate\n\n## Osnovni pojmovi\n\n- **Glavnica (C)** - početni iznos\n- **Kamatna stopa (p)** - procenat na godišnjem nivou\n- **Kamata (K)** - zarada od uloga\n\n## Prosta kamata\n\nK = C × p × t / 100\n\ngde je t broj godina\n\n### Primer\nUlog: 10.000 din, kamata 5%, 2 godine\nK = 10.000 × 5 × 2 / 100 = 1.000 din\nUkupno posle 2 godine: 11.000 din\n\n## Složena kamata\n\nKamata se dodaje glavnici svake godine:\nS = C × (1 + p/100)^t\n\n### Primer\n10.000 din na 5% za 2 godine:\n10.000 × 1,05² = 10.000 × 1,1025 = 11.025 din\n\n(Sa složenom kamatom dobijamo 25 din više)",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        }
+      ],
+      "test": {
+        "title": "Test: Primene procenata",
+        "slug": "test-primene-procenata",
+        "description": "Proveri znanje o praktičnim primenama procenata.",
+        "timeLimit": 15,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Artikal koji košta 1200 dinara je na popustu od 25%. Kolika je nova cena?",
+            "type": "single_choice",
+            "explanation": "Popust = 25% od 1200 = 300. Nova cena = 1200 - 300 = 900 din",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "popusti-povecanja",
+            "options": [
+              { "text": "800 din", "isCorrect": false, "order": 1 },
+              { "text": "900 din", "isCorrect": true, "order": 2 },
+              { "text": "950 din", "isCorrect": false, "order": 3 },
+              { "text": "1000 din", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Cena proizvoda je povećana za 10% i sada iznosi 550 dinara. Kolika je bila stara cena?",
+            "type": "single_choice",
+            "explanation": "Stara × 1,1 = 550. Stara = 550 ÷ 1,1 = 500 din",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "popusti-povecanja",
+            "options": [
+              { "text": "450 din", "isCorrect": false, "order": 1 },
+              { "text": "500 din", "isCorrect": true, "order": 2 },
+              { "text": "495 din", "isCorrect": false, "order": 3 },
+              { "text": "540 din", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Kolika je prosta kamata na 5000 dinara pri godišnjoj stopi od 4% za 3 godine?",
+            "type": "single_choice",
+            "explanation": "K = 5000 × 4 × 3 / 100 = 600 din",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "kamate",
+            "options": [
+              { "text": "400 din", "isCorrect": false, "order": 1 },
+              { "text": "600 din", "isCorrect": true, "order": 2 },
+              { "text": "200 din", "isCorrect": false, "order": 3 },
+              { "text": "800 din", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Proizvod je prvo pojeftinio za 20%, a zatim poskupeo za 20%. Ako je početna cena bila 100 din, kolika je konačna cena?",
+            "type": "single_choice",
+            "explanation": "100 × 0,8 = 80, zatim 80 × 1,2 = 96 din. Nije 100!",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "popusti-povecanja",
+            "options": [
+              { "text": "100 din", "isCorrect": false, "order": 1 },
+              { "text": "96 din", "isCorrect": true, "order": 2 },
+              { "text": "104 din", "isCorrect": false, "order": 3 },
+              { "text": "98 din", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Na koliko procenata iznosi popust ako je stara cena 800 din, a nova 640 din?",
+            "type": "single_choice",
+            "explanation": "Popust = 800 - 640 = 160. p = (160/800) × 100% = 20%",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "popusti-povecanja",
+            "options": [
+              { "text": "15%", "isCorrect": false, "order": 1 },
+              { "text": "20%", "isCorrect": true, "order": 2 },
+              { "text": "25%", "isCorrect": false, "order": 3 },
+              { "text": "30%", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

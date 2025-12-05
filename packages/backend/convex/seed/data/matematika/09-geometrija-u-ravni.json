@@ -1,0 +1,534 @@
+{
+  "name": "Geometrija u ravni",
+  "slug": "geometrija-u-ravni",
+  "description": "Osnovni geometrijski pojmovi, uglovi, trouglovi, četvorouglovi i krug.",
+  "sections": [
+    {
+      "name": "Osnovni pojmovi",
+      "slug": "osnovni-pojmovi-geometrija",
+      "description": "Tačka, prava, ravan, duž, poluprava i uglovi.",
+      "lessons": [
+        {
+          "title": "Tačka, prava i ravan",
+          "slug": "tacka-prava-ravan",
+          "content": "# Tačka, prava i ravan\n\n## Tačka\n\nTačka je osnovni geometrijski pojam. Označava se velikim slovom: A, B, C...\n\nTačka nema dimenzije - nema dužinu, širinu ni visinu.\n\n## Prava\n\nPrava je skup beskonačno mnogo tačaka poređanih u istom pravcu.\n\nOznačava se malim slovom: a, b, p...\n\nPrava nema početak ni kraj - prostire se beskonačno u oba smera.\n\n## Ravan\n\nRavan je skup svih tačaka koje leže u istoj „ravnoj površi“.\n\nOznačava se grčkim slovima: α, β, γ...\n\n## Aksiome\n\n- Kroz dve različite tačke prolazi tačno jedna prava\n- Kroz tri tačke koje nisu na istoj pravoj prolazi tačno jedna ravan",
+          "contentType": "text",
+          "estimatedMinutes": 8
+        },
+        {
+          "title": "Duž i poluprava",
+          "slug": "duz-poluprava",
+          "content": "# Duž i poluprava\n\n## Duž\n\nDuž je deo prave ograničen sa dve tačke - krajevima duži.\n\nOznaka: AB ili |AB|\n\n### Dužina duži\n\nDužina duži je rastojanje između njenih krajeva.\n\nOznačava se: |AB| = 5 cm\n\n## Poluprava\n\nPoluprava je deo prave koji ima početak, ali nema kraj.\n\nOznaka: AB→ (poluprava sa početkom u A koja prolazi kroz B)\n\n## Središte duži\n\nTačka M je središte duži AB ako važi:\n|AM| = |MB| = |AB|/2\n\n## Primer\n\nAko je |AB| = 8 cm i M je središte, tada:\n|AM| = |MB| = 4 cm",
+          "contentType": "text",
+          "estimatedMinutes": 8
+        },
+        {
+          "title": "Uglovi",
+          "slug": "uglovi",
+          "content": "# Uglovi\n\n## Definicija\n\nUgao je deo ravni ograničen sa dve poluprave koje imaju zajednički početak.\n\n- Poluprave = kraci ugla\n- Zajednički početak = teme ugla\n\n## Označavanje\n\n∠ABC ili ∠B ili α\n\n## Merenje uglova\n\nJedinica: stepen (°)\n- Pun ugao = 360°\n- Prav ugao = 180°\n- Prav ugao = 90°\n\n## Vrste uglova po veličini\n\n- **Oštar ugao**: 0° < α < 90°\n- **Prav ugao**: α = 90°\n- **Tup ugao**: 90° < α < 180°\n- **Opružen ugao**: α = 180°\n\n## Komplementni uglovi\n\nDva ugla su komplementni ako je njihov zbir 90°.\n\n## Suplementni uglovi\n\nDva ugla su suplementni ako je njihov zbir 180°.",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        }
+      ],
+      "test": {
+        "title": "Test: Osnovni pojmovi geometrije",
+        "slug": "test-osnovni-pojmovi-geometrija",
+        "description": "Proveri znanje o osnovnim geometrijskim pojmovima.",
+        "timeLimit": 10,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Koliko pravih prolazi kroz dve različite tačke?",
+            "type": "single_choice",
+            "explanation": "Kroz dve različite tačke prolazi tačno jedna prava - to je jedna od osnovnih aksioma geometrije.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "tacka-prava-ravan",
+            "options": [
+              { "text": "Nijedna", "isCorrect": false, "order": 1 },
+              { "text": "Tačno jedna", "isCorrect": true, "order": 2 },
+              { "text": "Dve", "isCorrect": false, "order": 3 },
+              { "text": "Beskonačno mnogo", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Šta je duž?",
+            "type": "single_choice",
+            "explanation": "Duž je deo prave ograničen sa dve tačke (krajevima duži).",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "duz-poluprava",
+            "options": [
+              { "text": "Deo prave ograničen sa dve tačke", "isCorrect": true, "order": 1 },
+              { "text": "Prava koja ima početak ali ne i kraj", "isCorrect": false, "order": 2 },
+              { "text": "Beskonačna prava", "isCorrect": false, "order": 3 },
+              { "text": "Zatvorena kriva linija", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Ako je |AB| = 12 cm i M je središte duži AB, kolika je dužina |AM|?",
+            "type": "single_choice",
+            "explanation": "Središte deli duž na dva jednaka dela: |AM| = |AB|/2 = 12/2 = 6 cm.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "duz-poluprava",
+            "options": [
+              { "text": "3 cm", "isCorrect": false, "order": 1 },
+              { "text": "6 cm", "isCorrect": true, "order": 2 },
+              { "text": "12 cm", "isCorrect": false, "order": 3 },
+              { "text": "24 cm", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koji ugao je tup?",
+            "type": "single_choice",
+            "explanation": "Tup ugao je ugao čija je mera između 90° i 180°. 120° je tup ugao.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "uglovi",
+            "options": [
+              { "text": "45°", "isCorrect": false, "order": 1 },
+              { "text": "90°", "isCorrect": false, "order": 2 },
+              { "text": "120°", "isCorrect": true, "order": 3 },
+              { "text": "180°", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Dva ugla su komplementna. Ako je jedan 35°, koliki je drugi?",
+            "type": "single_choice",
+            "explanation": "Komplementni uglovi imaju zbir 90°. Drugi ugao = 90° - 35° = 55°.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "uglovi",
+            "options": [
+              { "text": "35°", "isCorrect": false, "order": 1 },
+              { "text": "55°", "isCorrect": true, "order": 2 },
+              { "text": "145°", "isCorrect": false, "order": 3 },
+              { "text": "325°", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Dva ugla su suplementna. Ako je jedan 110°, koliki je drugi?",
+            "type": "single_choice",
+            "explanation": "Suplementni uglovi imaju zbir 180°. Drugi ugao = 180° - 110° = 70°.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "uglovi",
+            "options": [
+              { "text": "70°", "isCorrect": true, "order": 1 },
+              { "text": "110°", "isCorrect": false, "order": 2 },
+              { "text": "250°", "isCorrect": false, "order": 3 },
+              { "text": "290°", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Trouglovi",
+      "slug": "trouglovi",
+      "description": "Vrste trouglova, osobine, površina i obim.",
+      "lessons": [
+        {
+          "title": "Vrste trouglova",
+          "slug": "vrste-trouglova",
+          "content": "# Vrste trouglova\n\n## Po stranicama\n\n### Jednakostranični trougao\n- Sve tri stranice jednake: a = b = c\n- Svi uglovi jednaki: α = β = γ = 60°\n\n### Jednakokraki trougao\n- Dve stranice jednake (kraci)\n- Uglovi na osnovici su jednaki\n\n### Raznostranični trougao\n- Sve stranice različite\n- Svi uglovi različiti\n\n## Po uglovima\n\n### Oštrougli trougao\n- Sva tri ugla su oštra (manja od 90°)\n\n### Pravougli trougao\n- Jedan ugao je prav (90°)\n- Hipotenuza - stranica naspram pravog ugla\n- Katete - stranice uz prav ugao\n\n### Tupougli trougao\n- Jedan ugao je tup (veći od 90°)\n\n## Zbir uglova\n\nZbir unutrašnjih uglova trougla je uvek 180°:\nα + β + γ = 180°",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        },
+        {
+          "title": "Površina i obim trougla",
+          "slug": "povrsina-obim-trougla",
+          "content": "# Površina i obim trougla\n\n## Obim trougla\n\nObim je zbir dužina svih stranica:\n\n**O = a + b + c**\n\n## Površina trougla\n\n### Osnovna formula\n\n**P = (a × h) / 2**\n\ngde je:\n- a - osnovica\n- h - visina na tu osnovicu\n\n### Heronova formula\n\nKada znamo sve tri stranice:\n\n**P = √(s(s-a)(s-b)(s-c))**\n\ngde je s = (a + b + c) / 2 (poluobim)\n\n## Primer\n\nTrougao sa a = 6 cm, h = 4 cm:\n\nP = (6 × 4) / 2 = 24 / 2 = 12 cm²\n\n## Pravougli trougao\n\nZa pravougli trougao sa katetama a i b:\n\n**P = (a × b) / 2**",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Pitagorina teorema",
+          "slug": "pitagorina-teorema",
+          "content": "# Pitagorina teorema\n\n## Teorema\n\nU pravouglom trouglu važi:\n\n**c² = a² + b²**\n\ngde je:\n- c - hipotenuza (naspram pravog ugla)\n- a, b - katete\n\n## Primena\n\n### Nalaženje hipotenuze\n\nAko su katete a = 3 cm i b = 4 cm:\nc² = 3² + 4² = 9 + 16 = 25\nc = √25 = 5 cm\n\n### Nalaženje katete\n\nAko je c = 13 cm i a = 5 cm:\nb² = c² - a² = 169 - 25 = 144\nb = √144 = 12 cm\n\n## Pitagorine trojke\n\nCelobrojna rešenja:\n- (3, 4, 5)\n- (5, 12, 13)\n- (8, 15, 17)\n- (7, 24, 25)\n\n## Obrnuta teorema\n\nAko za stranice trougla važi a² + b² = c², tada je trougao pravougli.",
+          "contentType": "text",
+          "estimatedMinutes": 15
+        }
+      ],
+      "test": {
+        "title": "Test: Trouglovi",
+        "slug": "test-trouglovi",
+        "description": "Proveri znanje o trouglovima.",
+        "timeLimit": 15,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Koliki je zbir unutrašnjih uglova trougla?",
+            "type": "single_choice",
+            "explanation": "Zbir unutrašnjih uglova svakog trougla je 180°.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "vrste-trouglova",
+            "options": [
+              { "text": "90°", "isCorrect": false, "order": 1 },
+              { "text": "180°", "isCorrect": true, "order": 2 },
+              { "text": "270°", "isCorrect": false, "order": 3 },
+              { "text": "360°", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Svi uglovi jednakostraničnog trougla su jednaki i iznose:",
+            "type": "single_choice",
+            "explanation": "Jednakostranični trougao ima sva tri ugla jednaka. 180° ÷ 3 = 60°.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "vrste-trouglova",
+            "options": [
+              { "text": "30°", "isCorrect": false, "order": 1 },
+              { "text": "45°", "isCorrect": false, "order": 2 },
+              { "text": "60°", "isCorrect": true, "order": 3 },
+              { "text": "90°", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj obim trougla sa stranicama 5 cm, 7 cm i 9 cm.",
+            "type": "single_choice",
+            "explanation": "O = a + b + c = 5 + 7 + 9 = 21 cm",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "povrsina-obim-trougla",
+            "options": [
+              { "text": "17 cm", "isCorrect": false, "order": 1 },
+              { "text": "19 cm", "isCorrect": false, "order": 2 },
+              { "text": "21 cm", "isCorrect": true, "order": 3 },
+              { "text": "35 cm", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj površinu trougla ako je osnovica 10 cm a visina 6 cm.",
+            "type": "single_choice",
+            "explanation": "P = (a × h) / 2 = (10 × 6) / 2 = 60 / 2 = 30 cm²",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "povrsina-obim-trougla",
+            "options": [
+              { "text": "16 cm²", "isCorrect": false, "order": 1 },
+              { "text": "30 cm²", "isCorrect": true, "order": 2 },
+              { "text": "60 cm²", "isCorrect": false, "order": 3 },
+              { "text": "120 cm²", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "U pravouglom trouglu katete su 6 cm i 8 cm. Kolika je hipotenuza?",
+            "type": "single_choice",
+            "explanation": "c² = a² + b² = 36 + 64 = 100, c = √100 = 10 cm",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "pitagorina-teorema",
+            "options": [
+              { "text": "7 cm", "isCorrect": false, "order": 1 },
+              { "text": "10 cm", "isCorrect": true, "order": 2 },
+              { "text": "14 cm", "isCorrect": false, "order": 3 },
+              { "text": "100 cm", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Hipotenuza pravouglog trougla je 15 cm, a jedna kateta 9 cm. Kolika je druga kateta?",
+            "type": "single_choice",
+            "explanation": "b² = c² - a² = 225 - 81 = 144, b = √144 = 12 cm",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "pitagorina-teorema",
+            "options": [
+              { "text": "6 cm", "isCorrect": false, "order": 1 },
+              { "text": "12 cm", "isCorrect": true, "order": 2 },
+              { "text": "18 cm", "isCorrect": false, "order": 3 },
+              { "text": "24 cm", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Dva ugla trougla su 45° i 75°. Koliki je treći ugao?",
+            "type": "single_choice",
+            "explanation": "Treći ugao = 180° - 45° - 75° = 60°",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "vrste-trouglova",
+            "options": [
+              { "text": "30°", "isCorrect": false, "order": 1 },
+              { "text": "60°", "isCorrect": true, "order": 2 },
+              { "text": "90°", "isCorrect": false, "order": 3 },
+              { "text": "120°", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koja od sledećih trojki brojeva može biti stranice pravouglog trougla?",
+            "type": "single_choice",
+            "explanation": "Proveravamo: 5² + 12² = 25 + 144 = 169 = 13². To je Pitagorina trojka.",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "pitagorina-teorema",
+            "options": [
+              { "text": "3, 4, 6", "isCorrect": false, "order": 1 },
+              { "text": "5, 12, 13", "isCorrect": true, "order": 2 },
+              { "text": "6, 7, 8", "isCorrect": false, "order": 3 },
+              { "text": "4, 5, 6", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Četvorouglovi",
+      "slug": "cetvorouglovi",
+      "description": "Paralelogram, pravougaonik, romb, kvadrat i trapez.",
+      "lessons": [
+        {
+          "title": "Paralelogram",
+          "slug": "paralelogram",
+          "content": "# Paralelogram\n\n## Definicija\n\nParalelogram je četvorougao čiji su naspramni parovi stranica paralelni.\n\n## Osobine\n\n1. Naspramne stranice su jednake: a = c, b = d\n2. Naspramni uglovi su jednaki\n3. Susedni uglovi su suplementni (zbir 180°)\n4. Dijagonale se polove (seku na polovini)\n\n## Obim\n\n**O = 2a + 2b = 2(a + b)**\n\n## Površina\n\n**P = a × h**\n\ngde je h visina na stranicu a.\n\n## Primer\n\nParalelogram sa a = 8 cm, b = 5 cm, h = 4 cm:\n\nO = 2(8 + 5) = 2 × 13 = 26 cm\nP = 8 × 4 = 32 cm²",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Pravougaonik i kvadrat",
+          "slug": "pravougaonik-kvadrat",
+          "content": "# Pravougaonik i kvadrat\n\n## Pravougaonik\n\nPravougaonik je paralelogram sa pravim uglovima.\n\n### Osobine\n- Svi uglovi su pravi (90°)\n- Dijagonale su jednake\n\n### Formule\n\n**O = 2a + 2b = 2(a + b)**\n\n**P = a × b**\n\n**d = √(a² + b²)** (dijagonala)\n\n## Kvadrat\n\nKvadrat je pravougaonik sa jednakim stranicama (a = b).\n\n### Osobine\n- Sve stranice jednake\n- Svi uglovi pravi\n- Dijagonale su jednake i normalne\n\n### Formule\n\n**O = 4a**\n\n**P = a²**\n\n**d = a√2**\n\n## Primer\n\nKvadrat sa stranicom a = 5 cm:\nO = 4 × 5 = 20 cm\nP = 5² = 25 cm²\nd = 5√2 ≈ 7,07 cm",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        },
+        {
+          "title": "Romb i trapez",
+          "slug": "romb-trapez",
+          "content": "# Romb i trapez\n\n## Romb\n\nRomb je paralelogram sa jednakim stranicama.\n\n### Osobine\n- Sve stranice jednake\n- Dijagonale su normalne i polove se\n- Dijagonale polove uglove\n\n### Formule\n\n**O = 4a**\n\n**P = (d₁ × d₂) / 2**\n\ngde su d₁ i d₂ dijagonale.\n\n## Trapez\n\nTrapez je četvorougao sa tačno jednim parom paralelnih stranica.\n\n- **Osnovice** (a, c) - paralelne stranice\n- **Kraci** (b, d) - neparalelne stranice\n\n### Formule\n\n**O = a + b + c + d**\n\n**P = ((a + c) × h) / 2**\n\n### Jednakokraki trapez\n\nTrapez čiji su kraci jednaki (b = d).\n\n## Primer\n\nTrapez: a = 10 cm, c = 6 cm, h = 4 cm\nP = ((10 + 6) × 4) / 2 = (16 × 4) / 2 = 32 cm²",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        }
+      ],
+      "test": {
+        "title": "Test: Četvorouglovi",
+        "slug": "test-cetvorouglovi",
+        "description": "Proveri znanje o četvorouglovima.",
+        "timeLimit": 15,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Koliki je zbir uglova svakog četvorougla?",
+            "type": "single_choice",
+            "explanation": "Zbir unutrašnjih uglova četvorougla je uvek 360°.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "paralelogram",
+            "options": [
+              { "text": "180°", "isCorrect": false, "order": 1 },
+              { "text": "270°", "isCorrect": false, "order": 2 },
+              { "text": "360°", "isCorrect": true, "order": 3 },
+              { "text": "540°", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj obim pravougaonika sa stranicama 7 cm i 4 cm.",
+            "type": "single_choice",
+            "explanation": "O = 2(a + b) = 2(7 + 4) = 2 × 11 = 22 cm",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "pravougaonik-kvadrat",
+            "options": [
+              { "text": "11 cm", "isCorrect": false, "order": 1 },
+              { "text": "22 cm", "isCorrect": true, "order": 2 },
+              { "text": "28 cm", "isCorrect": false, "order": 3 },
+              { "text": "56 cm", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj površinu kvadrata sa stranicom 6 cm.",
+            "type": "single_choice",
+            "explanation": "P = a² = 6² = 36 cm²",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "pravougaonik-kvadrat",
+            "options": [
+              { "text": "12 cm²", "isCorrect": false, "order": 1 },
+              { "text": "24 cm²", "isCorrect": false, "order": 2 },
+              { "text": "36 cm²", "isCorrect": true, "order": 3 },
+              { "text": "72 cm²", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj površinu pravougaonika sa stranicama 8 cm i 5 cm.",
+            "type": "single_choice",
+            "explanation": "P = a × b = 8 × 5 = 40 cm²",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "pravougaonik-kvadrat",
+            "options": [
+              { "text": "13 cm²", "isCorrect": false, "order": 1 },
+              { "text": "26 cm²", "isCorrect": false, "order": 2 },
+              { "text": "40 cm²", "isCorrect": true, "order": 3 },
+              { "text": "80 cm²", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj površinu romba ako su dijagonale 10 cm i 8 cm.",
+            "type": "single_choice",
+            "explanation": "P = (d₁ × d₂) / 2 = (10 × 8) / 2 = 80 / 2 = 40 cm²",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "romb-trapez",
+            "options": [
+              { "text": "18 cm²", "isCorrect": false, "order": 1 },
+              { "text": "40 cm²", "isCorrect": true, "order": 2 },
+              { "text": "80 cm²", "isCorrect": false, "order": 3 },
+              { "text": "160 cm²", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj površinu trapeza ako su osnovice 12 cm i 8 cm, a visina 5 cm.",
+            "type": "single_choice",
+            "explanation": "P = ((a + c) × h) / 2 = ((12 + 8) × 5) / 2 = (20 × 5) / 2 = 50 cm²",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "romb-trapez",
+            "options": [
+              { "text": "30 cm²", "isCorrect": false, "order": 1 },
+              { "text": "50 cm²", "isCorrect": true, "order": 2 },
+              { "text": "100 cm²", "isCorrect": false, "order": 3 },
+              { "text": "120 cm²", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Kolika je dijagonala kvadrata sa stranicom 4 cm?",
+            "type": "single_choice",
+            "explanation": "d = a√2 = 4√2 ≈ 4 × 1,414 ≈ 5,66 cm",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "pravougaonik-kvadrat",
+            "options": [
+              { "text": "4 cm", "isCorrect": false, "order": 1 },
+              { "text": "4√2 cm", "isCorrect": true, "order": 2 },
+              { "text": "8 cm", "isCorrect": false, "order": 3 },
+              { "text": "16 cm", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Krug",
+      "slug": "krug",
+      "description": "Elementi kruga, obim i površina.",
+      "lessons": [
+        {
+          "title": "Elementi kruga",
+          "slug": "elementi-kruga",
+          "content": "# Elementi kruga\n\n## Definicija\n\nKrug je skup svih tačaka ravni koje su na istom rastojanju od jedne fiksne tačke (centra).\n\n## Osnovni elementi\n\n### Centar (O)\n\nFiksna tačka od koje su sve tačke kruga jednako udaljene.\n\n### Poluprečnik (r)\n\nDuž od centra do bilo koje tačke na krugu.\n\n### Prečnik (d)\n\nDuž koja prolazi kroz centar i spaja dve tačke na krugu.\n\n**d = 2r**\n\n### Tetiva\n\nDuž koja spaja dve tačke na krugu. Prečnik je najduža tetiva.\n\n## Kružnica\n\nKružnica je samo granica kruga (linija), dok krug uključuje i unutrašnjost.\n\n## Broj π (pi)\n\nOdnos obima i prečnika:\n**π = O / d ≈ 3,14159...**\n\nKoristimo π ≈ 3,14 ili π ≈ 22/7",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Obim i površina kruga",
+          "slug": "obim-povrsina-kruga",
+          "content": "# Obim i površina kruga\n\n## Obim kruga\n\nObim je dužina kružnice:\n\n**O = 2πr = πd**\n\n### Primer\n\nKrug sa r = 7 cm:\nO = 2 × 3,14 × 7 = 43,96 cm\n\nili tačnije: O = 2 × (22/7) × 7 = 44 cm\n\n## Površina kruga\n\n**P = πr² = πd²/4**\n\n### Primer\n\nKrug sa r = 5 cm:\nP = 3,14 × 5² = 3,14 × 25 = 78,5 cm²\n\n## Dužina luka\n\nDeo kružnice određen centralnim uglom α (u stepenima):\n\n**l = (α/360°) × 2πr**\n\n## Površina isečka\n\nDeo kruga određen centralnim uglom α:\n\n**P = (α/360°) × πr²**\n\n### Primer\n\nIsečak sa α = 90° i r = 4 cm:\nP = (90/360) × 3,14 × 16 = 0,25 × 50,24 = 12,56 cm²",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        }
+      ],
+      "test": {
+        "title": "Test: Krug",
+        "slug": "test-krug",
+        "description": "Proveri znanje o krugu.",
+        "timeLimit": 12,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Ako je poluprečnik kruga 5 cm, koliki je prečnik?",
+            "type": "single_choice",
+            "explanation": "d = 2r = 2 × 5 = 10 cm",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "elementi-kruga",
+            "options": [
+              { "text": "2,5 cm", "isCorrect": false, "order": 1 },
+              { "text": "5 cm", "isCorrect": false, "order": 2 },
+              { "text": "10 cm", "isCorrect": true, "order": 3 },
+              { "text": "25 cm", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Šta je tetiva?",
+            "type": "single_choice",
+            "explanation": "Tetiva je duž koja spaja dve tačke na krugu (kružnici).",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "elementi-kruga",
+            "options": [
+              { "text": "Duž od centra do kružnice", "isCorrect": false, "order": 1 },
+              { "text": "Duž koja spaja dve tačke na krugu", "isCorrect": true, "order": 2 },
+              { "text": "Poluprečnik kruga", "isCorrect": false, "order": 3 },
+              { "text": "Deo kružnice", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj obim kruga ako je r = 7 cm (koristi π = 22/7).",
+            "type": "single_choice",
+            "explanation": "O = 2πr = 2 × (22/7) × 7 = 44 cm",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "obim-povrsina-kruga",
+            "options": [
+              { "text": "22 cm", "isCorrect": false, "order": 1 },
+              { "text": "44 cm", "isCorrect": true, "order": 2 },
+              { "text": "154 cm", "isCorrect": false, "order": 3 },
+              { "text": "308 cm", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj površinu kruga ako je r = 10 cm (koristi π = 3,14).",
+            "type": "single_choice",
+            "explanation": "P = πr² = 3,14 × 10² = 3,14 × 100 = 314 cm²",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "obim-povrsina-kruga",
+            "options": [
+              { "text": "31,4 cm²", "isCorrect": false, "order": 1 },
+              { "text": "62,8 cm²", "isCorrect": false, "order": 2 },
+              { "text": "314 cm²", "isCorrect": true, "order": 3 },
+              { "text": "628 cm²", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Kolika je površina kruga ako je prečnik d = 14 cm (koristi π = 22/7)?",
+            "type": "single_choice",
+            "explanation": "r = d/2 = 7 cm. P = πr² = (22/7) × 49 = 22 × 7 = 154 cm²",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "obim-povrsina-kruga",
+            "options": [
+              { "text": "44 cm²", "isCorrect": false, "order": 1 },
+              { "text": "154 cm²", "isCorrect": true, "order": 2 },
+              { "text": "308 cm²", "isCorrect": false, "order": 3 },
+              { "text": "616 cm²", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Kolika je površina polukruga sa poluprečnikom 6 cm (π = 3,14)?",
+            "type": "single_choice",
+            "explanation": "Površina polukruga = πr²/2 = 3,14 × 36 / 2 = 113,04 / 2 = 56,52 cm²",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "obim-povrsina-kruga",
+            "options": [
+              { "text": "18,84 cm²", "isCorrect": false, "order": 1 },
+              { "text": "56,52 cm²", "isCorrect": true, "order": 2 },
+              { "text": "113,04 cm²", "isCorrect": false, "order": 3 },
+              { "text": "226,08 cm²", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

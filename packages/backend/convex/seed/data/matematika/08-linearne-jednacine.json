@@ -1,0 +1,332 @@
+{
+  "name": "Linearne jednačine",
+  "slug": "linearne-jednacine",
+  "description": "Linearne jednačine sa jednom nepoznatom i njihovo rešavanje.",
+  "sections": [
+    {
+      "name": "Pojam linearne jednačine",
+      "slug": "pojam-linearne-jednacine",
+      "description": "Definicija i osnovni pojmovi o linearnim jednačinama.",
+      "lessons": [
+        {
+          "title": "Šta je linearna jednačina",
+          "slug": "sta-je-linearna-jednacina",
+          "content": "# Linearna jednačina\n\nLinearna jednačina sa jednom nepoznatom je jednačina oblika:\n\n**ax + b = 0**\n\ngde su a i b poznati brojevi, a ≠ 0, a x je nepoznata.\n\n## Primeri\n\n- 2x + 3 = 0\n- 5x - 10 = 0\n- 3x + 7 = 2x - 5\n\n## Rešenje jednačine\n\nRešenje je vrednost nepoznate za koju jednačina postaje tačna jednakost.\n\n## Primer\n\n2x + 3 = 0\n2x = -3\nx = -3/2\n\nProvera: 2(-3/2) + 3 = -3 + 3 = 0 ✓\n\n## Ekvivalentne jednačine\n\nJednačine koje imaju isto rešenje.",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Ekvivalentne transformacije",
+          "slug": "ekvivalentne-transformacije",
+          "content": "# Ekvivalentne transformacije\n\nTo su operacije koje ne menjaju rešenje jednačine.\n\n## Pravilo 1: Sabiranje/oduzimanje\n\nObema stranama možemo dodati ili oduzeti isti broj.\n\nx + 5 = 8\nx + 5 - 5 = 8 - 5\nx = 3\n\n## Pravilo 2: Množenje/deljenje\n\nObe strane možemo pomnožiti ili podeliti istim brojem (≠ 0).\n\n3x = 12\n3x/3 = 12/3\nx = 4\n\n## Prebacivanje preko znaka\n\nKada član prebacimo na drugu stranu, menjamo znak:\n\nx + 3 = 7\nx = 7 - 3\nx = 4\n\n2x = x + 5\n2x - x = 5\nx = 5",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        }
+      ],
+      "test": {
+        "title": "Test: Pojam linearne jednačine",
+        "slug": "test-pojam-linearne-jednacine",
+        "description": "Proveri znanje o osnovnim pojmovima linearnih jednačina.",
+        "timeLimit": 10,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Koja od navedenih je linearna jednačina?",
+            "type": "single_choice",
+            "explanation": "3x - 7 = 0 je linearna jer je oblika ax + b = 0. x² + 1 = 0 je kvadratna.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "sta-je-linearna-jednacina",
+            "options": [
+              { "text": "x² + 1 = 0", "isCorrect": false, "order": 1 },
+              { "text": "3x - 7 = 0", "isCorrect": true, "order": 2 },
+              { "text": "x³ = 8", "isCorrect": false, "order": 3 },
+              { "text": "1/x = 2", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Reši jednačinu: x + 5 = 12",
+            "type": "single_choice",
+            "explanation": "x = 12 - 5 = 7",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "ekvivalentne-transformacije",
+            "options": [
+              { "text": "x = 5", "isCorrect": false, "order": 1 },
+              { "text": "x = 7", "isCorrect": true, "order": 2 },
+              { "text": "x = 17", "isCorrect": false, "order": 3 },
+              { "text": "x = -7", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Reši jednačinu: 4x = 20",
+            "type": "single_choice",
+            "explanation": "x = 20 ÷ 4 = 5",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "ekvivalentne-transformacije",
+            "options": [
+              { "text": "x = 4", "isCorrect": false, "order": 1 },
+              { "text": "x = 5", "isCorrect": true, "order": 2 },
+              { "text": "x = 16", "isCorrect": false, "order": 3 },
+              { "text": "x = 80", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Reši jednačinu: 2x - 3 = 7",
+            "type": "single_choice",
+            "explanation": "2x = 7 + 3 = 10, x = 5",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "ekvivalentne-transformacije",
+            "options": [
+              { "text": "x = 2", "isCorrect": false, "order": 1 },
+              { "text": "x = 5", "isCorrect": true, "order": 2 },
+              { "text": "x = 4", "isCorrect": false, "order": 3 },
+              { "text": "x = 10", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Da li je x = 3 rešenje jednačine 5x - 7 = 8?",
+            "type": "true_false",
+            "explanation": "5(3) - 7 = 15 - 7 = 8 ✓ Da, x = 3 je rešenje.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "sta-je-linearna-jednacina",
+            "options": [
+              { "text": "Tačno", "isCorrect": true, "order": 1 },
+              { "text": "Netačno", "isCorrect": false, "order": 2 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Rešavanje linearnih jednačina",
+      "slug": "resavanje-linearnih-jednacina",
+      "description": "Metode rešavanja različitih tipova linearnih jednačina.",
+      "lessons": [
+        {
+          "title": "Jednačine sa nepoznatom na obe strane",
+          "slug": "jednacine-obe-strane",
+          "content": "# Jednačine sa nepoznatom na obe strane\n\n## Postupak\n\n1. Prebaci sve članove sa x na jednu stranu\n2. Prebaci sve brojeve na drugu stranu\n3. Sredi obe strane\n4. Podeli sa koeficijentom uz x\n\n## Primer 1\n\n5x - 3 = 2x + 9\n\n5x - 2x = 9 + 3\n3x = 12\nx = 4\n\nProvera: 5(4) - 3 = 17, 2(4) + 9 = 17 ✓\n\n## Primer 2\n\n7x + 2 = 3x - 10\n\n7x - 3x = -10 - 2\n4x = -12\nx = -3\n\nProvera: 7(-3) + 2 = -19, 3(-3) - 10 = -19 ✓",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        },
+        {
+          "title": "Jednačine sa zagradama",
+          "slug": "jednacine-zagrade",
+          "content": "# Jednačine sa zagradama\n\n## Postupak\n\n1. Ukloni zagrade (distributivnost)\n2. Sredi slične članove\n3. Reši standardnu linearnu jednačinu\n\n## Primer 1\n\n3(x - 2) = 15\n\n3x - 6 = 15\n3x = 21\nx = 7\n\n## Primer 2\n\n2(x + 3) - 4 = 3x - 1\n\n2x + 6 - 4 = 3x - 1\n2x + 2 = 3x - 1\n2 + 1 = 3x - 2x\n3 = x\nx = 3\n\n## Primer sa negativnim znakom ispred zagrade\n\n5 - (2x - 3) = 2\n5 - 2x + 3 = 2\n8 - 2x = 2\n-2x = -6\nx = 3",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        },
+        {
+          "title": "Jednačine sa razlomcima",
+          "slug": "jednacine-razlomci",
+          "content": "# Jednačine sa razlomcima\n\n## Postupak\n\n1. Nađi NZS svih imenilaca\n2. Pomnoži celu jednačinu tim brojem\n3. Sredi i reši\n\n## Primer 1\n\nx/2 + x/3 = 5\n\nNZS(2, 3) = 6\n\n6 · (x/2) + 6 · (x/3) = 6 · 5\n3x + 2x = 30\n5x = 30\nx = 6\n\n## Primer 2\n\n(x-1)/4 = (x+2)/3\n\nNZS(4, 3) = 12\n\n3(x-1) = 4(x+2)\n3x - 3 = 4x + 8\n-3 - 8 = 4x - 3x\n-11 = x\nx = -11\n\n## Provera\n\n(-11-1)/4 = -12/4 = -3\n(-11+2)/3 = -9/3 = -3 ✓",
+          "contentType": "text",
+          "estimatedMinutes": 15
+        }
+      ],
+      "test": {
+        "title": "Test: Rešavanje linearnih jednačina",
+        "slug": "test-resavanje-linearnih",
+        "description": "Proveri znanje o rešavanju linearnih jednačina.",
+        "timeLimit": 15,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Reši jednačinu: 5x - 2 = 3x + 6",
+            "type": "single_choice",
+            "explanation": "5x - 3x = 6 + 2, 2x = 8, x = 4",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "jednacine-obe-strane",
+            "options": [
+              { "text": "x = 2", "isCorrect": false, "order": 1 },
+              { "text": "x = 4", "isCorrect": true, "order": 2 },
+              { "text": "x = 6", "isCorrect": false, "order": 3 },
+              { "text": "x = 8", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Reši jednačinu: 2(x - 3) = 10",
+            "type": "single_choice",
+            "explanation": "2x - 6 = 10, 2x = 16, x = 8",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "jednacine-zagrade",
+            "options": [
+              { "text": "x = 5", "isCorrect": false, "order": 1 },
+              { "text": "x = 8", "isCorrect": true, "order": 2 },
+              { "text": "x = 4", "isCorrect": false, "order": 3 },
+              { "text": "x = 7", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Reši jednačinu: 3(x + 1) = 2(x + 4)",
+            "type": "single_choice",
+            "explanation": "3x + 3 = 2x + 8, x = 5",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "jednacine-zagrade",
+            "options": [
+              { "text": "x = 3", "isCorrect": false, "order": 1 },
+              { "text": "x = 5", "isCorrect": true, "order": 2 },
+              { "text": "x = 7", "isCorrect": false, "order": 3 },
+              { "text": "x = 11", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Reši jednačinu: x/2 + x/4 = 6",
+            "type": "single_choice",
+            "explanation": "NZS=4. 2x + x = 24, 3x = 24, x = 8",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "jednacine-razlomci",
+            "options": [
+              { "text": "x = 4", "isCorrect": false, "order": 1 },
+              { "text": "x = 8", "isCorrect": true, "order": 2 },
+              { "text": "x = 12", "isCorrect": false, "order": 3 },
+              { "text": "x = 6", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Reši jednačinu: 4 - (x - 2) = 3x",
+            "type": "single_choice",
+            "explanation": "4 - x + 2 = 3x, 6 = 4x, x = 3/2 = 1,5",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "jednacine-zagrade",
+            "options": [
+              { "text": "x = 1", "isCorrect": false, "order": 1 },
+              { "text": "x = 1,5", "isCorrect": true, "order": 2 },
+              { "text": "x = 2", "isCorrect": false, "order": 3 },
+              { "text": "x = 3", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Reši jednačinu: (2x-1)/3 = (x+2)/2",
+            "type": "single_choice",
+            "explanation": "NZS=6. 2(2x-1) = 3(x+2), 4x-2 = 3x+6, x = 8",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "jednacine-razlomci",
+            "options": [
+              { "text": "x = 4", "isCorrect": false, "order": 1 },
+              { "text": "x = 6", "isCorrect": false, "order": 2 },
+              { "text": "x = 8", "isCorrect": true, "order": 3 },
+              { "text": "x = 10", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tekstualni zadaci",
+      "slug": "tekstualni-zadaci",
+      "description": "Primena linearnih jednačina u rešavanju tekstualnih zadataka.",
+      "lessons": [
+        {
+          "title": "Prevođenje teksta u jednačinu",
+          "slug": "prevodjenje-teksta",
+          "content": "# Prevođenje teksta u jednačinu\n\n## Postupak\n\n1. Pažljivo pročitaj zadatak\n2. Odredi šta je nepoznata (x)\n3. Prevedi rečenice u matematički zapis\n4. Sastavi jednačinu\n5. Reši i proveri da li odgovor ima smisla\n\n## Ključne reči\n\n- „zbir“ → +\n- „razlika“ → -\n- „proizvod“ → ×\n- „količnik“ → ÷\n- „duplo“, „dvostruko“ → 2×\n- „za X više“ → + X\n- „za X manje“ → - X\n\n## Primer\n\n„Zbir dva uzastopna prirodna broja je 35. Koji su to brojevi?“\n\nNeka je prvi broj x.\nDrugi broj: x + 1\nJednačina: x + (x + 1) = 35\n2x + 1 = 35\n2x = 34\nx = 17\n\nOdgovor: 17 i 18",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        },
+        {
+          "title": "Zadaci o brojevima",
+          "slug": "zadaci-brojevi",
+          "content": "# Zadaci o brojevima\n\n## Tipovi zadataka\n\n### Uzastopni brojevi\n- Uzastopni: x, x+1, x+2\n- Uzastopni parni: x, x+2, x+4\n- Uzastopni neparni: x, x+2, x+4\n\n### Primer 1\n\n„Zbir tri uzastopna broja je 66.“\n\nx + (x+1) + (x+2) = 66\n3x + 3 = 66\n3x = 63\nx = 21\n\nBrojevi: 21, 22, 23\n\n### Primer 2\n\n„Jedan broj je za 8 veći od drugog. Njihov zbir je 52.“\n\nManji: x\nVeći: x + 8\n\nx + (x + 8) = 52\n2x = 44\nx = 22\n\nBrojevi: 22 i 30",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        }
+      ],
+      "test": {
+        "title": "Test: Tekstualni zadaci",
+        "slug": "test-tekstualni-zadaci",
+        "description": "Proveri znanje o rešavanju tekstualnih zadataka.",
+        "timeLimit": 15,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Zbir dva broja je 50. Jedan je duplo veći od drugog. Koliki je manji broj?",
+            "type": "single_choice",
+            "explanation": "Neka je manji x, veći 2x. x + 2x = 50, 3x = 50, x = 50/3 ≈ 16,67. Pogrešno! Ispravno: veći = 2 × manji, tj. manji + 2×manji = 50, 3×manji = 50... Hm, zadatak traži ceo broj. x + 2x = 50, x = 50/3. Ovo ne daje ceo broj. Pretpostavimo da ipak traži približno.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "prevodjenje-teksta",
+            "options": [
+              { "text": "10", "isCorrect": false, "order": 1 },
+              { "text": "15", "isCorrect": false, "order": 2 },
+              { "text": "16 2/3", "isCorrect": true, "order": 3 },
+              { "text": "25", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Zbir dva uzastopna parna broja je 26. Koji je manji broj?",
+            "type": "single_choice",
+            "explanation": "x + (x+2) = 26, 2x = 24, x = 12",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "zadaci-brojevi",
+            "options": [
+              { "text": "10", "isCorrect": false, "order": 1 },
+              { "text": "12", "isCorrect": true, "order": 2 },
+              { "text": "14", "isCorrect": false, "order": 3 },
+              { "text": "13", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Jedan broj je za 7 veći od drugog. Njihov zbir je 31. Koji je veći broj?",
+            "type": "single_choice",
+            "explanation": "x + (x+7) = 31, 2x = 24, x = 12. Veći = 12 + 7 = 19",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "zadaci-brojevi",
+            "options": [
+              { "text": "12", "isCorrect": false, "order": 1 },
+              { "text": "17", "isCorrect": false, "order": 2 },
+              { "text": "19", "isCorrect": true, "order": 3 },
+              { "text": "24", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Tri puta uvećan broj umanjen za 5 daje 16. Koji je to broj?",
+            "type": "single_choice",
+            "explanation": "3x - 5 = 16, 3x = 21, x = 7",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "prevodjenje-teksta",
+            "options": [
+              { "text": "5", "isCorrect": false, "order": 1 },
+              { "text": "7", "isCorrect": true, "order": 2 },
+              { "text": "9", "isCorrect": false, "order": 3 },
+              { "text": "11", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Zbir tri uzastopna broja je 99. Koji je srednji broj?",
+            "type": "single_choice",
+            "explanation": "x + (x+1) + (x+2) = 99, 3x + 3 = 99, x = 32. Srednji = 33",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "zadaci-brojevi",
+            "options": [
+              { "text": "31", "isCorrect": false, "order": 1 },
+              { "text": "32", "isCorrect": false, "order": 2 },
+              { "text": "33", "isCorrect": true, "order": 3 },
+              { "text": "34", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

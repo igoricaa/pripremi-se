@@ -1,0 +1,355 @@
+{
+  "name": "Decimalni brojevi",
+  "slug": "decimalni-brojevi",
+  "description": "Pojam decimalnog broja, pretvaranje, operacije i zaokrugljivanje.",
+  "sections": [
+    {
+      "name": "Pojam decimalnog broja",
+      "slug": "pojam-decimalnog-broja",
+      "description": "Osnovni pojmovi o decimalnim brojevima i njihovo predstavljanje.",
+      "lessons": [
+        {
+          "title": "Šta je decimalni broj",
+          "slug": "sta-je-decimalni-broj",
+          "content": "# Decimalni brojevi\n\nDecimalni broj je broj zapisan pomoću decimalne tačke (ili zareza).\n\n## Delovi decimalnog broja\n\n- **Ceo deo** - broj levo od tačke\n- **Decimalni deo** - broj desno od tačke\n\nPrimer: 3,75\n- Ceo deo: 3\n- Decimalni deo: 75\n\n## Mestovrednosti\n\n- Desetice, jedinice, decimalne: desetine, stotine, hiljadite...\n- 3,456 = 3 + 4/10 + 5/100 + 6/1000\n\n## Primeri\n\n- Cena: 125,50 din\n- Visina: 1,75 m\n- Temperatura: 36,6°C",
+          "contentType": "text",
+          "estimatedMinutes": 8
+        },
+        {
+          "title": "Pretvaranje razlomaka u decimalne brojeve",
+          "slug": "pretvaranje-razlomaka-decimalne",
+          "content": "# Pretvaranje razlomaka u decimalne brojeve\n\n## Postupak\n\nDelimo brojilac imeniocem.\n\n## Primeri\n\n1/2 = 1 ÷ 2 = 0,5\n3/4 = 3 ÷ 4 = 0,75\n1/5 = 1 ÷ 5 = 0,2\n\n## Konačni i periodični\n\n### Konačni decimalni brojevi\n- Imaju konačan broj decimala\n- 1/4 = 0,25\n- 3/8 = 0,375\n\n### Periodični decimalni brojevi\n- Jedna ili više cifara se beskonačno ponavljaju\n- 1/3 = 0,333... = 0,(3)\n- 1/6 = 0,1666... = 0,1(6)\n- 5/11 = 0,454545... = 0,(45)\n\n## Pravilo\n\nRazlomak daje konačan decimalni broj ako imenilac (posle skraćivanja) sadrži samo faktore 2 i/ili 5.",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Pretvaranje decimalnih brojeva u razlomke",
+          "slug": "pretvaranje-decimalnih-razlomke",
+          "content": "# Pretvaranje decimalnih brojeva u razlomke\n\n## Konačni decimalni brojevi\n\n1. Zapiši decimalni broj kao razlomak sa imeniocem 10, 100, 1000...\n2. Skrati razlomak\n\n## Primeri\n\n0,5 = 5/10 = 1/2\n0,75 = 75/100 = 3/4\n0,125 = 125/1000 = 1/8\n\n## Periodični decimalni brojevi\n\nZa 0,(3):\n- Neka je x = 0,333...\n- 10x = 3,333...\n- 10x - x = 3\n- 9x = 3\n- x = 3/9 = 1/3\n\nZa 0,1(6):\n- Neka je x = 0,1666...\n- 10x = 1,666...\n- 100x = 16,666...\n- 100x - 10x = 15\n- 90x = 15\n- x = 15/90 = 1/6",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        }
+      ],
+      "test": {
+        "title": "Test: Pojam decimalnog broja",
+        "slug": "test-pojam-decimalnog-broja",
+        "description": "Proveri znanje o decimalnim brojevima i pretvaranju.",
+        "timeLimit": 12,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Koliki je ceo deo broja 15,789?",
+            "type": "single_choice",
+            "explanation": "Ceo deo je broj levo od decimalne tačke, dakle 15.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "sta-je-decimalni-broj",
+            "options": [
+              { "text": "15", "isCorrect": true, "order": 1 },
+              { "text": "789", "isCorrect": false, "order": 2 },
+              { "text": "1", "isCorrect": false, "order": 3 },
+              { "text": "5", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Pretvori 3/4 u decimalni broj.",
+            "type": "single_choice",
+            "explanation": "3/4 = 3 ÷ 4 = 0,75",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "pretvaranje-razlomaka-decimalne",
+            "options": [
+              { "text": "0,34", "isCorrect": false, "order": 1 },
+              { "text": "0,75", "isCorrect": true, "order": 2 },
+              { "text": "0,43", "isCorrect": false, "order": 3 },
+              { "text": "0,25", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Pretvori 0,6 u razlomak u nesvodljivom obliku.",
+            "type": "single_choice",
+            "explanation": "0,6 = 6/10 = 3/5",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "pretvaranje-decimalnih-razlomke",
+            "options": [
+              { "text": "6/10", "isCorrect": false, "order": 1 },
+              { "text": "3/5", "isCorrect": true, "order": 2 },
+              { "text": "2/3", "isCorrect": false, "order": 3 },
+              { "text": "1/6", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koji razlomak daje periodičan decimalni broj?",
+            "type": "single_choice",
+            "explanation": "1/3 = 0,(3) - periodičan. Ostali: 1/4=0,25, 1/5=0,2, 1/8=0,125 - konačni.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "pretvaranje-razlomaka-decimalne",
+            "options": [
+              { "text": "1/4", "isCorrect": false, "order": 1 },
+              { "text": "1/5", "isCorrect": false, "order": 2 },
+              { "text": "1/3", "isCorrect": true, "order": 3 },
+              { "text": "1/8", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Pretvori 0,125 u razlomak.",
+            "type": "single_choice",
+            "explanation": "0,125 = 125/1000 = 1/8",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "pretvaranje-decimalnih-razlomke",
+            "options": [
+              { "text": "1/4", "isCorrect": false, "order": 1 },
+              { "text": "1/5", "isCorrect": false, "order": 2 },
+              { "text": "1/8", "isCorrect": true, "order": 3 },
+              { "text": "1/125", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koja cifra se nalazi na mestu stotinki u broju 24,537?",
+            "type": "single_choice",
+            "explanation": "Posle tačke: 5 je na mestu desetinki, 3 na mestu stotinki.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "sta-je-decimalni-broj",
+            "options": [
+              { "text": "5", "isCorrect": false, "order": 1 },
+              { "text": "3", "isCorrect": true, "order": 2 },
+              { "text": "7", "isCorrect": false, "order": 3 },
+              { "text": "4", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Operacije sa decimalnim brojevima",
+      "slug": "operacije-decimalnim",
+      "description": "Sabiranje, oduzimanje, množenje i deljenje decimalnih brojeva.",
+      "lessons": [
+        {
+          "title": "Sabiranje i oduzimanje decimalnih brojeva",
+          "slug": "sabiranje-oduzimanje-decimalnih",
+          "content": "# Sabiranje i oduzimanje decimalnih brojeva\n\n## Pravilo\n\n1. Poravnaj decimalne tačke (jedna ispod druge)\n2. Sabiraj/oduzimaj kao cele brojeve\n3. Spusti decimalnu tačku\n\n## Primeri\n\n### Sabiranje\n```\n  12,35\n+  4,78\n-------\n  17,13\n```\n\n### Oduzimanje\n```\n  15,20\n-  8,75\n-------\n   6,45\n```\n\n## Dodavanje nula\n\nAko brojevi imaju različit broj decimala, dodajemo nule:\n\n3,5 + 2,125 → 3,500 + 2,125 = 5,625",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Množenje decimalnih brojeva",
+          "slug": "mnozenje-decimalnih",
+          "content": "# Množenje decimalnih brojeva\n\n## Pravilo\n\n1. Množi kao cele brojeve (zanemari tačke)\n2. Prebroj ukupan broj decimala u oba činioca\n3. Stavi tačku toliko mesta sleva\n\n## Primeri\n\n2,5 × 1,2 = ?\n- 25 × 12 = 300\n- Ukupno decimala: 1 + 1 = 2\n- Rezultat: 3,00 = 3\n\n0,3 × 0,4 = ?\n- 3 × 4 = 12\n- Ukupno decimala: 1 + 1 = 2\n- Rezultat: 0,12\n\n## Množenje sa 10, 100, 1000...\n\nPomeramo tačku udesno za onoliko mesta koliko ima nula:\n- 3,45 × 10 = 34,5\n- 3,45 × 100 = 345\n- 3,45 × 1000 = 3450",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Deljenje decimalnih brojeva",
+          "slug": "deljenje-decimalnih",
+          "content": "# Deljenje decimalnih brojeva\n\n## Deljenje celim brojem\n\n1. Deli kao obično\n2. Spusti tačku kada dođeš do nje u deljeniku\n\nPrimer: 7,5 ÷ 3 = 2,5\n\n## Deljenje decimalnim brojem\n\n1. Pomnoži delilac i deljenik istim brojem da delilac postane ceo\n2. Zatim deli\n\nPrimer: 6,3 ÷ 0,7 = 63 ÷ 7 = 9\n\n## Deljenje sa 10, 100, 1000...\n\nPomeramo tačku ulevo:\n- 345 ÷ 10 = 34,5\n- 345 ÷ 100 = 3,45\n- 345 ÷ 1000 = 0,345\n\n## Primer\n\n12,6 ÷ 0,03 = ?\n- Množimo sa 100: 1260 ÷ 3 = 420",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        }
+      ],
+      "test": {
+        "title": "Test: Operacije sa decimalnim brojevima",
+        "slug": "test-operacije-decimalnim",
+        "description": "Proveri znanje o računskim operacijama sa decimalnim brojevima.",
+        "timeLimit": 15,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Izračunaj: 3,5 + 2,75",
+            "type": "single_choice",
+            "explanation": "3,50 + 2,75 = 6,25",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "sabiranje-oduzimanje-decimalnih",
+            "options": [
+              { "text": "5,25", "isCorrect": false, "order": 1 },
+              { "text": "6,25", "isCorrect": true, "order": 2 },
+              { "text": "6,15", "isCorrect": false, "order": 3 },
+              { "text": "5,75", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: 10,5 - 4,75",
+            "type": "single_choice",
+            "explanation": "10,50 - 4,75 = 5,75",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "sabiranje-oduzimanje-decimalnih",
+            "options": [
+              { "text": "5,75", "isCorrect": true, "order": 1 },
+              { "text": "6,75", "isCorrect": false, "order": 2 },
+              { "text": "5,25", "isCorrect": false, "order": 3 },
+              { "text": "6,25", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: 0,6 × 0,4",
+            "type": "single_choice",
+            "explanation": "6 × 4 = 24, ukupno 2 decimale: 0,24",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "mnozenje-decimalnih",
+            "options": [
+              { "text": "2,4", "isCorrect": false, "order": 1 },
+              { "text": "0,24", "isCorrect": true, "order": 2 },
+              { "text": "0,024", "isCorrect": false, "order": 3 },
+              { "text": "24", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: 4,5 × 100",
+            "type": "single_choice",
+            "explanation": "Pomeramo tačku udesno za 2 mesta: 450",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "mnozenje-decimalnih",
+            "options": [
+              { "text": "45", "isCorrect": false, "order": 1 },
+              { "text": "450", "isCorrect": true, "order": 2 },
+              { "text": "4500", "isCorrect": false, "order": 3 },
+              { "text": "0,045", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: 7,2 ÷ 0,9",
+            "type": "single_choice",
+            "explanation": "Množimo sa 10: 72 ÷ 9 = 8",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "deljenje-decimalnih",
+            "options": [
+              { "text": "0,8", "isCorrect": false, "order": 1 },
+              { "text": "8", "isCorrect": true, "order": 2 },
+              { "text": "80", "isCorrect": false, "order": 3 },
+              { "text": "6,3", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: 2,5 × 3,2",
+            "type": "single_choice",
+            "explanation": "25 × 32 = 800, ukupno 2 decimale: 8,00 = 8",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "mnozenje-decimalnih",
+            "options": [
+              { "text": "8", "isCorrect": true, "order": 1 },
+              { "text": "80", "isCorrect": false, "order": 2 },
+              { "text": "0,8", "isCorrect": false, "order": 3 },
+              { "text": "7,5", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Zaokrugljivanje",
+      "slug": "zaokrugljivanje",
+      "description": "Zaokrugljivanje decimalnih brojeva na određenu tačnost.",
+      "lessons": [
+        {
+          "title": "Pravila zaokrugljivanja",
+          "slug": "pravila-zaokrugljivanja",
+          "content": "# Zaokrugljivanje decimalnih brojeva\n\n## Pravilo\n\nGledamo prvu cifru koju uklanjamo:\n- Ako je 0, 1, 2, 3 ili 4 → zaokružujemo naniže\n- Ako je 5, 6, 7, 8 ili 9 → zaokružujemo naviše\n\n## Primeri\n\n### Na jednu decimalu\n- 3,74 ≈ 3,7 (jer je 4 < 5)\n- 3,75 ≈ 3,8 (jer je 5 ≥ 5)\n\n### Na dve decimale\n- 5,234 ≈ 5,23\n- 5,236 ≈ 5,24\n\n### Na ceo broj\n- 7,3 ≈ 7\n- 7,8 ≈ 8\n\n## Primene\n\n- Cene (zaokrugljivanje na dinare)\n- Merenja (zaokrugljivanje na metre, kilograme)\n- Statistika (proseci)",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Procena rezultata",
+          "slug": "procena-rezultata",
+          "content": "# Procena rezultata\n\n## Zašto procenjujemo?\n\n- Da brzo proverimo da li je rezultat razuman\n- Da procenimo bez kalkulatora\n\n## Postupak\n\n1. Zaokruži brojeve na pogodne vrednosti\n2. Izračunaj sa zaokrugljenim vrednostima\n\n## Primeri\n\n### Sabiranje\n47,8 + 31,2 ≈ 48 + 31 = 79\n(Tačno: 79)\n\n### Množenje\n4,9 × 3,1 ≈ 5 × 3 = 15\n(Tačno: 15,19)\n\n### Deljenje\n19,7 ÷ 4,1 ≈ 20 ÷ 4 = 5\n(Tačno: 4,8...)\n\n## Savet\n\nProcena pomaže da uočimo grube greške u računanju!",
+          "contentType": "text",
+          "estimatedMinutes": 8
+        }
+      ],
+      "test": {
+        "title": "Test: Zaokrugljivanje",
+        "slug": "test-zaokrugljivanje",
+        "description": "Proveri znanje o zaokrugljivanju decimalnih brojeva.",
+        "timeLimit": 10,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Zaokruži 7,34 na jednu decimalu.",
+            "type": "single_choice",
+            "explanation": "Gledamo drugu decimalu (4). Pošto je 4 < 5, zaokružujemo naniže: 7,3",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "pravila-zaokrugljivanja",
+            "options": [
+              { "text": "7,3", "isCorrect": true, "order": 1 },
+              { "text": "7,4", "isCorrect": false, "order": 2 },
+              { "text": "7", "isCorrect": false, "order": 3 },
+              { "text": "7,35", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Zaokruži 12,85 na ceo broj.",
+            "type": "single_choice",
+            "explanation": "Gledamo prvu decimalu (8). Pošto je 8 ≥ 5, zaokružujemo naviše: 13",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "pravila-zaokrugljivanja",
+            "options": [
+              { "text": "12", "isCorrect": false, "order": 1 },
+              { "text": "13", "isCorrect": true, "order": 2 },
+              { "text": "12,9", "isCorrect": false, "order": 3 },
+              { "text": "12,8", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Zaokruži 5,555 na dve decimale.",
+            "type": "single_choice",
+            "explanation": "Gledamo treću decimalu (5). Pošto je 5 ≥ 5, zaokružujemo naviše: 5,56",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "pravila-zaokrugljivanja",
+            "options": [
+              { "text": "5,55", "isCorrect": false, "order": 1 },
+              { "text": "5,56", "isCorrect": true, "order": 2 },
+              { "text": "5,6", "isCorrect": false, "order": 3 },
+              { "text": "5,5", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Proceni rezultat: 9,8 × 5,1 (bez računanja)",
+            "type": "single_choice",
+            "explanation": "9,8 ≈ 10, 5,1 ≈ 5. Procena: 10 × 5 = 50",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "procena-rezultata",
+            "options": [
+              { "text": "≈ 45", "isCorrect": false, "order": 1 },
+              { "text": "≈ 50", "isCorrect": true, "order": 2 },
+              { "text": "≈ 55", "isCorrect": false, "order": 3 },
+              { "text": "≈ 100", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Na koliko se decimala mora zaokružiti 3,14159 da dobijemo 3,14?",
+            "type": "single_choice",
+            "explanation": "3,14 ima dve decimale. Zaokružujemo na dve decimale.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "pravila-zaokrugljivanja",
+            "options": [
+              { "text": "Jednu", "isCorrect": false, "order": 1 },
+              { "text": "Dve", "isCorrect": true, "order": 2 },
+              { "text": "Tri", "isCorrect": false, "order": 3 },
+              { "text": "Četiri", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

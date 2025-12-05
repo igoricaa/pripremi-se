@@ -1,0 +1,232 @@
+{
+  "name": "Algebarski izrazi",
+  "slug": "algebarski-izrazi",
+  "description": "Pojam promenljive, monomi, polinomi i operacije sa njima.",
+  "sections": [
+    {
+      "name": "Osnovni pojmovi",
+      "slug": "osnovni-pojmovi-algebra",
+      "description": "Promenljive, konstante i algebarski izrazi.",
+      "lessons": [
+        {
+          "title": "Promenljive i konstante",
+          "slug": "promenljive-konstante",
+          "content": "# Promenljive i konstante\n\n## Konstanta\n\nKonstanta je broj čija se vrednost ne menja.\nPrimeri: 5, -3, 2/3, π\n\n## Promenljiva\n\nPromenljiva je simbol (slovo) koji predstavlja nepoznatu vrednost.\nOznake: x, y, z, a, b, c...\n\n## Algebarski izraz\n\nKombinacija brojeva, promenljivih i operacija.\n\nPrimeri:\n- 3x + 5\n- 2a - b\n- x² + 2xy + y²\n\n## Vrednost izraza\n\nKada zamenimo promenljive brojevima, dobijamo vrednost izraza.\n\nPrimer: x = 2\n3x + 5 = 3(2) + 5 = 6 + 5 = 11",
+          "contentType": "text",
+          "estimatedMinutes": 8
+        },
+        {
+          "title": "Monomi",
+          "slug": "monomi",
+          "content": "# Monomi\n\nMonom je algebarski izraz koji je proizvod broja i stepena promenljivih.\n\n## Primeri monoma\n\n- 5x\n- -3ab\n- 7x²y\n- 2/3 xy³\n\n## Delovi monoma\n\n- **Koeficijent** - brojni deo\n- **Promenljivi deo** - slova sa eksponentima\n\nPrimer: 5x²y³\n- Koeficijent: 5\n- Promenljivi deo: x²y³\n\n## Stepen monoma\n\nStepen monoma je zbir svih eksponenata.\n\nPrimer: 5x²y³ ima stepen 2+3 = 5\n\n## Slični monomi\n\nMonomi sa istim promenljivim delom.\n3x² i -5x² su slični\n3x² i 3x³ nisu slični",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        }
+      ],
+      "test": {
+        "title": "Test: Osnovni pojmovi",
+        "slug": "test-osnovni-pojmovi-algebra",
+        "description": "Proveri znanje o osnovnim algebarskim pojmovima.",
+        "timeLimit": 10,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Izračunaj vrednost izraza 2x - 3 za x = 5.",
+            "type": "single_choice",
+            "explanation": "2(5) - 3 = 10 - 3 = 7",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "promenljive-konstante",
+            "options": [
+              { "text": "5", "isCorrect": false, "order": 1 },
+              { "text": "7", "isCorrect": true, "order": 2 },
+              { "text": "10", "isCorrect": false, "order": 3 },
+              { "text": "13", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koji je koeficijent monoma -4x³y²?",
+            "type": "single_choice",
+            "explanation": "Koeficijent je brojni deo monoma: -4",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "monomi",
+            "options": [
+              { "text": "4", "isCorrect": false, "order": 1 },
+              { "text": "-4", "isCorrect": true, "order": 2 },
+              { "text": "x³y²", "isCorrect": false, "order": 3 },
+              { "text": "3", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koji je stepen monoma 2x³y²z?",
+            "type": "single_choice",
+            "explanation": "Stepen = 3 + 2 + 1 = 6",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "monomi",
+            "options": [
+              { "text": "3", "isCorrect": false, "order": 1 },
+              { "text": "5", "isCorrect": false, "order": 2 },
+              { "text": "6", "isCorrect": true, "order": 3 },
+              { "text": "7", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koji od parova su slični monomi?",
+            "type": "single_choice",
+            "explanation": "5xy² i -3xy² imaju isti promenljivi deo (xy²), pa su slični.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "monomi",
+            "options": [
+              { "text": "3x² i 3y²", "isCorrect": false, "order": 1 },
+              { "text": "5xy² i -3xy²", "isCorrect": true, "order": 2 },
+              { "text": "2x³ i 2x²", "isCorrect": false, "order": 3 },
+              { "text": "4ab i 4a²b", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj vrednost izraza x² - 2y za x = 3, y = 2.",
+            "type": "single_choice",
+            "explanation": "3² - 2(2) = 9 - 4 = 5",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "promenljive-konstante",
+            "options": [
+              { "text": "3", "isCorrect": false, "order": 1 },
+              { "text": "5", "isCorrect": true, "order": 2 },
+              { "text": "7", "isCorrect": false, "order": 3 },
+              { "text": "13", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Polinomi",
+      "slug": "polinomi",
+      "description": "Sabiranje, oduzimanje i množenje polinoma.",
+      "lessons": [
+        {
+          "title": "Pojam polinoma",
+          "slug": "pojam-polinoma",
+          "content": "# Polinomi\n\nPolinom je zbir monoma.\n\n## Primeri\n\n- x² + 3x - 5 (trinom)\n- 2x + 1 (binom)\n- 5x³ - 2x² + x - 7 (polinom 3. stepena)\n\n## Stepen polinoma\n\nStepen polinoma je najveći stepen njegovih članova.\n\nPrimer: 3x⁴ - 2x² + 5x - 1 ima stepen 4\n\n## Standardni oblik\n\nČlanovi poređani po opadajućim stepenima:\n5x³ - 2x² + x - 7 (standardni oblik)\n-2x² + 5x³ + x - 7 (nije standardni)\n\n## Vrste polinoma\n\n- Monom: jedan član (5x²)\n- Binom: dva člana (x + 2)\n- Trinom: tri člana (x² + 2x + 1)",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Sabiranje i oduzimanje polinoma",
+          "slug": "sabiranje-oduzimanje-polinoma",
+          "content": "# Sabiranje i oduzimanje polinoma\n\n## Sabiranje\n\nSabiramo slične članove (isti promenljivi delovi).\n\n### Primer\n(3x² + 2x - 1) + (x² - 4x + 5)\n= 3x² + x² + 2x - 4x - 1 + 5\n= 4x² - 2x + 4\n\n## Oduzimanje\n\nPromenimo znak svakom članu drugog polinoma, pa sabiramo.\n\n### Primer\n(5x² - 3x + 2) - (2x² + x - 4)\n= 5x² - 3x + 2 - 2x² - x + 4\n= 3x² - 4x + 6\n\n## Saveti\n\n1. Podvuci slične članove istom bojom\n2. Pazi na znakove pri oduzimanju\n3. Rezultat zapiši u standardnom obliku",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        },
+        {
+          "title": "Množenje polinoma",
+          "slug": "mnozenje-polinoma",
+          "content": "# Množenje polinoma\n\n## Množenje monoma\n\nMnožimo koeficijente i sabiramo eksponente istih promenljivih.\n\n3x² × 2x³ = 6x⁵\n\n## Množenje monoma i polinoma\n\nPrimeni distributivnost: monom × svaki član.\n\n2x(3x² - x + 4) = 6x³ - 2x² + 8x\n\n## Množenje dva polinoma\n\nSvaki član prvog × svaki član drugog.\n\n### Primer\n(x + 2)(x + 3)\n= x·x + x·3 + 2·x + 2·3\n= x² + 3x + 2x + 6\n= x² + 5x + 6\n\n## FOIL metoda (za binome)\n\n- F: First (prvi × prvi)\n- O: Outer (spoljašnji)\n- I: Inner (unutrašnji)\n- L: Last (poslednji × poslednji)",
+          "contentType": "text",
+          "estimatedMinutes": 15
+        }
+      ],
+      "test": {
+        "title": "Test: Polinomi",
+        "slug": "test-polinomi",
+        "description": "Proveri znanje o operacijama sa polinomima.",
+        "timeLimit": 15,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Koji je stepen polinoma 4x³ - 2x⁵ + x - 7?",
+            "type": "single_choice",
+            "explanation": "Najveći eksponent je 5, pa je stepen polinoma 5.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "pojam-polinoma",
+            "options": [
+              { "text": "3", "isCorrect": false, "order": 1 },
+              { "text": "4", "isCorrect": false, "order": 2 },
+              { "text": "5", "isCorrect": true, "order": 3 },
+              { "text": "7", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: (2x + 3) + (4x - 5)",
+            "type": "single_choice",
+            "explanation": "2x + 4x + 3 - 5 = 6x - 2",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "sabiranje-oduzimanje-polinoma",
+            "options": [
+              { "text": "6x + 2", "isCorrect": false, "order": 1 },
+              { "text": "6x - 2", "isCorrect": true, "order": 2 },
+              { "text": "-2x + 8", "isCorrect": false, "order": 3 },
+              { "text": "6x - 8", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: (3x² - x) - (x² + 2x)",
+            "type": "single_choice",
+            "explanation": "3x² - x - x² - 2x = 2x² - 3x",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "sabiranje-oduzimanje-polinoma",
+            "options": [
+              { "text": "2x² + x", "isCorrect": false, "order": 1 },
+              { "text": "2x² - 3x", "isCorrect": true, "order": 2 },
+              { "text": "4x² - 3x", "isCorrect": false, "order": 3 },
+              { "text": "2x² + 3x", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: 3x(2x - 4)",
+            "type": "single_choice",
+            "explanation": "3x × 2x - 3x × 4 = 6x² - 12x",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "mnozenje-polinoma",
+            "options": [
+              { "text": "6x² - 4", "isCorrect": false, "order": 1 },
+              { "text": "6x² - 12x", "isCorrect": true, "order": 2 },
+              { "text": "6x - 12", "isCorrect": false, "order": 3 },
+              { "text": "5x² - 12x", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: (x + 3)(x - 2)",
+            "type": "single_choice",
+            "explanation": "x² - 2x + 3x - 6 = x² + x - 6",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "mnozenje-polinoma",
+            "options": [
+              { "text": "x² + x - 6", "isCorrect": true, "order": 1 },
+              { "text": "x² - x - 6", "isCorrect": false, "order": 2 },
+              { "text": "x² + 5x - 6", "isCorrect": false, "order": 3 },
+              { "text": "x² - 6", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: (2x - 1)²",
+            "type": "single_choice",
+            "explanation": "(2x-1)² = 4x² - 4x + 1",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "mnozenje-polinoma",
+            "options": [
+              { "text": "4x² - 1", "isCorrect": false, "order": 1 },
+              { "text": "4x² + 1", "isCorrect": false, "order": 2 },
+              { "text": "4x² - 4x + 1", "isCorrect": true, "order": 3 },
+              { "text": "4x² - 2x + 1", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

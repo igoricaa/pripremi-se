@@ -1,0 +1,477 @@
+{
+  "name": "Celi brojevi",
+  "slug": "celi-brojevi",
+  "description": "Celi brojevi, apsolutna vrednost, operacije sa negativnim brojevima i primene u svakodnevnom životu.",
+  "sections": [
+    {
+      "name": "Pojam celih brojeva",
+      "slug": "pojam-celih-brojeva",
+      "description": "Uvod u cele brojeve, brojevna prava i apsolutna vrednost.",
+      "lessons": [
+        {
+          "title": "Šta su celi brojevi",
+          "slug": "sta-su-celi-brojevi",
+          "content": "# Celi brojevi\n\nCeli brojevi proširuju skup prirodnih brojeva dodavanjem nule i negativnih brojeva.\n\n## Skup celih brojeva\n\nSkup celih brojeva označavamo slovom **Z**:\n\nZ = {..., -3, -2, -1, 0, 1, 2, 3, ...}\n\n## Vrste celih brojeva\n\n- **Pozitivni celi brojevi**: 1, 2, 3, 4, ... (isto kao prirodni)\n- **Negativni celi brojevi**: -1, -2, -3, -4, ...\n- **Nula**: 0 (nije ni pozitivna ni negativna)\n\n## Primena u životu\n\n- **Temperatura**: -5°C znači 5 stepeni ispod nule\n- **Dug**: -1000 dinara znači dugovanje\n- **Nadmorska visina**: -423m (Mrtvo more)\n- **Vreme**: -3 sata = pre 3 sata",
+          "contentType": "text",
+          "estimatedMinutes": 6
+        },
+        {
+          "title": "Brojevna prava celih brojeva",
+          "slug": "brojevna-prava-celih",
+          "content": "# Brojevna prava celih brojeva\n\nCeli brojevi se predstavljaju na brojevnoj pravoj koja se proteže beskonačno u oba smera.\n\n## Crtanje brojevne prave\n\n```\n... -4  -3  -2  -1   0   1   2   3   4 ...\n─────●───●───●───●───●───●───●───●───●─────\n```\n\n## Osobine\n\n1. **Nula je u centru** - deli pozitivne i negativne brojeve\n2. **Levo od nule** su negativni brojevi\n3. **Desno od nule** su pozitivni brojevi\n4. **Veći broj** je uvek desnije na pravoj\n\n## Suprotni brojevi\n\nBrojevi koji su na istom rastojanju od nule, ali sa suprotnih strana:\n\n- 3 i -3 su suprotni brojevi\n- -7 i 7 su suprotni brojevi\n\nZbir suprotnih brojeva je uvek 0:\na + (-a) = 0",
+          "contentType": "text",
+          "estimatedMinutes": 8
+        },
+        {
+          "title": "Apsolutna vrednost",
+          "slug": "apsolutna-vrednost",
+          "content": "# Apsolutna vrednost\n\n**Apsolutna vrednost** broja je njegovo rastojanje od nule na brojevnoj pravoj.\n\n## Oznaka\n\nApsolutnu vrednost označavamo uspravnim crtama: |a|\n\n## Primeri\n\n- |5| = 5 (rastojanje od 0 do 5 je 5)\n- |-5| = 5 (rastojanje od 0 do -5 je takođe 5)\n- |0| = 0\n\n## Pravila\n\n1. Apsolutna vrednost je uvek **neengativna** (≥ 0)\n2. Za pozitivne brojeve: |a| = a\n3. Za negativne brojeve: |a| = -a\n4. |a| = |-a| za svaki broj a\n\n## Primene\n\n- Računanje udaljenosti\n- Merenje razlike temperatura\n- Odstupanje od srednje vrednosti",
+          "contentType": "text",
+          "estimatedMinutes": 8
+        }
+      ],
+      "test": {
+        "title": "Test: Pojam celih brojeva",
+        "slug": "test-pojam-celih-brojeva",
+        "description": "Proveri znanje o celim brojevima, brojevnoj pravoj i apsolutnoj vrednosti.",
+        "timeLimit": 10,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Koji broj nije ceo broj?",
+            "type": "single_choice",
+            "explanation": "1,5 (ili 1.5) nije ceo broj jer celi brojevi nemaju decimale. Celi brojevi su: ..., -2, -1, 0, 1, 2, ...",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "sta-su-celi-brojevi",
+            "options": [
+              { "text": "-7", "isCorrect": false, "order": 1 },
+              { "text": "0", "isCorrect": false, "order": 2 },
+              { "text": "1,5", "isCorrect": true, "order": 3 },
+              { "text": "100", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Kolika je apsolutna vrednost broja -8?",
+            "type": "single_choice",
+            "explanation": "|-8| = 8. Apsolutna vrednost je rastojanje od nule, koje je uvek pozitivno.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "apsolutna-vrednost",
+            "options": [
+              { "text": "-8", "isCorrect": false, "order": 1 },
+              { "text": "8", "isCorrect": true, "order": 2 },
+              { "text": "0", "isCorrect": false, "order": 3 },
+              { "text": "1", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koji broj je suprotan broju -5?",
+            "type": "single_choice",
+            "explanation": "Suprotan broj broju -5 je 5. Suprotni brojevi su na istom rastojanju od nule, ali sa suprotnih strana.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "brojevna-prava-celih",
+            "options": [
+              { "text": "-5", "isCorrect": false, "order": 1 },
+              { "text": "5", "isCorrect": true, "order": 2 },
+              { "text": "0", "isCorrect": false, "order": 3 },
+              { "text": "-10", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Na brojevnoj pravoj, koji broj je više levo: -3 ili -7?",
+            "type": "single_choice",
+            "explanation": "-7 je više levo od -3 na brojevnoj pravoj. Što je broj manji, više je levo.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "brojevna-prava-celih",
+            "options": [
+              { "text": "-3", "isCorrect": false, "order": 1 },
+              { "text": "-7", "isCorrect": true, "order": 2 },
+              { "text": "Isto su", "isCorrect": false, "order": 3 },
+              { "text": "Zavisi od skale", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Za koje brojeve x važi |x| = 4?",
+            "type": "single_choice",
+            "explanation": "|x| = 4 znači da je x na rastojanju 4 od nule. To mogu biti x = 4 ili x = -4.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "apsolutna-vrednost",
+            "options": [
+              { "text": "Samo x = 4", "isCorrect": false, "order": 1 },
+              { "text": "Samo x = -4", "isCorrect": false, "order": 2 },
+              { "text": "x = 4 ili x = -4", "isCorrect": true, "order": 3 },
+              { "text": "Svi brojevi od -4 do 4", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Temperatura je u ponoć bila -3°C, a u podne 12°C. Za koliko se temperatura promenila?",
+            "type": "single_choice",
+            "explanation": "Promena temperature: 12 - (-3) = 12 + 3 = 15°C. Temperatura se povećala za 15 stepeni.",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "sta-su-celi-brojevi",
+            "options": [
+              { "text": "9°C", "isCorrect": false, "order": 1 },
+              { "text": "12°C", "isCorrect": false, "order": 2 },
+              { "text": "15°C", "isCorrect": true, "order": 3 },
+              { "text": "-15°C", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Poređenje celih brojeva",
+      "slug": "poredjenje-celih-brojeva",
+      "description": "Pravila za poređenje celih brojeva.",
+      "lessons": [
+        {
+          "title": "Poređenje pozitivnih i negativnih brojeva",
+          "slug": "poredjenje-pozitivnih-negativnih",
+          "content": "# Poređenje celih brojeva\n\nCele brojeve poredimo koristeći brojevnu pravu: broj koji je desnije je veći.\n\n## Osnovna pravila\n\n### 1. Svaki pozitivan broj je veći od nule i svakog negativnog broja\n\n5 > 0 > -3\n\n### 2. Nula je veća od svakog negativnog broja\n\n0 > -1, 0 > -100\n\n### 3. Kod negativnih brojeva - veći je onaj koji je bliži nuli\n\n-2 > -5 (jer je -2 bliže nuli)\n-1 > -100\n\n## Savet za pamćenje\n\nZamislite termometar:\n- Toplije (više) = veći broj\n- Hladnije (niže) = manji broj\n\n-5°C je hladnije od -2°C, znači -5 < -2",
+          "contentType": "text",
+          "estimatedMinutes": 7
+        },
+        {
+          "title": "Uređivanje niza celih brojeva",
+          "slug": "uredjivanje-niza-celih",
+          "content": "# Uređivanje niza celih brojeva\n\n## Rastući redosled (od najmanjeg do najvećeg)\n\nPrimer: Poređaj brojeve -5, 3, -2, 0, 7 rastuće.\n\nRešenje: -5 < -2 < 0 < 3 < 7\n\n## Opadajući redosled (od najvećeg do najmanjeg)\n\nPrimer: Poređaj iste brojeve opadajuće.\n\nRešenje: 7 > 3 > 0 > -2 > -5\n\n## Postupak\n\n1. Izdvoj pozitivne, negativne i nulu\n2. Poređaj pozitivne: 3 < 7\n3. Poređaj negativne: -5 < -2 (bliži nuli = veći)\n4. Spoji: negativni < 0 < pozitivni\n\n## Vizuelizacija\n\nNacrtaj brojevnu pravu i označi brojeve - odmah vidiš redosled!",
+          "contentType": "text",
+          "estimatedMinutes": 8
+        }
+      ],
+      "test": {
+        "title": "Test: Poređenje celih brojeva",
+        "slug": "test-poredjenje-celih",
+        "description": "Proveri znanje o poređenju celih brojeva.",
+        "timeLimit": 8,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Koji znak treba staviti: -4 ☐ -9",
+            "type": "single_choice",
+            "explanation": "-4 > -9 jer je -4 bliže nuli. Na brojevnoj pravoj, -4 je desno od -9.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "poredjenje-pozitivnih-negativnih",
+            "options": [
+              { "text": "<", "isCorrect": false, "order": 1 },
+              { "text": ">", "isCorrect": true, "order": 2 },
+              { "text": "=", "isCorrect": false, "order": 3 }
+            ]
+          },
+          {
+            "text": "Koji je najmanji broj: -2, 5, -8, 0?",
+            "type": "single_choice",
+            "explanation": "Najmanji broj je -8 jer je najdalje od nule u negativnom smeru.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "uredjivanje-niza-celih",
+            "options": [
+              { "text": "-2", "isCorrect": false, "order": 1 },
+              { "text": "5", "isCorrect": false, "order": 2 },
+              { "text": "-8", "isCorrect": true, "order": 3 },
+              { "text": "0", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Poređaj rastuće: 3, -5, 0, -1, 2",
+            "type": "single_choice",
+            "explanation": "Rastući redosled: -5 < -1 < 0 < 2 < 3. Negativni idu prvo, počevši od najvećeg po apsolutnoj vrednosti.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "uredjivanje-niza-celih",
+            "options": [
+              { "text": "-5, -1, 0, 2, 3", "isCorrect": true, "order": 1 },
+              { "text": "-1, -5, 0, 2, 3", "isCorrect": false, "order": 2 },
+              { "text": "3, 2, 0, -1, -5", "isCorrect": false, "order": 3 },
+              { "text": "0, -1, -5, 2, 3", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Koliko celih brojeva zadovoljava uslov -3 < x < 2?",
+            "type": "single_choice",
+            "explanation": "Celi brojevi između -3 i 2 (ne računajući -3 i 2) su: -2, -1, 0, 1. To su 4 broja.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "poredjenje-pozitivnih-negativnih",
+            "options": [
+              { "text": "3", "isCorrect": false, "order": 1 },
+              { "text": "4", "isCorrect": true, "order": 2 },
+              { "text": "5", "isCorrect": false, "order": 3 },
+              { "text": "6", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Ako je a < 0 i b > 0, šta je tačno?",
+            "type": "single_choice",
+            "explanation": "Ako je a negativan i b pozitivan, onda je a < b uvek tačno, jer su svi negativni brojevi manji od svih pozitivnih.",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "poredjenje-pozitivnih-negativnih",
+            "options": [
+              { "text": "a > b", "isCorrect": false, "order": 1 },
+              { "text": "a < b", "isCorrect": true, "order": 2 },
+              { "text": "a = b", "isCorrect": false, "order": 3 },
+              { "text": "Ne može se odrediti", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Sabiranje i oduzimanje celih brojeva",
+      "slug": "sabiranje-oduzimanje-celih",
+      "description": "Operacije sabiranja i oduzimanja sa negativnim brojevima.",
+      "lessons": [
+        {
+          "title": "Sabiranje celih brojeva",
+          "slug": "sabiranje-celih-brojeva",
+          "content": "# Sabiranje celih brojeva\n\n## Pravila sabiranja\n\n### 1. Oba broja su pozitivna\nZbir je pozitivan: 5 + 3 = 8\n\n### 2. Oba broja su negativna\nZbir je negativan, sabiramo apsolutne vrednosti:\n(-5) + (-3) = -(5 + 3) = -8\n\n### 3. Jedan pozitivan, jedan negativan\nOduzimamo apsolutne vrednosti, znak uzimamo od broja sa većom apsolutnom vrednošću:\n\n5 + (-3) = 5 - 3 = 2 (pozitivan jer je |5| > |-3|)\n(-5) + 3 = -(5 - 3) = -2 (negativan jer je |-5| > |3|)\n\n## Savet\n\nZamisli kretanje na brojevnoj pravoj:\n- Dodavanje pozitivnog = korak udesno\n- Dodavanje negativnog = korak ulevo",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Oduzimanje celih brojeva",
+          "slug": "oduzimanje-celih-brojeva",
+          "content": "# Oduzimanje celih brojeva\n\n## Glavno pravilo\n\n**Oduzimanje broja je isto što i sabiranje sa suprotnim brojem!**\n\na - b = a + (-b)\n\n## Primeri\n\n### Oduzimanje pozitivnog broja\n7 - 4 = 7 + (-4) = 3\n(-2) - 5 = (-2) + (-5) = -7\n\n### Oduzimanje negativnog broja\n7 - (-4) = 7 + 4 = 11 (minus i minus daju plus!)\n(-2) - (-5) = (-2) + 5 = 3\n\n## Mnemonik\n\nKada imaš dva znaka jedan pored drugog:\n- **+ +** → **+**\n- **+ -** → **-**\n- **- +** → **-**\n- **- -** → **+** (dva minusa daju plus!)\n\n## Primer iz života\n\nDugovanje od 100 dinara: -100 din\nNeko ti oprosti dug od 30 din: -100 - (-30) = -100 + 30 = -70 din",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Izrazi sa više operacija",
+          "slug": "izrazi-sa-vise-operacija",
+          "content": "# Izrazi sa više operacija\n\n## Redosled računanja\n\n1. Prvo računamo izraze u zagradama\n2. Zatim redom sleva nadesno\n\n## Primeri\n\n### Primer 1\n5 - 3 + (-2) - (-4) = \n= 5 - 3 + (-2) + 4\n= 2 + (-2) + 4\n= 0 + 4\n= 4\n\n### Primer 2\n(-8) + 5 - (-3) + (-2) =\n= (-8) + 5 + 3 + (-2)\n= (-3) + 3 + (-2)\n= 0 + (-2)\n= -2\n\n## Strategija\n\n1. Prvo pretvori sva oduzimanja u sabiranja\n2. Grupiši pozitivne i negativne brojeve\n3. Saberi svaku grupu posebno\n4. Na kraju saberi rezultate\n\nPrimer: 3 + (-7) + 5 + (-2)\nPozitivni: 3 + 5 = 8\nNegativni: (-7) + (-2) = -9\nRezultat: 8 + (-9) = -1",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        }
+      ],
+      "test": {
+        "title": "Test: Sabiranje i oduzimanje celih brojeva",
+        "slug": "test-sabiranje-oduzimanje-celih",
+        "description": "Proveri znanje o sabiranju i oduzimanju celih brojeva.",
+        "timeLimit": 12,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Izračunaj: (-5) + (-3)",
+            "type": "single_choice",
+            "explanation": "(-5) + (-3) = -8. Kada sabiramo dva negativna broja, sabiramo apsolutne vrednosti i rezultat je negativan.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "sabiranje-celih-brojeva",
+            "options": [
+              { "text": "-8", "isCorrect": true, "order": 1 },
+              { "text": "8", "isCorrect": false, "order": 2 },
+              { "text": "-2", "isCorrect": false, "order": 3 },
+              { "text": "2", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: 7 - (-4)",
+            "type": "single_choice",
+            "explanation": "7 - (-4) = 7 + 4 = 11. Oduzimanje negativnog broja je isto što i sabiranje pozitivnog.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "oduzimanje-celih-brojeva",
+            "options": [
+              { "text": "3", "isCorrect": false, "order": 1 },
+              { "text": "-3", "isCorrect": false, "order": 2 },
+              { "text": "11", "isCorrect": true, "order": 3 },
+              { "text": "-11", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: (-9) + 4",
+            "type": "single_choice",
+            "explanation": "(-9) + 4 = -5. Imamo brojeve različitog znaka, oduzimamo apsolutne vrednosti: 9 - 4 = 5, znak od većeg (-9): negativan.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "sabiranje-celih-brojeva",
+            "options": [
+              { "text": "-13", "isCorrect": false, "order": 1 },
+              { "text": "13", "isCorrect": false, "order": 2 },
+              { "text": "-5", "isCorrect": true, "order": 3 },
+              { "text": "5", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: (-6) - (-10)",
+            "type": "single_choice",
+            "explanation": "(-6) - (-10) = (-6) + 10 = 4. Pretvaramo u sabiranje: minus i minus daju plus.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "oduzimanje-celih-brojeva",
+            "options": [
+              { "text": "-16", "isCorrect": false, "order": 1 },
+              { "text": "16", "isCorrect": false, "order": 2 },
+              { "text": "-4", "isCorrect": false, "order": 3 },
+              { "text": "4", "isCorrect": true, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: 5 - 8 + (-3) - (-2)",
+            "type": "single_choice",
+            "explanation": "5 - 8 + (-3) - (-2) = 5 - 8 - 3 + 2 = 5 + 2 - 8 - 3 = 7 - 11 = -4",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "izrazi-sa-vise-operacija",
+            "options": [
+              { "text": "-4", "isCorrect": true, "order": 1 },
+              { "text": "4", "isCorrect": false, "order": 2 },
+              { "text": "-8", "isCorrect": false, "order": 3 },
+              { "text": "0", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "U 6 ujutru temperatura je bila -7°C. Do podneva je porasla za 12°C, a do ponoći opala za 8°C. Kolika je temperatura u ponoć?",
+            "type": "single_choice",
+            "explanation": "Početna: -7°C, porast: +12°C → -7 + 12 = 5°C, pad: -8°C → 5 - 8 = -3°C",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "izrazi-sa-vise-operacija",
+            "options": [
+              { "text": "-3°C", "isCorrect": true, "order": 1 },
+              { "text": "3°C", "isCorrect": false, "order": 2 },
+              { "text": "-5°C", "isCorrect": false, "order": 3 },
+              { "text": "5°C", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Množenje i deljenje celih brojeva",
+      "slug": "mnozenje-deljenje-celih",
+      "description": "Pravila za množenje i deljenje sa negativnim brojevima.",
+      "lessons": [
+        {
+          "title": "Množenje celih brojeva",
+          "slug": "mnozenje-celih-brojeva",
+          "content": "# Množenje celih brojeva\n\n## Pravila za znak proizvoda\n\n### 1. Pozitivan × Pozitivan = Pozitivan\n(+5) × (+3) = +15\n\n### 2. Negativan × Negativan = Pozitivan\n(-5) × (-3) = +15\n\n### 3. Pozitivan × Negativan = Negativan\n(+5) × (-3) = -15\n\n### 4. Negativan × Pozitivan = Negativan\n(-5) × (+3) = -15\n\n## Sažeto pravilo\n\n- **Isti znaci** → rezultat je **pozitivan** (+)\n- **Različiti znaci** → rezultat je **negativan** (-)\n\n## Mnemonik\n\n+ × + = +  (prijatelj mog prijatelja je moj prijatelj)\n- × - = +  (neprijatelj mog neprijatelja je moj prijatelj)\n+ × - = -  (prijatelj mog neprijatelja je moj neprijatelj)\n- × + = -  (neprijatelj mog prijatelja je moj neprijatelj)",
+          "contentType": "text",
+          "estimatedMinutes": 10
+        },
+        {
+          "title": "Deljenje celih brojeva",
+          "slug": "deljenje-celih-brojeva",
+          "content": "# Deljenje celih brojeva\n\n## Pravila za znak količnika\n\nIsta pravila kao za množenje!\n\n### 1. Pozitivan ÷ Pozitivan = Pozitivan\n(+15) ÷ (+3) = +5\n\n### 2. Negativan ÷ Negativan = Pozitivan\n(-15) ÷ (-3) = +5\n\n### 3. Pozitivan ÷ Negativan = Negativan\n(+15) ÷ (-3) = -5\n\n### 4. Negativan ÷ Pozitivan = Negativan\n(-15) ÷ (+3) = -5\n\n## Sažeto pravilo\n\n- **Isti znaci** → rezultat je **pozitivan** (+)\n- **Različiti znaci** → rezultat je **negativan** (-)\n\n## Važno!\n\nDeljenje sa nulom je **nemoguće**!\n\n- 5 ÷ 0 = nedefinisano\n- 0 ÷ 5 = 0 (nula deljena bilo čim je nula)",
+          "contentType": "text",
+          "estimatedMinutes": 8
+        },
+        {
+          "title": "Kombinovani izrazi",
+          "slug": "kombinovani-izrazi-celi",
+          "content": "# Kombinovani izrazi sa celim brojevima\n\n## Redosled operacija\n\n1. Zagrade\n2. Množenje i deljenje (sleva nadesno)\n3. Sabiranje i oduzimanje (sleva nadesno)\n\n## Primeri\n\n### Primer 1\n(-2) × 3 + (-4) × (-5) =\n= -6 + 20\n= 14\n\n### Primer 2\n(-20) ÷ 4 - 3 × (-2) =\n= -5 - (-6)\n= -5 + 6\n= 1\n\n### Primer 3 (sa zagradama)\n((-3) + 5) × ((-2) - 4) =\n= 2 × (-6)\n= -12\n\n## Saveti\n\n1. Uvek prvo odredi znak rezultata\n2. Pazi na redosled operacija\n3. Zagrade računaj prvo\n4. Proveri rezultat ponovnim računanjem",
+          "contentType": "text",
+          "estimatedMinutes": 12
+        }
+      ],
+      "test": {
+        "title": "Test: Množenje i deljenje celih brojeva",
+        "slug": "test-mnozenje-deljenje-celih",
+        "description": "Proveri znanje o množenju i deljenju celih brojeva.",
+        "timeLimit": 12,
+        "passingScore": 60,
+        "shuffleQuestions": true,
+        "showCorrectAnswers": true,
+        "questions": [
+          {
+            "text": "Izračunaj: (-6) × (-4)",
+            "type": "single_choice",
+            "explanation": "(-6) × (-4) = 24. Negativan × negativan = pozitivan. Množimo apsolutne vrednosti: 6 × 4 = 24.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "mnozenje-celih-brojeva",
+            "options": [
+              { "text": "-24", "isCorrect": false, "order": 1 },
+              { "text": "24", "isCorrect": true, "order": 2 },
+              { "text": "-10", "isCorrect": false, "order": 3 },
+              { "text": "10", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: (-35) ÷ 7",
+            "type": "single_choice",
+            "explanation": "(-35) ÷ 7 = -5. Negativan ÷ pozitivan = negativan. 35 ÷ 7 = 5, rezultat je -5.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "deljenje-celih-brojeva",
+            "options": [
+              { "text": "5", "isCorrect": false, "order": 1 },
+              { "text": "-5", "isCorrect": true, "order": 2 },
+              { "text": "-7", "isCorrect": false, "order": 3 },
+              { "text": "7", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: 8 × (-3)",
+            "type": "single_choice",
+            "explanation": "8 × (-3) = -24. Pozitivan × negativan = negativan.",
+            "difficulty": "easy",
+            "points": 1,
+            "lessonSlug": "mnozenje-celih-brojeva",
+            "options": [
+              { "text": "24", "isCorrect": false, "order": 1 },
+              { "text": "-24", "isCorrect": true, "order": 2 },
+              { "text": "11", "isCorrect": false, "order": 3 },
+              { "text": "-11", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: (-48) ÷ (-6)",
+            "type": "single_choice",
+            "explanation": "(-48) ÷ (-6) = 8. Negativan ÷ negativan = pozitivan.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "deljenje-celih-brojeva",
+            "options": [
+              { "text": "-8", "isCorrect": false, "order": 1 },
+              { "text": "8", "isCorrect": true, "order": 2 },
+              { "text": "-6", "isCorrect": false, "order": 3 },
+              { "text": "6", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: (-3) × 4 + (-2) × (-5)",
+            "type": "single_choice",
+            "explanation": "(-3) × 4 + (-2) × (-5) = -12 + 10 = -2. Prvo množimo: -3 × 4 = -12, (-2) × (-5) = 10, zatim sabiramo.",
+            "difficulty": "medium",
+            "points": 2,
+            "lessonSlug": "kombinovani-izrazi-celi",
+            "options": [
+              { "text": "-2", "isCorrect": true, "order": 1 },
+              { "text": "2", "isCorrect": false, "order": 2 },
+              { "text": "-22", "isCorrect": false, "order": 3 },
+              { "text": "22", "isCorrect": false, "order": 4 }
+            ]
+          },
+          {
+            "text": "Izračunaj: ((-4) × 3 - 6) ÷ (-2)",
+            "type": "single_choice",
+            "explanation": "((-4) × 3 - 6) ÷ (-2) = (-12 - 6) ÷ (-2) = (-18) ÷ (-2) = 9",
+            "difficulty": "hard",
+            "points": 3,
+            "lessonSlug": "kombinovani-izrazi-celi",
+            "options": [
+              { "text": "-9", "isCorrect": false, "order": 1 },
+              { "text": "9", "isCorrect": true, "order": 2 },
+              { "text": "-3", "isCorrect": false, "order": 3 },
+              { "text": "3", "isCorrect": false, "order": 4 }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
