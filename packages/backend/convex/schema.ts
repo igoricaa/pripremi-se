@@ -3,14 +3,14 @@ import { v } from "convex/values";
 
 export default defineSchema({
 	userProfiles: defineTable({
-		authId: v.string(),
+		userId: v.string(), // Better Auth user ID
 		displayName: v.string(),
 		location: v.optional(v.string()),
 		role: v.string(),
 		createdAt: v.number(),
 		updatedAt: v.number(),
 	})
-		.index('by_authId', ['authId'])
+		.index('by_userId', ['userId'])
 		.index('by_location', ['location']),
 
 	// Curriculum: Subjects (root of curriculum hierarchy)
@@ -182,4 +182,95 @@ export default defineSchema({
 		.index('by_questionId', ['questionId'])
 		.index('by_testId_order', ['testId', 'order'])
 		.index('by_testId_questionId', ['testId', 'questionId']), // Uniqueness check
+
+	// Assessment: Test Attempts (tracks student test submissions)
+	testAttempts: defineTable({
+		userId: v.string(), // Better Auth user ID
+		testId: v.id('tests'), // Reference to test taken
+		score: v.number(), // Score achieved (percentage 0-100)
+		correctCount: v.number(), // Number of correct answers
+		totalQuestions: v.number(), // Total questions in test
+		timeSpent: v.number(), // Time spent in seconds
+		status: v.string(), // "in_progress", "completed", "abandoned"
+		startedAt: v.number(), // When attempt started
+		completedAt: v.optional(v.number()), // When attempt finished
+		createdAt: v.number(),
+		updatedAt: v.number(),
+	})
+		.index('by_userId', ['userId'])
+		.index('by_testId', ['testId'])
+		.index('by_userId_testId', ['userId', 'testId'])
+		.index('by_status', ['status'])
+		.index('by_userId_status', ['userId', 'status'])
+		.index('by_testId_score', ['testId', 'score']),
+
+	// Assessment: Answer Responses (individual question answers within an attempt)
+	answerResponses: defineTable({
+		attemptId: v.id('testAttempts'), // Reference to parent attempt
+		questionId: v.id('questions'), // Reference to question answered
+		selectedOptionIds: v.optional(v.array(v.id('questionOptions'))), // For choice questions
+		textAnswer: v.optional(v.string()), // For short_answer/essay questions
+		isCorrect: v.boolean(), // Whether answer was correct
+		pointsEarned: v.number(), // Points earned for this answer
+		timeSpent: v.optional(v.number()), // Seconds spent on this question
+		createdAt: v.number(),
+		updatedAt: v.number(),
+	})
+		.index('by_attemptId', ['attemptId'])
+		.index('by_questionId', ['questionId'])
+		.index('by_attemptId_questionId', ['attemptId', 'questionId']),
+
+	// Progress: Lesson Progress (tracks student progress through lessons)
+	lessonProgress: defineTable({
+		userId: v.string(), // Better Auth user ID
+		lessonId: v.id('lessons'), // Reference to lesson
+		status: v.string(), // "in_progress", "completed"
+		timeSpent: v.number(), // Total seconds spent on lesson
+		completedAt: v.optional(v.number()), // When lesson was marked complete
+		lastAccessedAt: v.number(), // Last access timestamp
+		createdAt: v.number(),
+		updatedAt: v.number(),
+	})
+		.index('by_userId', ['userId'])
+		.index('by_lessonId', ['lessonId'])
+		.index('by_userId_lessonId', ['userId', 'lessonId'])
+		.index('by_status', ['status']),
+
+	// Student Enrollments (tracks which subjects students are enrolled in)
+	studentEnrollments: defineTable({
+		userId: v.string(), // Better Auth user ID
+		subjectId: v.id('subjects'), // Reference to enrolled subject
+		status: v.string(), // "active", "completed", "paused"
+		completedAt: v.optional(v.number()), // When student completed subject
+		lastAccessedAt: v.optional(v.number()), // Last time student accessed this subject
+		createdAt: v.number(), // Enrollment timestamp
+		updatedAt: v.number(),
+	})
+		.index('by_userId', ['userId'])
+		.index('by_subjectId', ['subjectId'])
+		.index('by_userId_subjectId', ['userId', 'subjectId'])
+		.index('by_userId_status', ['userId', 'status'])
+		.index('by_subjectId_status', ['subjectId', 'status'])
+		.index('by_userId_lastAccessedAt', ['userId', 'lastAccessedAt'])
+		.index('by_status', ['status']),
+
+	// Progress: Section Progress (aggregated section-level progress)
+	sectionProgress: defineTable({
+		userId: v.string(), // Better Auth user ID
+		sectionId: v.id('sections'), // Reference to section
+		lessonsCompleted: v.number(), // Count of completed lessons (synced)
+		totalLessons: v.number(), // Total lessons in section (synced)
+		testPassed: v.boolean(), // Whether section test passed (auto-updated)
+		bestTestScore: v.optional(v.number()), // Best test score achieved (0-100)
+		status: v.string(), // "in_progress", "completed"
+		completedAt: v.optional(v.number()), // When section was completed
+		lastAccessedAt: v.number(), // Last access timestamp
+		createdAt: v.number(),
+		updatedAt: v.number(),
+	})
+		.index('by_userId', ['userId'])
+		.index('by_sectionId', ['sectionId'])
+		.index('by_userId_sectionId', ['userId', 'sectionId'])
+		.index('by_userId_status', ['userId', 'status'])
+		.index('by_sectionId_status', ['sectionId', 'status']),
 });

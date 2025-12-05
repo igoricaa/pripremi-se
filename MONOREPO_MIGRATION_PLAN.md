@@ -182,7 +182,7 @@ export const updateMyProfile = authedZodMutation({
     const existingProfile = await getOneFrom(
       db,
       'userProfiles',
-      'by_authId',
+      'by_userId',
       user._id
     );
 
@@ -195,7 +195,7 @@ export const updateMyProfile = authedZodMutation({
     }
 
     return await db.insert('userProfiles', {
-      authId: user._id,
+      userId: user._id,
       ...args,
       role: 'user',
       ...createTimestamps(),

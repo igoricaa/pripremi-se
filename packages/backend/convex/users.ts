@@ -18,7 +18,7 @@ export const getCurrentUser = optionalAuthQuery({
 		const { user, db } = ctx;
 		if (!user) return null;
 
-		const userProfile = await getOneFrom(db, 'userProfiles', 'by_authId', user._id);
+		const userProfile = await getOneFrom(db, 'userProfiles', 'by_userId', user._id);
 
 		return { user, userProfile: userProfile ?? null };
 	},

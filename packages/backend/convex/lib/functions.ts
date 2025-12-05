@@ -56,5 +56,11 @@ export const authedZodQuery = zCustomQuery(
 	})
 );
 
+// Zod query WITHOUT authentication - validates args with Zod schema (public endpoints)
+export const zodQuery = zCustomQuery(query, customCtx(async () => ({})));
+
+// Zod mutation WITHOUT authentication - validates args with Zod schema (public endpoints)
+export const zodMutation = zCustomMutation(mutation, customCtx(async () => ({})));
+
 // Re-export base functions for non-authenticated use
 export { query, mutation };

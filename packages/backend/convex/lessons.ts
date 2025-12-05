@@ -17,6 +17,7 @@ import {
 	createTimestamps,
 	updateTimestamp,
 } from './lib';
+import { DatabaseWriter } from './_generated/server';
 
 // ============================================================================
 // QUERIES
@@ -116,6 +117,7 @@ export const getLessonById = authedZodQuery({
  * Create a new lesson.
  * Slug is auto-generated from title if not provided.
  * Requires authentication.
+ * Also updates totalLessons in all affected sectionProgress records.
  * TODO: Add admin role check when implementing IZA-198
  */
 export const createLesson = authedZodMutation({
@@ -125,9 +127,10 @@ export const createLesson = authedZodMutation({
 
 		const baseSlug = args.slug || slugify(args.title);
 		const uniqueSlug = await generateUniqueSlug(db, 'lessons', baseSlug);
+		const sectionId = args.sectionId as Id<'sections'>;
 
 		const lessonId = await db.insert('lessons', {
-			sectionId: args.sectionId as Id<'sections'>,
+			sectionId,
 			title: args.title,
 			slug: uniqueSlug,
 			content: args.content,
@@ -139,6 +142,11 @@ export const createLesson = authedZodMutation({
 			...createTimestamps(),
 		});
 
+		// Sync totalLessons in all sectionProgress records for this section
+		if (args.isActive) {
+			await syncSectionProgressTotalLessons(db, sectionId);
+		}
+
 		return lessonId;
 	},
 });
@@ -147,6 +155,7 @@ export const createLesson = authedZodMutation({
  * Update an existing lesson.
  * If title is changed and slug is not provided, slug is regenerated.
  * Requires authentication.
+ * Also syncs totalLessons if isActive changes.
  * TODO: Add admin role check when implementing IZA-198
  */
 export const updateLesson = authedZodMutation({
@@ -190,6 +199,11 @@ export const updateLesson = authedZodMutation({
 
 		await db.patch(lessonId, updateData);
 
+		// Sync totalLessons if isActive changed
+		if (otherUpdates.isActive !== undefined && otherUpdates.isActive !== existing.isActive) {
+			await syncSectionProgressTotalLessons(db, existing.sectionId);
+		}
+
 		return lessonId;
 	},
 });
@@ -198,6 +212,7 @@ export const updateLesson = authedZodMutation({
  * Delete a lesson.
  * WARNING: This is a hard delete.
  * Requires authentication.
+ * Also updates totalLessons in all affected sectionProgress records.
  * TODO: Add admin role check when implementing IZA-198
  */
 export const deleteLesson = authedZodMutation({
@@ -211,7 +226,15 @@ export const deleteLesson = authedZodMutation({
 			throw new Error('Lesson not found');
 		}
 
+		const sectionId = existing.sectionId;
+		const wasActive = existing.isActive;
+
 		await db.delete(lessonId);
+
+		// Sync totalLessons in all sectionProgress records for this section
+		if (wasActive) {
+			await syncSectionProgressTotalLessons(db, sectionId);
+		}
 
 		return { success: true };
 	},
@@ -242,3 +265,33 @@ export const reorderLessons = authedZodMutation({
 		return { success: true };
 	},
 });
+
+
+/**
+ * Sync totalLessons in all sectionProgress records for a section.
+ * Called when lessons are created, updated (isActive changes), or deleted.
+ */
+async function syncSectionProgressTotalLessons(
+  db: DatabaseWriter,
+  sectionId: Id<'sections'>
+): Promise<void> {
+  const allProgress = await db
+    .query('sectionProgress')
+    .withIndex('by_sectionId', (q) => q.eq('sectionId', sectionId))
+    .collect();
+
+  if (allProgress.length === 0) return;
+
+  const allLessons = await db
+    .query('lessons')
+    .withIndex('by_sectionId', (q) => q.eq('sectionId', sectionId))
+    .collect();
+  
+  const totalLessons = allLessons.filter((l) => l.isActive).length;
+
+  await Promise.all(
+    allProgress.map((progress) =>
+      db.patch(progress._id, { totalLessons, ...updateTimestamp() })
+    )
+  );
+}

@@ -12,7 +12,7 @@ export const getCurrentUserProfile = authedQuery({
 	args: {},
 	handler: async (ctx) => {
 		const { user, db } = ctx;
-		return await getOneFrom(db, 'userProfiles', 'by_authId', user._id);
+		return await getOneFrom(db, 'userProfiles', 'by_userId', user._id);
 	}
 })
 
@@ -32,7 +32,7 @@ export const updateMyProfile = authedZodMutation({
 		const existingProfile = await getOneFrom(
 			db,
 			'userProfiles',
-			'by_authId',
+			'by_userId',
 			user._id
 		);
 
@@ -45,7 +45,7 @@ export const updateMyProfile = authedZodMutation({
 		}
 
 		return await db.insert('userProfiles', {
-			authId: user._id,
+			userId: user._id,
 			...args,
 			role: USER_ROLES.USER,
 			...createTimestamps(),

@@ -120,16 +120,11 @@ export const createQuestion = authedZodMutation({
 	handler: async (ctx, args) => {
 		const { db } = ctx;
 		
-		const questionId = await db.insert('questions', {...args, ...createTimestamps()});
-		// const questionId = await db.insert('questions', {
-		// 	text: args.text,
-		// 	explanation: args.explanation,
-		// 	type: args.type,
-		// 	points: args.points,
-		// 	allowPartialCredit: args.allowPartialCredit,
-		// 	isActive: args.isActive,
-		// 	...createTimestamps(),
-		// })
+		const questionId = await db.insert('questions', {
+			...args,
+			lessonId: args.lessonId ? (args.lessonId as Id<'lessons'>) : undefined,
+			...createTimestamps(),
+		});
 		return questionId;
 	}
 })
@@ -152,6 +147,7 @@ export const createQuestionWithOptions = authedZodMutation({
 		// Create question (simplified - no testId/isShared)
 		const questionId = await db.insert('questions', {
 			...question,
+			lessonId: question.lessonId ? (question.lessonId as Id<'lessons'>) : undefined,
 			...createTimestamps(),
 		});
 

@@ -319,7 +319,7 @@ export const updateTimestamp = () => ({ updatedAt: now() });
 **Before:**
 ```typescript
 await db.insert('userProfiles', {
-  authId: user._id,
+  userId: user._id,
   displayName: args.displayName,
   createdAt: Date.now(),
   updatedAt: Date.now(),
@@ -329,7 +329,7 @@ await db.insert('userProfiles', {
 **After:**
 ```typescript
 await db.insert('userProfiles', {
-  authId: user._id,
+  userId: user._id,
   displayName: args.displayName,
   ...createTimestamps(),
 });
@@ -366,17 +366,17 @@ getOneFrom(db, tableName, indexName, indexValue) → Document | null
 ```typescript
 const existingProfile = await ctx.db
   .query('userProfiles')
-  .withIndex('by_authId', (q) => q.eq('authId', user._id))
+  .withIndex('by_userId', (q) => q.eq('userId', user._id))
   .first();
 ```
 
 **After (with convex-helpers):**
 ```typescript
-const existingProfile = await getOneFrom(db, 'userProfiles', 'by_authId', user._id);
+const existingProfile = await getOneFrom(db, 'userProfiles', 'by_userId', user._id);
 ```
 
 **Where it's used:**
-- `userProfiles.ts` - Find existing profile by authId
+- `userProfiles.ts` - Find existing profile by userId
 - `users.ts` - Get user profile for current user
 
 **Related helpers (available but not currently used):**

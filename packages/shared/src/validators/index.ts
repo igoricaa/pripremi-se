@@ -6,3 +6,8 @@ export * from './lesson-schemas';
 export * from './test-schemas';
 export * from './question-schemas';
 export * from './test-question-linking-schemas';
+export * from './test-attempt-schemas';
+export * from './enrollment-schemas';
+export * from './lesson-progress-schemas';
+export * from './answer-response-schemas';
+export * from './section-progress-schemas';

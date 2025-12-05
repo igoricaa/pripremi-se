@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as answerResponses from "../answerResponses.js";
 import type * as auth from "../auth.js";
 import type * as chapters from "../chapters.js";
 import type * as email from "../email.js";
@@ -21,6 +22,7 @@ import type * as emails_components_resetPassword from "../emails/components/rese
 import type * as emails_components_verifyEmail from "../emails/components/verifyEmail.js";
 import type * as emails_components_welcome from "../emails/components/welcome.js";
 import type * as http from "../http.js";
+import type * as lessonProgress from "../lessonProgress.js";
 import type * as lessons from "../lessons.js";
 import type * as lib_functions from "../lib/functions.js";
 import type * as lib_index from "../lib/index.js";
@@ -28,8 +30,11 @@ import type * as lib_slugify from "../lib/slugify.js";
 import type * as lib_timestamps from "../lib/timestamps.js";
 import type * as questions from "../questions.js";
 import type * as rateLimiter from "../rateLimiter.js";
+import type * as sectionProgress from "../sectionProgress.js";
 import type * as sections from "../sections.js";
+import type * as studentEnrollments from "../studentEnrollments.js";
 import type * as subjects from "../subjects.js";
+import type * as testAttempts from "../testAttempts.js";
 import type * as testQuestions from "../testQuestions.js";
 import type * as tests from "../tests.js";
 import type * as userProfiles from "../userProfiles.js";
@@ -42,6 +47,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  answerResponses: typeof answerResponses;
   auth: typeof auth;
   chapters: typeof chapters;
   email: typeof email;
@@ -55,6 +61,7 @@ declare const fullApi: ApiFromModules<{
   "emails/components/verifyEmail": typeof emails_components_verifyEmail;
   "emails/components/welcome": typeof emails_components_welcome;
   http: typeof http;
+  lessonProgress: typeof lessonProgress;
   lessons: typeof lessons;
   "lib/functions": typeof lib_functions;
   "lib/index": typeof lib_index;
@@ -62,8 +69,11 @@ declare const fullApi: ApiFromModules<{
   "lib/timestamps": typeof lib_timestamps;
   questions: typeof questions;
   rateLimiter: typeof rateLimiter;
+  sectionProgress: typeof sectionProgress;
   sections: typeof sections;
+  studentEnrollments: typeof studentEnrollments;
   subjects: typeof subjects;
+  testAttempts: typeof testAttempts;
   testQuestions: typeof testQuestions;
   tests: typeof tests;
   userProfiles: typeof userProfiles;
