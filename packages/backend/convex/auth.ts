@@ -81,6 +81,31 @@ export const createAuth = (
 						}
 					},
 				},
+				update: {
+					after: async (user) => {
+						if (optionsOnly) return;
+
+						try {
+							const mutationCtx = requireMutationCtx(ctx);
+							const profile = await getOneFrom(
+								mutationCtx.db,
+								"userProfiles",
+								"by_userId",
+								user.id
+							);
+
+							// Sync displayName if user.name changed
+							if (profile && user.name && profile.displayName !== user.name) {
+								await mutationCtx.db.patch(profile._id, {
+									displayName: user.name,
+									updatedAt: Date.now(),
+								});
+							}
+						} catch (error) {
+							console.error(`Failed to sync profile for user ${user.id}:`, error);
+						}
+					},
+				},
 			},
 		},
 		emailAndPassword: {

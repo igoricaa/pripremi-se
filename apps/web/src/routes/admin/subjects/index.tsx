@@ -131,9 +131,9 @@ function SubjectsPage() {
 											<GripVertical className="h-4 w-4 cursor-grab text-muted-foreground" />
 										</TableCell>
 										<TableCell className="font-medium">
-											{subject.icon && (
+											{/* {subject.icon && (
 												<span className="mr-2">{subject.icon}</span>
-											)}
+											)} */}
 											{subject.name}
 										</TableCell>
 										<TableCell className="font-mono text-muted-foreground text-sm">

@@ -18,25 +18,15 @@ import { now } from './lib/timestamps';
 
 /**
  * Get a single lesson progress by ID.
- * Requires authentication - users can only view their own progress.
+ * Requires authentication - ownership enforced by RLS.
  */
 export const getProgress = authedZodQuery({
 	args: getLessonProgressSchema,
 	handler: async (ctx, args) => {
-		const { db, user } = ctx;
+		const { db } = ctx;
 		const progressId = args.id as Id<'lessonProgress'>;
 
-		const progress = await db.get(progressId);
-		if (!progress) {
-			return null;
-		}
-
-		// Users can only view their own progress
-		if (progress.userId !== user._id) {
-			throw new Error('Not authorized to view this progress');
-		}
-
-		return progress;
+		return db.get(progressId);
 	},
 });
 
@@ -140,22 +130,17 @@ export const startOrGetProgress = authedZodMutation({
 
 /**
  * Update lesson progress (e.g., tracking time spent).
- * Requires authentication.
+ * Requires authentication - ownership enforced by RLS.
  */
 export const updateProgress = authedZodMutation({
 	args: updateLessonProgressSchema,
 	handler: async (ctx, args) => {
-		const { db, user } = ctx;
+		const { db } = ctx;
 		const progressId = args.id as Id<'lessonProgress'>;
 
 		const progress = await db.get(progressId);
 		if (!progress) {
 			throw new Error('Progress not found');
-		}
-
-		// Users can only update their own progress
-		if (progress.userId !== user._id) {
-			throw new Error('Not authorized to update this progress');
 		}
 
 		const currentTime = now();
@@ -171,7 +156,7 @@ export const updateProgress = authedZodMutation({
 
 /**
  * Complete a lesson.
- * Requires authentication.
+ * Requires authentication - ownership enforced by RLS.
  * Also updates section progress counts.
  */
 export const completeProgress = authedZodMutation({
@@ -183,11 +168,6 @@ export const completeProgress = authedZodMutation({
 		const progress = await db.get(progressId);
 		if (!progress) {
 			throw new Error('Progress not found');
-		}
-
-		// Users can only complete their own progress
-		if (progress.userId !== user._id) {
-			throw new Error('Not authorized to complete this progress');
 		}
 
 		// Can only complete in_progress lessons

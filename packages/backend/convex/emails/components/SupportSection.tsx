@@ -1,4 +1,4 @@
-import { Heading, Link, Section, Text } from "@react-email/components";
+import { Heading, Section, Text } from "@react-email/components";
 
 const SupportSection = () => (
 	<Section className="mb-8 bg-gray-50 p-6 rounded-md">

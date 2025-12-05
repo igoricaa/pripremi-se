@@ -15,7 +15,7 @@ import {
 	TEST_ATTEMPT_STATUS,
 } from '@pripremi-se/shared';
 import type { Id } from './_generated/dataModel';
-import { authedZodMutation, authedZodQuery, createTimestamps, updateTimestamp } from './lib';
+import { authedZodMutation, authedZodQuery, adminZodQuery, createTimestamps, updateTimestamp } from './lib';
 import { now } from './lib/timestamps';
 
 // ============================================================================
@@ -24,25 +24,15 @@ import { now } from './lib/timestamps';
 
 /**
  * Get section progress by ID.
- * Requires authentication - users can only view their own progress.
+ * Requires authentication - ownership enforced by RLS.
  */
 export const getSectionProgressById = authedZodQuery({
 	args: getSectionProgressByIdSchema,
 	handler: async (ctx, args) => {
-		const { db, user } = ctx;
+		const { db } = ctx;
 		const progressId = args.id as Id<'sectionProgress'>;
 
-		const progress = await db.get(progressId);
-		if (!progress) {
-			return null;
-		}
-
-		// Users can only view their own progress
-		if (progress.userId !== user._id) {
-			throw new Error('Not authorized to view this progress');
-		}
-
-		return progress;
+		return db.get(progressId);
 	},
 });
 
@@ -135,10 +125,10 @@ export const getChapterProgress = authedZodQuery({
 });
 
 /**
- * Get section progress statistics (admin).
- * Shows counts by status for a specific section.
+ * Get section progress statistics (admin only).
+ * Shows counts by status for a specific section across all users.
  */
-export const getSectionProgressStats = authedZodQuery({
+export const getSectionProgressStats = adminZodQuery({
 	args: getSectionProgressStatsSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -358,16 +348,12 @@ export const updateLastAccessed = authedZodMutation({
 export const completeSectionProgress = authedZodMutation({
 	args: completeSectionProgressSchema,
 	handler: async (ctx, args) => {
-		const { db, user } = ctx;
+		const { db } = ctx;
 		const progressId = args.id as Id<'sectionProgress'>;
 
 		const progress = await db.get(progressId);
 		if (!progress) {
 			throw new Error('Progress not found');
-		}
-
-		if (progress.userId !== user._id) {
-			throw new Error('Not authorized to complete this progress');
 		}
 
 		if (progress.status === SECTION_PROGRESS_STATUS.COMPLETED) {

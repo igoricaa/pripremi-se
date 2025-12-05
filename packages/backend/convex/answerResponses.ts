@@ -5,7 +5,7 @@ import {
 	listQuestionResponsesSchema,
 } from '@pripremi-se/shared';
 import type { Id } from './_generated/dataModel';
-import { authedZodMutation, authedZodQuery, zodQuery, createTimestamps, updateTimestamp } from './lib';
+import { authedZodMutation, authedZodQuery, adminZodQuery, createTimestamps, updateTimestamp } from './lib';
 
 // ============================================================================
 // QUERIES
@@ -13,46 +13,31 @@ import { authedZodMutation, authedZodQuery, zodQuery, createTimestamps, updateTi
 
 /**
  * Get a single answer response by ID.
- * Requires authentication - users can only view responses from their own attempts.
+ * Requires authentication - ownership enforced by RLS.
  */
 export const getResponse = authedZodQuery({
 	args: getAnswerResponseSchema,
 	handler: async (ctx, args) => {
-		const { db, user } = ctx;
+		const { db } = ctx;
 		const responseId = args.id as Id<'answerResponses'>;
 
-		const response = await db.get(responseId);
-		if (!response) {
-			return null;
-		}
-
-		// Verify the response belongs to an attempt owned by the user
-		const attempt = await db.get(response.attemptId);
-		if (!attempt || attempt.userId !== user._id) {
-			throw new Error('Not authorized to view this response');
-		}
-
-		return response;
+		return db.get(responseId);
 	},
 });
 
 /**
  * Get all responses for a specific attempt.
- * Requires authentication - users can only view their own attempt responses.
+ * Requires authentication - ownership enforced by RLS.
  */
 export const getAttemptResponses = authedZodQuery({
 	args: listAttemptResponsesSchema,
 	handler: async (ctx, args) => {
-		const { db, user } = ctx;
+		const { db } = ctx;
 		const attemptId = args.attemptId as Id<'testAttempts'>;
 
-		// Verify the attempt belongs to the user
 		const attempt = await db.get(attemptId);
 		if (!attempt) {
 			throw new Error('Attempt not found');
-		}
-		if (attempt.userId !== user._id) {
-			throw new Error('Not authorized to view responses for this attempt');
 		}
 
 		const responses = await db
@@ -66,9 +51,9 @@ export const getAttemptResponses = authedZodQuery({
 
 /**
  * Get all responses for a specific question (for analytics).
- * Public query - no authentication required.
+ * Admin-only query - protects user data.
  */
-export const getQuestionResponses = zodQuery({
+export const getQuestionResponses = adminZodQuery({
 	args: listQuestionResponsesSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;
@@ -90,7 +75,7 @@ export const getQuestionResponses = zodQuery({
 
 /**
  * Submit an answer response for a question.
- * Requires authentication.
+ * Requires authentication - ownership enforced by RLS.
  */
 export const submitResponse = authedZodMutation({
 	args: submitAnswerResponseSchema,
@@ -99,23 +84,17 @@ export const submitResponse = authedZodMutation({
 		const attemptId = args.attemptId as Id<'testAttempts'>;
 		const questionId = args.questionId as Id<'questions'>;
 
-		// Verify the attempt belongs to the user
 		const attempt = await db.get(attemptId);
 		if (!attempt) {
 			throw new Error('Attempt not found');
 		}
-		if (attempt.userId !== user._id) {
-			throw new Error('Not authorized to submit responses for this attempt');
-		}
 
-		// Check if a response already exists for this question in this attempt
 		const existingResponse = await db
 			.query('answerResponses')
 			.withIndex('by_attemptId_questionId', (q) => q.eq('attemptId', attemptId).eq('questionId', questionId))
 			.first();
 
 		if (existingResponse) {
-			// Update existing response
 			await db.patch(existingResponse._id, {
 				selectedOptionIds: args.selectedOptionIds as Id<'questionOptions'>[] | undefined,
 				textAnswer: args.textAnswer,
@@ -127,10 +106,10 @@ export const submitResponse = authedZodMutation({
 			return existingResponse._id;
 		}
 
-		// Create new response
 		const responseId = await db.insert('answerResponses', {
 			attemptId,
 			questionId,
+			userId: user._id,
 			selectedOptionIds: args.selectedOptionIds as Id<'questionOptions'>[] | undefined,
 			textAnswer: args.textAnswer,
 			isCorrect: args.isCorrect,

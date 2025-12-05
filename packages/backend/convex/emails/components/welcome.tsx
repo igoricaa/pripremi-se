@@ -1,4 +1,4 @@
-import { Heading, Link, Section, Text } from "@react-email/components";
+import { Heading, Section, Text } from "@react-email/components";
 import { Button } from "./Button";
 import { Layout } from "./Layout";
 import SupportSection from "./SupportSection";
@@ -6,8 +6,8 @@ import SupportSection from "./SupportSection";
 const WelcomeEmailTemplate = ({
 	name,
 	dashboardUrl,
-	programsUrl,
-	communityUrl,
+	programsUrl: _programsUrl,
+	communityUrl: _communityUrl,
 	// supportUrl,
 }: {
 	name: string;

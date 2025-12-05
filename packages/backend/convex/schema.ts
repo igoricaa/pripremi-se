@@ -208,6 +208,7 @@ export default defineSchema({
 	answerResponses: defineTable({
 		attemptId: v.id('testAttempts'), // Reference to parent attempt
 		questionId: v.id('questions'), // Reference to question answered
+		userId: v.string(), // Denormalized for RLS performance (Better Auth user ID)
 		selectedOptionIds: v.optional(v.array(v.id('questionOptions'))), // For choice questions
 		textAnswer: v.optional(v.string()), // For short_answer/essay questions
 		isCorrect: v.boolean(), // Whether answer was correct
@@ -218,7 +219,8 @@ export default defineSchema({
 	})
 		.index('by_attemptId', ['attemptId'])
 		.index('by_questionId', ['questionId'])
-		.index('by_attemptId_questionId', ['attemptId', 'questionId']),
+		.index('by_attemptId_questionId', ['attemptId', 'questionId'])
+		.index('by_userId', ['userId']),
 
 	// Progress: Lesson Progress (tracks student progress through lessons)
 	lessonProgress: defineTable({

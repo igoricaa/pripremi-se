@@ -1,5 +1,5 @@
 import type { Id } from './_generated/dataModel';
-import { authedZodMutation, authedZodQuery } from './lib/functions';
+import { authedZodMutation, authedZodQuery, adminZodQuery } from './lib/functions';
 import { createTimestamps, updateTimestamp } from './lib/timestamps';
 import {
 	ENROLLMENT_STATUS,
@@ -68,17 +68,12 @@ export const enrollInSubject = authedZodMutation({
 export const updateEnrollmentStatus = authedZodMutation({
 	args: updateEnrollmentStatusSchema,
 	handler: async (ctx, args) => {
-		const { user, db } = ctx;
+		const { db } = ctx;
 		const enrollmentId = args.id as Id<'studentEnrollments'>;
 
 		const enrollment = await db.get(enrollmentId);
 		if (!enrollment) {
 			throw new Error('Enrollment not found');
-		}
-
-		// Verify ownership
-		if (enrollment.userId !== user._id) {
-			throw new Error('Not authorized to update this enrollment');
 		}
 
 		const updateData: Record<string, unknown> = {
@@ -103,16 +98,12 @@ export const updateEnrollmentStatus = authedZodMutation({
 export const pauseEnrollment = authedZodMutation({
 	args: pauseEnrollmentSchema,
 	handler: async (ctx, args) => {
-		const { user, db } = ctx;
+		const { db } = ctx;
 		const enrollmentId = args.id as Id<'studentEnrollments'>;
 
 		const enrollment = await db.get(enrollmentId);
 		if (!enrollment) {
 			throw new Error('Enrollment not found');
-		}
-
-		if (enrollment.userId !== user._id) {
-			throw new Error('Not authorized to update this enrollment');
 		}
 
 		if (enrollment.status !== ENROLLMENT_STATUS.ACTIVE) {
@@ -135,16 +126,12 @@ export const pauseEnrollment = authedZodMutation({
 export const resumeEnrollment = authedZodMutation({
 	args: resumeEnrollmentSchema,
 	handler: async (ctx, args) => {
-		const { user, db } = ctx;
+		const { db } = ctx;
 		const enrollmentId = args.id as Id<'studentEnrollments'>;
 
 		const enrollment = await db.get(enrollmentId);
 		if (!enrollment) {
 			throw new Error('Enrollment not found');
-		}
-
-		if (enrollment.userId !== user._id) {
-			throw new Error('Not authorized to update this enrollment');
 		}
 
 		if (enrollment.status !== ENROLLMENT_STATUS.PAUSED) {
@@ -167,16 +154,12 @@ export const resumeEnrollment = authedZodMutation({
 export const completeEnrollment = authedZodMutation({
 	args: completeEnrollmentSchema,
 	handler: async (ctx, args) => {
-		const { user, db } = ctx;
+		const { db } = ctx;
 		const enrollmentId = args.id as Id<'studentEnrollments'>;
 
 		const enrollment = await db.get(enrollmentId);
 		if (!enrollment) {
 			throw new Error('Enrollment not found');
-		}
-
-		if (enrollment.userId !== user._id) {
-			throw new Error('Not authorized to update this enrollment');
 		}
 
 		if (enrollment.status === ENROLLMENT_STATUS.COMPLETED) {
@@ -231,16 +214,12 @@ export const updateLastAccessed = authedZodMutation({
 export const unenroll = authedZodMutation({
 	args: unenrollSchema,
 	handler: async (ctx, args) => {
-		const { user, db } = ctx;
+		const { db } = ctx;
 		const enrollmentId = args.id as Id<'studentEnrollments'>;
 
 		const enrollment = await db.get(enrollmentId);
 		if (!enrollment) {
 			throw new Error('Enrollment not found');
-		}
-
-		if (enrollment.userId !== user._id) {
-			throw new Error('Not authorized to delete this enrollment');
 		}
 
 		await db.delete(enrollmentId);
@@ -258,20 +237,10 @@ export const unenroll = authedZodMutation({
 export const getEnrollmentById = authedZodQuery({
 	args: getEnrollmentByIdSchema,
 	handler: async (ctx, args) => {
-		const { user, db } = ctx;
+		const { db } = ctx;
 		const enrollmentId = args.id as Id<'studentEnrollments'>;
 
-		const enrollment = await db.get(enrollmentId);
-		if (!enrollment) {
-			return null;
-		}
-
-		// Verify ownership
-		if (enrollment.userId !== user._id) {
-			throw new Error('Not authorized to view this enrollment');
-		}
-
-		return enrollment;
+		return db.get(enrollmentId);
 	},
 });
 
@@ -367,10 +336,10 @@ export const getRecentlyAccessed = authedZodQuery({
 });
 
 /**
- * Get enrollment statistics for a subject (admin)
- * Returns counts by status
+ * Get enrollment statistics for a subject (admin only)
+ * Returns counts by status across all users
  */
-export const getSubjectEnrollmentStats = authedZodQuery({
+export const getSubjectEnrollmentStats = adminZodQuery({
 	args: getSubjectEnrollmentStatsSchema,
 	handler: async (ctx, args) => {
 		const { db } = ctx;

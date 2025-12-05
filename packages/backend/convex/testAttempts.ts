@@ -21,25 +21,15 @@ import { now } from './lib/timestamps';
 
 /**
  * Get a single test attempt by ID.
- * Requires authentication - users can only view their own attempts.
+ * Requires authentication - users can only view their own attempts (enforced by RLS).
  */
 export const getAttempt = authedZodQuery({
 	args: getTestAttemptSchema,
 	handler: async (ctx, args) => {
-		const { db, user } = ctx;
+		const { db } = ctx;
 		const attemptId = args.id as Id<'testAttempts'>;
 
-		const attempt = await db.get(attemptId);
-		if (!attempt) {
-			return null;
-		}
-
-		// Users can only view their own attempts
-		if (attempt.userId !== user._id) {
-			throw new Error('Not authorized to view this attempt');
-		}
-
-		return attempt;
+		return db.get(attemptId);
 	},
 });
 
@@ -236,22 +226,17 @@ export const startAttempt = authedZodMutation({
 
 /**
  * Update an in-progress attempt (e.g., tracking time spent).
- * Requires authentication.
+ * Requires authentication - ownership enforced by RLS.
  */
 export const updateAttempt = authedZodMutation({
 	args: updateTestAttemptSchema,
 	handler: async (ctx, args) => {
-		const { db, user } = ctx;
+		const { db } = ctx;
 		const attemptId = args.id as Id<'testAttempts'>;
 
 		const attempt = await db.get(attemptId);
 		if (!attempt) {
 			throw new Error('Attempt not found');
-		}
-
-		// Users can only update their own attempts
-		if (attempt.userId !== user._id) {
-			throw new Error('Not authorized to update this attempt');
 		}
 
 		// Can only update in_progress attempts
@@ -270,7 +255,7 @@ export const updateAttempt = authedZodMutation({
 
 /**
  * Complete a test attempt with final score.
- * Requires authentication.
+ * Requires authentication - ownership enforced by RLS.
  * Also updates section progress if test is linked to a section.
  */
 export const completeAttempt = authedZodMutation({
@@ -282,11 +267,6 @@ export const completeAttempt = authedZodMutation({
 		const attempt = await db.get(attemptId);
 		if (!attempt) {
 			throw new Error('Attempt not found');
-		}
-
-		// Users can only complete their own attempts
-		if (attempt.userId !== user._id) {
-			throw new Error('Not authorized to complete this attempt');
 		}
 
 		// Can only complete in_progress attempts
@@ -337,22 +317,17 @@ export const completeAttempt = authedZodMutation({
 
 /**
  * Abandon a test attempt.
- * Requires authentication.
+ * Requires authentication - ownership enforced by RLS.
  */
 export const abandonAttempt = authedZodMutation({
 	args: abandonTestAttemptSchema,
 	handler: async (ctx, args) => {
-		const { db, user } = ctx;
+		const { db } = ctx;
 		const attemptId = args.id as Id<'testAttempts'>;
 
 		const attempt = await db.get(attemptId);
 		if (!attempt) {
 			throw new Error('Attempt not found');
-		}
-
-		// Users can only abandon their own attempts
-		if (attempt.userId !== user._id) {
-			throw new Error('Not authorized to abandon this attempt');
 		}
 
 		// Can only abandon in_progress attempts
