@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useMutation, useQuery } from 'convex/react';
+import { useMutation } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
+import { useQueryWithStatus } from '@/lib/convex';
+import { QueryError } from '@/components/QueryError';
 import { Plus, Pencil, Trash2, GripVertical } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -37,7 +39,9 @@ export const Route = createFileRoute('/admin/subjects/')({
 });
 
 function SubjectsPage() {
-	const subjects = useQuery(api.subjects.listSubjects);
+	const { data: subjects, isPending, isError, error } = useQueryWithStatus(
+		api.subjects.listSubjects
+	);
 	const deleteSubject = useMutation(api.subjects.deleteSubject);
 	const [deleteId, setDeleteId] = useState<string | null>(null);
 	const [isDeleting, setIsDeleting] = useState(false);
@@ -52,19 +56,31 @@ function SubjectsPage() {
 		} catch (error) {
 			toast.error(
 				error instanceof Error ? error.message : 'Failed to delete subject'
-			)
+			);
 		} finally {
 			setIsDeleting(false);
 			setDeleteId(null);
 		}
-	}
+	};
 
-	if (subjects === undefined) {
+	if (isPending) {
 		return (
 			<div className="flex items-center justify-center py-8">
 				<div className="text-muted-foreground">Loading subjects...</div>
 			</div>
-		)
+		);
+	}
+
+	if (isError) {
+		return (
+			<div className="space-y-6">
+				<div>
+					<h1 className="font-bold text-3xl tracking-tight">Subjects</h1>
+					<p className="text-muted-foreground">Manage curriculum subjects</p>
+				</div>
+				<QueryError error={error} title="Failed to load subjects" />
+			</div>
+		);
 	}
 
 	return (

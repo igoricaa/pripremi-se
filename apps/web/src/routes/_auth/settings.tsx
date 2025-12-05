@@ -7,7 +7,8 @@ import {
 } from '@pripremi-se/shared/validators';
 import { useForm } from '@tanstack/react-form';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useMutation, useQuery } from 'convex/react';
+import { useMutation } from 'convex/react';
+import { useQueryWithStatus } from '@/lib/convex';
 import {
 	AlertTriangle,
 	CheckCircle2,
@@ -110,15 +111,35 @@ function SettingsPage() {
 
 // ============ Profile Tab ============
 // User type from Convex query
-type UserData = NonNullable<
-	ReturnType<typeof useQuery<typeof api.users.getCurrentUser>>
->;
+type UserData = NonNullable<typeof api.users.getCurrentUser._returnType>;
 
 function ProfileTab() {
-	const data = useQuery(api.users.getCurrentUser);
+	const { data, isPending, isError, error } = useQueryWithStatus(api.users.getCurrentUser);
+
+	if (isPending) {
+		return <ProfileTabSkeleton />;
+	}
+
+	if (isError) {
+		return (
+			<Alert variant="destructive">
+				<AlertTriangle className="h-4 w-4" />
+				<AlertTitle>Failed to load profile</AlertTitle>
+				<AlertDescription>{error.message}</AlertDescription>
+			</Alert>
+		);
+	}
 
 	if (!data) {
-		return <ProfileTabSkeleton />;
+		return (
+			<Alert variant="destructive">
+				<AlertTriangle className="h-4 w-4" />
+				<AlertTitle>Profile not found</AlertTitle>
+				<AlertDescription>
+					Unable to load your profile. Please try signing in again.
+				</AlertDescription>
+			</Alert>
+		);
 	}
 
 	return <ProfileForms user={data.user} userProfile={data.userProfile} />;

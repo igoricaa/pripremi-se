@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useMutation, useQuery } from 'convex/react';
+import { useMutation } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
+import { useQueryWithStatus } from '@/lib/convex';
 import { useForm } from '@tanstack/react-form';
 import { createSubjectSchema } from '@pripremi-se/shared';
 import { ArrowLeft } from 'lucide-react';
@@ -25,7 +26,7 @@ export const Route = createFileRoute('/admin/subjects/new')({
 function NewSubjectPage() {
 	const navigate = useNavigate();
 	const createSubject = useMutation(api.subjects.createSubject);
-	const subjects = useQuery(api.subjects.listSubjects);
+	const subjectsQuery = useQueryWithStatus(api.subjects.listSubjects);
 
 	const form = useForm({
 		defaultValues: {
@@ -33,7 +34,7 @@ function NewSubjectPage() {
 			description: '',
 			icon: '',
 			slug: '',
-			order: subjects?.length ?? 0,
+			order: subjectsQuery.data?.length ?? 0,
 			isActive: false,
 		},
 		onSubmit: async ({ value }) => {
