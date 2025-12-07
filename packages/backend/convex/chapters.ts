@@ -21,6 +21,40 @@ export const listChapters = editorZodQuery({
 })
 
 /**
+ * List all chapters with subject info.
+ * Single query replaces 2 separate queries (chapters + subjects).
+ * Includes subjects for filter dropdown.
+ * Requires editor or admin role.
+ */
+export const listChaptersWithSubjects = editorZodQuery({
+    args: {},
+    handler: async (ctx) => {
+        const { db } = ctx;
+
+        // Fetch all data in parallel
+        const [chapters, subjects] = await Promise.all([
+            db.query('chapters').withIndex('by_subjectId_order').collect(),
+            db.query('subjects').withIndex('by_order').collect(),
+        ]);
+
+        // Create lookup map server-side
+        const subjectMap = new Map(subjects.map((s) => [s._id, s]));
+
+        // Enrich chapters with subject name
+        const enrichedChapters = chapters.map((chapter) => ({
+            ...chapter,
+            subjectName: subjectMap.get(chapter.subjectId)?.name ?? null,
+        }));
+
+        // Return enriched chapters + subjects for filter dropdown
+        return {
+            chapters: enrichedChapters,
+            subjects,
+        };
+    }
+})
+
+/**
  * List all chapters for a specific subject (admin view), sorted by order.
  * Requires authentication.
  */

@@ -9,7 +9,7 @@ import { Authenticated, AuthLoading, Unauthenticated } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { PageSkeleton } from '@/components/admin/skeletons';
-import { useQueryWithStatus } from '@/lib/convex';
+import { convexQuery, useQueryWithStatus } from '@/lib/convex';
 import {
 	SidebarInset,
 	SidebarProvider,
@@ -25,6 +25,15 @@ export const Route = createFileRoute('/admin')({
 				search: { redirect: location.href },
 			});
 		}
+	},
+	loader: async ({ context }) => {
+		// Skip on server - auth not available during SSR
+		if (typeof window === 'undefined') return;
+
+		// Await prefetch - with preload on hover, data is cached for instant navigation
+		await context.queryClient.prefetchQuery(
+			convexQuery(api.lessons.listLessonsWithHierarchy, {})
+		);
 	},
 	// Preload stays fresh for 60 seconds
 	// TODO: Check how this actually works

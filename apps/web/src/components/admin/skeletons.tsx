@@ -47,3 +47,31 @@ export function PageSkeleton() {
 		</div>
 	);
 }
+
+export function CardHeaderSkeleton({ filterWidth = 'w-[280px]' }: { filterWidth?: string }) {
+	return (
+		<CardHeader>
+			<div className="flex items-center justify-between">
+				<div>
+					<Skeleton className="h-6 w-32" />
+					<Skeleton className="mt-1 h-4 w-24" />
+				</div>
+				<Skeleton className={`h-10 ${filterWidth}`} />
+			</div>
+		</CardHeader>
+	);
+}
+
+export function CardWithTableSkeleton({
+	rows = 5,
+	filterWidth = 'w-[280px]',
+}: { rows?: number; filterWidth?: string }) {
+	return (
+		<Card>
+			<CardHeaderSkeleton filterWidth={filterWidth} />
+			<CardContent>
+				<TableSkeleton rows={rows} />
+			</CardContent>
+		</Card>
+	);
+}

@@ -36,6 +36,47 @@ export const listSections = editorZodQuery({
 });
 
 /**
+ * List all sections with full hierarchy (chapter, subject).
+ * Single query replaces 3 separate queries (sections + chapters + subjects).
+ * Includes hierarchy data for filter dropdowns.
+ * Requires editor or admin role.
+ */
+export const listSectionsWithHierarchy = editorZodQuery({
+	args: {},
+	handler: async (ctx) => {
+		const { db } = ctx;
+
+		// Fetch all data in parallel
+		const [sections, chapters, subjects] = await Promise.all([
+			db.query('sections').withIndex('by_chapterId_order').collect(),
+			db.query('chapters').withIndex('by_subjectId_order').collect(),
+			db.query('subjects').withIndex('by_order').collect(),
+		]);
+
+		// Create lookup maps server-side
+		const chapterMap = new Map(chapters.map((c) => [c._id, c]));
+		const subjectMap = new Map(subjects.map((s) => [s._id, s]));
+
+		// Enrich sections with hierarchy info
+		const enrichedSections = sections.map((section) => {
+			const chapter = chapterMap.get(section.chapterId);
+			const subject = chapter ? subjectMap.get(chapter.subjectId) : null;
+			return {
+				...section,
+				chapterName: chapter?.name ?? null,
+				subjectName: subject?.name ?? null,
+			};
+		});
+
+		// Return enriched sections + hierarchy for filter dropdown
+		return {
+			sections: enrichedSections,
+			hierarchy: { subjects, chapters },
+		};
+	},
+});
+
+/**
  * List all sections for a specific chapter, sorted by order.
  * Public query - no authentication required.
  */

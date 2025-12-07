@@ -64,7 +64,18 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 		],
 	}),
 	beforeLoad: async (ctx) => {
-		// all queries, mutations and action made with TanStack Query will be
+		// Client-side navigation - skip server function, auth is already available
+		// from ConvexBetterAuthProvider. This enables instant SPA-like navigation.
+		if (typeof window !== 'undefined') {
+			// Return existing context values (may be undefined on first client render)
+			return {
+				userId: (ctx as { context: { userId?: string } }).context.userId,
+				token: (ctx as { context: { token?: string } }).context.token,
+			};
+		}
+
+		// SSR only - fetch auth from cookies
+		// All queries, mutations and actions made with TanStack Query will be
 		// authenticated by an identity token.
 		const { userId, token } = await fetchAuth();
 

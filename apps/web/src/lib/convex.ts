@@ -4,8 +4,12 @@
  * Uses convex-helpers to provide richer query state management
  * with explicit status, error, and loading states.
  */
+import { convexQuery } from '@convex-dev/react-query';
 import { makeUseQueryWithStatus } from 'convex-helpers/react';
 import { useQueries } from 'convex/react';
+
+// Re-export convexQuery for use with TanStack Query loaders and useSuspenseQuery
+export { convexQuery };
 
 /**
  * Enhanced useQuery hook that returns explicit status states.

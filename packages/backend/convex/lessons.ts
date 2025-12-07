@@ -37,6 +37,51 @@ export const listLessons = editorZodQuery({
 });
 
 /**
+ * List all lessons with full hierarchy (section, chapter, subject).
+ * Single query replaces 4 separate queries (lessons + sections + chapters + subjects).
+ * Includes hierarchy data for filter dropdowns.
+ * Requires editor or admin role.
+ */
+export const listLessonsWithHierarchy = editorZodQuery({
+	args: {},
+	handler: async (ctx) => {
+		const { db } = ctx;
+
+		// Fetch all data in parallel
+		const [lessons, sections, chapters, subjects] = await Promise.all([
+			db.query('lessons').withIndex('by_sectionId_order').collect(),
+			db.query('sections').withIndex('by_chapterId_order').collect(),
+			db.query('chapters').withIndex('by_subjectId_order').collect(),
+			db.query('subjects').withIndex('by_order').collect(),
+		]);
+
+		// Create lookup maps server-side
+		const sectionMap = new Map(sections.map((s) => [s._id, s]));
+		const chapterMap = new Map(chapters.map((c) => [c._id, c]));
+		const subjectMap = new Map(subjects.map((s) => [s._id, s]));
+
+		// Enrich lessons with hierarchy info
+		const enrichedLessons = lessons.map((lesson) => {
+			const section = sectionMap.get(lesson.sectionId);
+			const chapter = section ? chapterMap.get(section.chapterId) : null;
+			const subject = chapter ? subjectMap.get(chapter.subjectId) : null;
+			return {
+				...lesson,
+				sectionName: section?.name ?? null,
+				chapterName: chapter?.name ?? null,
+				subjectName: subject?.name ?? null,
+			};
+		});
+
+		// Return enriched lessons + hierarchy for filter dropdown
+		return {
+			lessons: enrichedLessons,
+			hierarchy: { subjects, chapters, sections },
+		};
+	},
+});
+
+/**
  * List all lessons for a specific section, sorted by order.
  * Public query - no authentication required.
  */

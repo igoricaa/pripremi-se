@@ -23,6 +23,8 @@ export function getRouter() {
 			queries: {
 				queryKeyHashFn: convexQueryClient.hashFn(),
 				queryFn: convexQueryClient.queryFn(),
+				staleTime: 5 * 60 * 1000, // Keep data fresh for 5 minutes
+				gcTime: 5 * 1000, // Cache for 5 seconds
 			},
 		},
 	});
@@ -32,8 +34,7 @@ export function getRouter() {
 		createRouter({
 			routeTree,
 			defaultPreload: 'intent',
-			// TODO: Check what this does and how it works
-			// defaultPreloadStaleTime: 30_000, // Keep preloaded data fresh for 30s
+			defaultPreloadStaleTime: 30_000, // Keep preloaded data fresh for 30s
 			defaultErrorComponent: DefaultCatchBoundary,
 			defaultNotFoundComponent: () => <NotFound />,
 			scrollRestoration: true,

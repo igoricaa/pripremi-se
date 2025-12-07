@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
-import { useQueryWithStatus } from '@/lib/convex';
-import { QueryError } from '@/components/QueryError';
-import { TableSkeleton } from '@/components/admin/skeletons';
+import { convexQuery } from '@/lib/convex';
+import { CardWithTableSkeleton } from '@/components/admin/skeletons';
 import { Plus, Pencil, Trash2, GripVertical } from 'lucide-react';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -43,29 +43,22 @@ import {
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/admin/sections/')({
+	loader: async ({ context }) => {
+		// Skip on server - auth not available during SSR
+		if (typeof window === 'undefined') return;
+
+		// Await prefetch - with preload on hover, data is cached for instant navigation
+		await context.queryClient.prefetchQuery(
+			convexQuery(api.sections.listSectionsWithHierarchy, {})
+		);
+	},
 	component: SectionsPage,
 });
 
 function SectionsPage() {
-	const {
-		data: sections,
-		isPending: isSectionsPending,
-		isError: isSectionsError,
-		error: sectionsError,
-	} = useQueryWithStatus(api.sections.listSections);
-
-	const { data: chapters, isPending: isChaptersPending } = useQueryWithStatus(
-		api.chapters.listChapters
-	);
-
-	const { data: subjects, isPending: isSubjectsPending } = useQueryWithStatus(
-		api.subjects.listSubjects
-	);
-
-	const deleteSection = useMutation(api.sections.deleteSection);
 	const [deleteId, setDeleteId] = useState<string | null>(null);
 	const [isDeleting, setIsDeleting] = useState(false);
-	const [selectedChapterId, setSelectedChapterId] = useState<string>('all');
+	const deleteSection = useMutation(api.sections.deleteSection);
 
 	const handleDelete = async () => {
 		if (!deleteId) return;
@@ -84,54 +77,9 @@ function SectionsPage() {
 		}
 	};
 
-	const isPending = isSectionsPending || isChaptersPending || isSubjectsPending;
-
-	if (isPending) {
-		return (
-			<div className="space-y-6">
-				<div>
-					<h1 className="font-bold text-3xl tracking-tight">Sections</h1>
-					<p className="text-muted-foreground">Manage curriculum sections</p>
-				</div>
-				<TableSkeleton />
-			</div>
-		);
-	}
-
-	if (isSectionsError) {
-		return (
-			<div className="space-y-6">
-				<div>
-					<h1 className="font-bold text-3xl tracking-tight">Sections</h1>
-					<p className="text-muted-foreground">Manage curriculum sections</p>
-				</div>
-				<QueryError error={sectionsError} title="Failed to load sections" />
-			</div>
-		);
-	}
-
-	// Filter sections by selected chapter
-	const filteredSections =
-		selectedChapterId === 'all'
-			? sections
-			: sections?.filter((s) => s.chapterId === selectedChapterId);
-
-	// Create lookup maps
-	const chapterMap = new Map(chapters?.map((c) => [c._id, c]) ?? []);
-	const subjectMap = new Map(subjects?.map((s) => [s._id as string, s.name]) ?? []);
-
-	// Group chapters by subject for the dropdown
-	const chaptersBySubject = new Map<string, NonNullable<typeof chapters>>();
-	for (const chapter of chapters ?? []) {
-		const subjectId = chapter.subjectId as string;
-		if (!chaptersBySubject.has(subjectId)) {
-			chaptersBySubject.set(subjectId, []);
-		}
-		chaptersBySubject.get(subjectId)?.push(chapter);
-	}
-
 	return (
 		<div className="space-y-6">
+			{/* Header renders immediately - no data needed */}
 			<div className="flex items-center justify-between">
 				<div>
 					<h1 className="font-bold text-3xl tracking-tight">Sections</h1>
@@ -145,119 +93,12 @@ function SectionsPage() {
 				</Button>
 			</div>
 
-			<Card>
-				<CardHeader>
-					<div className="flex items-center justify-between">
-						<div>
-							<CardTitle>All Sections</CardTitle>
-							<CardDescription>
-								{filteredSections?.length ?? 0} section
-								{(filteredSections?.length ?? 0) !== 1 ? 's' : ''}{' '}
-								{selectedChapterId !== 'all' ? 'in selected chapter' : 'total'}
-							</CardDescription>
-						</div>
-						<Select
-							value={selectedChapterId}
-							onValueChange={setSelectedChapterId}
-						>
-							<SelectTrigger className="w-[280px]">
-								<SelectValue placeholder="Filter by chapter" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="all">All Chapters</SelectItem>
-								{Array.from(chaptersBySubject.entries()).map(
-									([subjectId, subjectChapters]) => (
-										<div key={subjectId}>
-											<div className="px-2 py-1.5 font-semibold text-muted-foreground text-xs">
-												{subjectMap.get(subjectId) ?? 'Unknown Subject'}
-											</div>
-											{subjectChapters?.map((chapter) => (
-												<SelectItem key={chapter._id} value={chapter._id}>
-													{chapter.name}
-												</SelectItem>
-											))}
-										</div>
-									)
-								)}
-							</SelectContent>
-						</Select>
-					</div>
-				</CardHeader>
-				<CardContent>
-					{!filteredSections || filteredSections.length === 0 ? (
-						<div className="py-8 text-center text-muted-foreground">
-							{selectedChapterId === 'all'
-								? 'No sections yet. Create your first section to get started.'
-								: 'No sections in this chapter. Create one to get started.'}
-						</div>
-					) : (
-						<Table>
-							<TableHeader>
-								<TableRow>
-									<TableHead className="w-12" />
-									<TableHead>Name</TableHead>
-									<TableHead>Chapter</TableHead>
-									<TableHead>Slug</TableHead>
-									<TableHead>Status</TableHead>
-									<TableHead>Order</TableHead>
-									<TableHead className="w-24">Actions</TableHead>
-								</TableRow>
-							</TableHeader>
-							<TableBody>
-								{filteredSections.map((section) => {
-									const chapter = chapterMap.get(section.chapterId);
-									return (
-										<TableRow key={section._id}>
-											<TableCell>
-												<GripVertical className="h-4 w-4 cursor-grab text-muted-foreground" />
-											</TableCell>
-											<TableCell className="font-medium">
-												{section.name}
-											</TableCell>
-											<TableCell className="text-muted-foreground">
-												{chapter?.name ?? 'Unknown'}
-											</TableCell>
-											<TableCell className="font-mono text-muted-foreground text-sm">
-												{section.slug}
-											</TableCell>
-											<TableCell>
-												<Badge
-													variant={section.isActive ? 'default' : 'secondary'}
-												>
-													{section.isActive ? 'Active' : 'Draft'}
-												</Badge>
-											</TableCell>
-											<TableCell>{section.order}</TableCell>
-											<TableCell>
-												<div className="flex items-center gap-2">
-													<Button variant="ghost" size="icon" asChild>
-														<Link
-															to="/admin/sections/$sectionId"
-															params={{ sectionId: section._id }}
-														>
-															<Pencil className="h-4 w-4" />
-															<span className="sr-only">Edit</span>
-														</Link>
-													</Button>
-													<Button
-														variant="ghost"
-														size="icon"
-														onClick={() => setDeleteId(section._id)}
-													>
-														<Trash2 className="h-4 w-4" />
-														<span className="sr-only">Delete</span>
-													</Button>
-												</div>
-											</TableCell>
-										</TableRow>
-									);
-								})}
-							</TableBody>
-						</Table>
-					)}
-				</CardContent>
-			</Card>
+			{/* Data component suspends until ready */}
+			<Suspense fallback={<CardWithTableSkeleton rows={5} filterWidth="w-[280px]" />}>
+				<SectionsCard onDeleteRequest={(id) => setDeleteId(id)} />
+			</Suspense>
 
+			{/* Delete dialog - always available */}
 			<AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
 				<AlertDialogContent>
 					<AlertDialogHeader>
@@ -280,5 +121,152 @@ function SectionsPage() {
 				</AlertDialogContent>
 			</AlertDialog>
 		</div>
+	);
+}
+
+function SectionsCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => void }) {
+	// Single query - data already prefetched by loader
+	const { data } = useSuspenseQuery(
+		convexQuery(api.sections.listSectionsWithHierarchy, {})
+	);
+
+	const { sections, hierarchy } = data;
+	const { subjects, chapters } = hierarchy;
+
+	const [selectedChapterId, setSelectedChapterId] = useState<string>('all');
+
+	// Filter sections by selected chapter
+	const filteredSections =
+		selectedChapterId === 'all'
+			? sections
+			: sections.filter((s) => s.chapterId === selectedChapterId);
+
+	// Create lookup maps for table rendering
+	const chapterMap = new Map(chapters.map((c) => [c._id, c]));
+	const subjectMap = new Map(subjects.map((s) => [s._id as string, s.name]));
+
+	// Group chapters by subject for the dropdown
+	const chaptersBySubject = new Map<string, typeof chapters>();
+	for (const chapter of chapters) {
+		const subjectId = chapter.subjectId as string;
+		if (!chaptersBySubject.has(subjectId)) {
+			chaptersBySubject.set(subjectId, []);
+		}
+		chaptersBySubject.get(subjectId)?.push(chapter);
+	}
+
+	return (
+		<Card>
+			<CardHeader>
+				<div className="flex items-center justify-between">
+					<div>
+						<CardTitle>All Sections</CardTitle>
+						<CardDescription>
+							{filteredSections.length} section
+							{filteredSections.length !== 1 ? 's' : ''}{' '}
+							{selectedChapterId !== 'all' ? 'in selected chapter' : 'total'}
+						</CardDescription>
+					</div>
+					<Select
+						value={selectedChapterId}
+						onValueChange={setSelectedChapterId}
+					>
+						<SelectTrigger className="w-[280px]">
+							<SelectValue placeholder="Filter by chapter" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="all">All Chapters</SelectItem>
+							{Array.from(chaptersBySubject.entries()).map(
+								([subjectId, subjectChapters]) => (
+									<div key={subjectId}>
+										<div className="px-2 py-1.5 font-semibold text-muted-foreground text-xs">
+											{subjectMap.get(subjectId) ?? 'Unknown Subject'}
+										</div>
+										{subjectChapters?.map((chapter) => (
+											<SelectItem key={chapter._id} value={chapter._id}>
+												{chapter.name}
+											</SelectItem>
+										))}
+									</div>
+								)
+							)}
+						</SelectContent>
+					</Select>
+				</div>
+			</CardHeader>
+			<CardContent>
+				{filteredSections.length === 0 ? (
+					<div className="py-8 text-center text-muted-foreground">
+						{selectedChapterId === 'all'
+							? 'No sections yet. Create your first section to get started.'
+							: 'No sections in this chapter. Create one to get started.'}
+					</div>
+				) : (
+					<Table>
+						<TableHeader>
+							<TableRow>
+								<TableHead className="w-12" />
+								<TableHead>Name</TableHead>
+								<TableHead>Chapter</TableHead>
+								<TableHead>Slug</TableHead>
+								<TableHead>Status</TableHead>
+								<TableHead>Order</TableHead>
+								<TableHead className="w-24">Actions</TableHead>
+							</TableRow>
+						</TableHeader>
+						<TableBody>
+							{filteredSections.map((section) => {
+								const chapter = chapterMap.get(section.chapterId);
+								return (
+									<TableRow key={section._id}>
+										<TableCell>
+											<GripVertical className="h-4 w-4 cursor-grab text-muted-foreground" />
+										</TableCell>
+										<TableCell className="font-medium">
+											{section.name}
+										</TableCell>
+										<TableCell className="text-muted-foreground">
+											{chapter?.name ?? section.chapterName ?? 'Unknown'}
+										</TableCell>
+										<TableCell className="font-mono text-muted-foreground text-sm">
+											{section.slug}
+										</TableCell>
+										<TableCell>
+											<Badge
+												variant={section.isActive ? 'default' : 'secondary'}
+											>
+												{section.isActive ? 'Active' : 'Draft'}
+											</Badge>
+										</TableCell>
+										<TableCell>{section.order}</TableCell>
+										<TableCell>
+											<div className="flex items-center gap-2">
+												<Button variant="ghost" size="icon" asChild>
+													<Link
+														to="/admin/sections/$sectionId"
+														params={{ sectionId: section._id }}
+													>
+														<Pencil className="h-4 w-4" />
+														<span className="sr-only">Edit</span>
+													</Link>
+												</Button>
+												<Button
+													variant="ghost"
+													size="icon"
+													onClick={() => onDeleteRequest(section._id)}
+												>
+													<Trash2 className="h-4 w-4" />
+													<span className="sr-only">Delete</span>
+												</Button>
+											</div>
+										</TableCell>
+									</TableRow>
+								);
+							})}
+						</TableBody>
+					</Table>
+				)}
+			</CardContent>
+		</Card>
 	);
 }

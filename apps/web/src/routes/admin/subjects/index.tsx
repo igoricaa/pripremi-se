@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
-import { useQueryWithStatus } from '@/lib/convex';
-import { QueryError } from '@/components/QueryError';
-import { TableSkeleton } from '@/components/admin/skeletons';
+import { convexQuery } from '@/lib/convex';
+import { CardWithTableSkeleton } from '@/components/admin/skeletons';
 import { Plus, Pencil, Trash2, GripVertical } from 'lucide-react';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -36,16 +36,22 @@ import {
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/admin/subjects/')({
+	loader: async ({ context }) => {
+		// Skip on server - auth not available during SSR
+		if (typeof window === 'undefined') return;
+
+		// Await prefetch - with preload on hover, data is cached for instant navigation
+		await context.queryClient.prefetchQuery(
+			convexQuery(api.subjects.listSubjects, {})
+		);
+	},
 	component: SubjectsPage,
 });
 
 function SubjectsPage() {
-	const { data: subjects, isPending, isError, error } = useQueryWithStatus(
-		api.subjects.listSubjects
-	);
-	const deleteSubject = useMutation(api.subjects.deleteSubject);
 	const [deleteId, setDeleteId] = useState<string | null>(null);
 	const [isDeleting, setIsDeleting] = useState(false);
+	const deleteSubject = useMutation(api.subjects.deleteSubject);
 
 	const handleDelete = async () => {
 		if (!deleteId) return;
@@ -64,38 +70,13 @@ function SubjectsPage() {
 		}
 	};
 
-	if (isPending) {
-		return (
-			<div className="space-y-6">
-				<div>
-					<h1 className="font-bold text-3xl tracking-tight">Subjects</h1>
-					<p className="text-muted-foreground">Manage curriculum subjects</p>
-				</div>
-				<TableSkeleton />
-			</div>
-		);
-	}
-
-	if (isError) {
-		return (
-			<div className="space-y-6">
-				<div>
-					<h1 className="font-bold text-3xl tracking-tight">Subjects</h1>
-					<p className="text-muted-foreground">Manage curriculum subjects</p>
-				</div>
-				<QueryError error={error} title="Failed to load subjects" />
-			</div>
-		);
-	}
-
 	return (
 		<div className="space-y-6">
+			{/* Header renders immediately - no data needed */}
 			<div className="flex items-center justify-between">
 				<div>
 					<h1 className="font-bold text-3xl tracking-tight">Subjects</h1>
-					<p className="text-muted-foreground">
-						Manage curriculum subjects
-					</p>
+					<p className="text-muted-foreground">Manage curriculum subjects</p>
 				</div>
 				<Button asChild>
 					<Link to="/admin/subjects/new">
@@ -105,83 +86,12 @@ function SubjectsPage() {
 				</Button>
 			</div>
 
-			<Card>
-				<CardHeader>
-					<CardTitle>All Subjects</CardTitle>
-					<CardDescription>
-						{subjects.length} subject{subjects.length !== 1 ? 's' : ''} total
-					</CardDescription>
-				</CardHeader>
-				<CardContent>
-					{subjects.length === 0 ? (
-						<div className="py-8 text-center text-muted-foreground">
-							No subjects yet. Create your first subject to get started.
-						</div>
-					) : (
-						<Table>
-							<TableHeader>
-								<TableRow>
-									<TableHead className="w-12" />
-									<TableHead>Name</TableHead>
-									<TableHead>Slug</TableHead>
-									<TableHead>Status</TableHead>
-									<TableHead>Order</TableHead>
-									<TableHead className="w-24">Actions</TableHead>
-								</TableRow>
-							</TableHeader>
-							<TableBody>
-								{subjects.map((subject) => (
-									<TableRow key={subject._id}>
-										<TableCell>
-											<GripVertical className="h-4 w-4 cursor-grab text-muted-foreground" />
-										</TableCell>
-										<TableCell className="font-medium">
-											{/* {subject.icon && (
-												<span className="mr-2">{subject.icon}</span>
-											)} */}
-											{subject.name}
-										</TableCell>
-										<TableCell className="font-mono text-muted-foreground text-sm">
-											{subject.slug}
-										</TableCell>
-										<TableCell>
-											<Badge
-												variant={subject.isActive ? 'default' : 'secondary'}
-											>
-												{subject.isActive ? 'Active' : 'Draft'}
-											</Badge>
-										</TableCell>
-										<TableCell>{subject.order}</TableCell>
-										<TableCell>
-											<div className="flex items-center gap-2">
-												<Button
-													variant='ghost'
-													size='icon'
-													asChild
-												>
-													<Link to="/admin/subjects/$subjectId" params={{ subjectId: subject._id }}>
-														<Pencil className='h-4 w-4' />
-														<span className='sr-only'>Edit</span>
-													</Link>
-												</Button>
-												<Button
-													variant='ghost'
-													size='icon'
-													onClick={() => setDeleteId(subject._id)}
-												>
-													<Trash2 className='h-4 w-4' />
-													<span className='sr-only'>Delete</span>
-												</Button>
-											</div>
-										</TableCell>
-									</TableRow>
-								))}
-							</TableBody>
-						</Table>
-					)}
-				</CardContent>
-			</Card>
+			{/* Data component suspends until ready */}
+			<Suspense fallback={<CardWithTableSkeleton rows={5} />}>
+				<SubjectsCard onDeleteRequest={(id) => setDeleteId(id)} />
+			</Suspense>
 
+			{/* Delete dialog - always available */}
 			<AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
 				<AlertDialogContent>
 					<AlertDialogHeader>
@@ -205,5 +115,87 @@ function SubjectsPage() {
 				</AlertDialogContent>
 			</AlertDialog>
 		</div>
-	)
+	);
+}
+
+function SubjectsCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => void }) {
+	// Single query - data already prefetched by loader
+	const { data: subjects } = useSuspenseQuery(
+		convexQuery(api.subjects.listSubjects, {})
+	);
+
+	return (
+		<Card>
+			<CardHeader>
+				<CardTitle>All Subjects</CardTitle>
+				<CardDescription>
+					{subjects.length} subject{subjects.length !== 1 ? 's' : ''} total
+				</CardDescription>
+			</CardHeader>
+			<CardContent>
+				{subjects.length === 0 ? (
+					<div className="py-8 text-center text-muted-foreground">
+						No subjects yet. Create your first subject to get started.
+					</div>
+				) : (
+					<Table>
+						<TableHeader>
+							<TableRow>
+								<TableHead className="w-12" />
+								<TableHead>Name</TableHead>
+								<TableHead>Slug</TableHead>
+								<TableHead>Status</TableHead>
+								<TableHead>Order</TableHead>
+								<TableHead className="w-24">Actions</TableHead>
+							</TableRow>
+						</TableHeader>
+						<TableBody>
+							{subjects.map((subject) => (
+								<TableRow key={subject._id}>
+									<TableCell>
+										<GripVertical className="h-4 w-4 cursor-grab text-muted-foreground" />
+									</TableCell>
+									<TableCell className="font-medium">
+										{subject.name}
+									</TableCell>
+									<TableCell className="font-mono text-muted-foreground text-sm">
+										{subject.slug}
+									</TableCell>
+									<TableCell>
+										<Badge
+											variant={subject.isActive ? 'default' : 'secondary'}
+										>
+											{subject.isActive ? 'Active' : 'Draft'}
+										</Badge>
+									</TableCell>
+									<TableCell>{subject.order}</TableCell>
+									<TableCell>
+										<div className="flex items-center gap-2">
+											<Button variant="ghost" size="icon" asChild>
+												<Link
+													to="/admin/subjects/$subjectId"
+													params={{ subjectId: subject._id }}
+												>
+													<Pencil className="h-4 w-4" />
+													<span className="sr-only">Edit</span>
+												</Link>
+											</Button>
+											<Button
+												variant="ghost"
+												size="icon"
+												onClick={() => onDeleteRequest(subject._id)}
+											>
+												<Trash2 className="h-4 w-4" />
+												<span className="sr-only">Delete</span>
+											</Button>
+										</div>
+									</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
+				)}
+			</CardContent>
+		</Card>
+	);
 }
