@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import { useForm } from '@tanstack/react-form';
@@ -116,12 +116,10 @@ function EditLessonPage() {
 		return (
 			<div className="space-y-6">
 				<div className="flex items-center gap-4">
-					<Button
-						variant="ghost"
-						size="icon"
-						onClick={() => navigate({ to: '/admin/lessons' })}
-					>
-						<ArrowLeft className="h-4 w-4" />
+					<Button variant="ghost" size="icon" asChild>
+						<Link to="/admin/lessons">
+							<ArrowLeft className="h-4 w-4" />
+						</Link>
 					</Button>
 					<div>
 						<h1 className="font-bold text-3xl tracking-tight">
@@ -141,12 +139,10 @@ function EditLessonPage() {
 		return (
 			<div className="space-y-6">
 				<div className="flex items-center gap-4">
-					<Button
-						variant="ghost"
-						size="icon"
-						onClick={() => navigate({ to: '/admin/lessons' })}
-					>
-						<ArrowLeft className="h-4 w-4" />
+					<Button variant="ghost" size="icon" asChild>
+						<Link to="/admin/lessons">
+							<ArrowLeft className="h-4 w-4" />
+						</Link>
 					</Button>
 					<div>
 						<h1 className="font-bold text-3xl tracking-tight">
@@ -181,12 +177,10 @@ function EditLessonPage() {
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center gap-4">
-				<Button
-					variant="ghost"
-					size="icon"
-					onClick={() => navigate({ to: '/admin/lessons' })}
-				>
-					<ArrowLeft className="h-4 w-4" />
+				<Button variant="ghost" size="icon" asChild>
+					<Link to="/admin/lessons">
+						<ArrowLeft className="h-4 w-4" />
+					</Link>
 				</Button>
 				<div>
 					<h1 className="font-bold text-3xl tracking-tight">Edit Lesson</h1>
@@ -276,9 +270,11 @@ function EditLessonPage() {
 								<Button
 									type="button"
 									variant="outline"
-									onClick={() => navigate({ to: '/admin/lessons' })}
+									asChild
 								>
-									Cancel
+									<Link to="/admin/lessons">
+										Cancel
+									</Link>
 								</Button>
 								<form.Subscribe
 									selector={(state) => [state.canSubmit, state.isSubmitting]}
@@ -432,9 +428,11 @@ function EditLessonPage() {
 								<Button
 									type="button"
 									variant="outline"
-									onClick={() => navigate({ to: '/admin/lessons' })}
+									asChild
 								>
-									Cancel
+									<Link to="/admin/lessons">
+										Cancel
+									</Link>
 								</Button>
 								<form.Subscribe
 									selector={(state) => [state.canSubmit, state.isSubmitting]}

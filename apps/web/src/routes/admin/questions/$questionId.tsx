@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useMutation, useQuery } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import { useForm } from '@tanstack/react-form';
@@ -322,12 +322,10 @@ function EditQuestionPage() {
 		return (
 			<div className="space-y-6">
 				<div className="flex items-center gap-4">
-					<Button
-						variant="ghost"
-						size="icon"
-						onClick={() => navigate({ to: '/admin/questions', search: { limit: 20, type: 'all', difficulty: 'all' } })}
-					>
-						<ArrowLeft className="h-4 w-4" />
+					<Button variant="ghost" size="icon" asChild>
+						<Link to="/admin/questions" search={{ limit: 20, type: 'all', difficulty: 'all' }}>
+							<ArrowLeft className="h-4 w-4" />
+						</Link>
 					</Button>
 					<div>
 						<h1 className="font-bold text-3xl tracking-tight">Question Not Found</h1>
@@ -343,12 +341,10 @@ function EditQuestionPage() {
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center gap-4">
-				<Button
-					variant="ghost"
-					size="icon"
-					onClick={() => navigate({ to: '/admin/questions', search: { limit: 20, type: 'all', difficulty: 'all' } })}
-				>
-					<ArrowLeft className="h-4 w-4" />
+				<Button variant="ghost" size="icon" asChild>
+					<Link to="/admin/questions" search={{ limit: 20, type: 'all', difficulty: 'all' }}>
+						<ArrowLeft className="h-4 w-4" />
+					</Link>
 				</Button>
 				<div>
 					<h1 className="font-bold text-3xl tracking-tight">Edit Question</h1>
@@ -651,9 +647,11 @@ function EditQuestionPage() {
 								type="button"
 								variant="outline"
 								className="flex-1"
-								onClick={() => navigate({ to: '/admin/questions', search: { limit: 20, type: 'all', difficulty: 'all' } })}
+								asChild
 							>
-								Cancel
+								<Link to="/admin/questions" search={{ limit: 20, type: 'all', difficulty: 'all' }}>
+									Cancel
+								</Link>
 							</Button>
 							<form.Subscribe
 								selector={(state) => [state.canSubmit, state.isSubmitting]}

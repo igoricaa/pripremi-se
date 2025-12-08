@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import { useForm } from '@tanstack/react-form';
@@ -97,8 +97,10 @@ function EditSubjectPage() {
 		return (
 			<div className="space-y-6">
 				<div className="flex items-center gap-4">
-					<Button variant="ghost" size="icon" onClick={() => navigate({ to: '/admin/subjects' })}>
-						<ArrowLeft className="h-4 w-4" />
+					<Button variant="ghost" size="icon" asChild>
+						<Link to="/admin/subjects">
+							<ArrowLeft className="h-4 w-4" />
+						</Link>
 					</Button>
 					<div>
 						<h1 className="font-bold text-3xl tracking-tight">Error Loading Subject</h1>
@@ -116,8 +118,10 @@ function EditSubjectPage() {
 		return (
 			<div className="space-y-6">
 				<div className="flex items-center gap-4">
-					<Button variant="ghost" size="icon" onClick={() => navigate({ to: '/admin/subjects' })}>
-						<ArrowLeft className="h-4 w-4" />
+					<Button variant="ghost" size="icon" asChild>
+						<Link to="/admin/subjects">
+							<ArrowLeft className="h-4 w-4" />
+						</Link>
 					</Button>
 					<div>
 						<h1 className="font-bold text-3xl tracking-tight">Subject Not Found</h1>
@@ -145,8 +149,10 @@ function EditSubjectPage() {
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center gap-4">
-				<Button variant="ghost" size="icon" onClick={() => navigate({ to: '/admin/subjects' })}>
-					<ArrowLeft className="h-4 w-4" />
+				<Button variant="ghost" size="icon" asChild>
+					<Link to="/admin/subjects">
+						<ArrowLeft className="h-4 w-4" />
+					</Link>
 				</Button>
 				<div>
 					<h1 className="font-bold text-3xl tracking-tight">Edit Subject</h1>
@@ -287,9 +293,11 @@ function EditSubjectPage() {
 						<Button
 							type="button"
 							variant="outline"
-							onClick={() => navigate({ to: '/admin/subjects' })}
+							asChild
 						>
-							Cancel
+							<Link to="/admin/subjects">
+								Cancel
+							</Link>
 						</Button>
 						<form.Subscribe
 							selector={(state) => [state.canSubmit, state.isSubmitting]}

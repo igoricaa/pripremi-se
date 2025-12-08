@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import { useForm } from '@tanstack/react-form';
@@ -100,12 +100,10 @@ function EditChapterPage() {
 		return (
 			<div className="space-y-6">
 				<div className="flex items-center gap-4">
-					<Button
-						variant="ghost"
-						size="icon"
-						onClick={() => navigate({ to: '/admin/chapters' })}
-					>
-						<ArrowLeft className="h-4 w-4" />
+					<Button variant="ghost" size="icon" asChild>
+						<Link to="/admin/chapters">
+							<ArrowLeft className="h-4 w-4" />
+						</Link>
 					</Button>
 					<div>
 						<h1 className="font-bold text-3xl tracking-tight">
@@ -125,12 +123,10 @@ function EditChapterPage() {
 		return (
 			<div className="space-y-6">
 				<div className="flex items-center gap-4">
-					<Button
-						variant="ghost"
-						size="icon"
-						onClick={() => navigate({ to: '/admin/chapters' })}
-					>
-						<ArrowLeft className="h-4 w-4" />
+					<Button variant="ghost" size="icon" asChild>
+						<Link to="/admin/chapters">
+							<ArrowLeft className="h-4 w-4" />
+						</Link>
 					</Button>
 					<div>
 						<h1 className="font-bold text-3xl tracking-tight">
@@ -164,12 +160,10 @@ function EditChapterPage() {
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center gap-4">
-				<Button
-					variant="ghost"
-					size="icon"
-					onClick={() => navigate({ to: '/admin/chapters' })}
-				>
-					<ArrowLeft className="h-4 w-4" />
+				<Button variant="ghost" size="icon" asChild>
+					<Link to="/admin/chapters">
+						<ArrowLeft className="h-4 w-4" />
+					</Link>
 				</Button>
 				<div>
 					<h1 className="font-bold text-3xl tracking-tight">Edit Chapter</h1>
@@ -303,9 +297,11 @@ function EditChapterPage() {
 						<Button
 							type="button"
 							variant="outline"
-							onClick={() => navigate({ to: '/admin/chapters' })}
+							asChild
 						>
-							Cancel
+							<Link to="/admin/chapters">
+								Cancel
+							</Link>
 						</Button>
 						<form.Subscribe
 							selector={(state) => [state.canSubmit, state.isSubmitting]}

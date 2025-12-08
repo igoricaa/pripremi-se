@@ -477,9 +477,11 @@ function NewQuestionPage() {
 								type="button"
 								variant="outline"
 								className="flex-1"
-								onClick={() => navigate({ to: '/admin/questions', search: { limit: 20, type: 'all', difficulty: 'all' } })}
+								asChild
 							>
-								Cancel
+								<Link to="/admin/questions" search={{ limit: 20, type: 'all', difficulty: 'all' }}>
+									Cancel
+								</Link>
 							</Button>
 							<form.Subscribe
 								selector={(state) => [state.canSubmit, state.isSubmitting]}

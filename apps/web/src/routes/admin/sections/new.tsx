@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import { useQueryWithStatus } from '@/lib/convex';
@@ -104,12 +104,10 @@ function NewSectionPage() {
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center gap-4">
-				<Button
-					variant="ghost"
-					size="icon"
-					onClick={() => navigate({ to: '/admin/sections' })}
-				>
-					<ArrowLeft className="h-4 w-4" />
+				<Button variant="ghost" size="icon" asChild>
+					<Link to="/admin/sections">
+						<ArrowLeft className="h-4 w-4" />
+					</Link>
 				</Button>
 				<div>
 					<h1 className="font-bold text-3xl tracking-tight">New Section</h1>
@@ -254,9 +252,11 @@ function NewSectionPage() {
 					<Button
 						type="button"
 						variant="outline"
-						onClick={() => navigate({ to: '/admin/sections' })}
+						asChild
 					>
-						Cancel
+						<Link to="/admin/sections">
+							Cancel
+						</Link>
 					</Button>
 					<form.Subscribe
 						selector={(state) => [state.canSubmit, state.isSubmitting]}
