@@ -57,12 +57,66 @@ function validateQuestionOptions(
 
 /**
  * List all questions (for admin panel).
+ * Returns ALL questions regardless of status.
  * Requires editor or admin role.
  */
-export const listAllQuestions = editorZodQuery({
+export const listQuestions = editorZodQuery({
 	args: {},
 	handler: async (ctx) => {
-		return await ctx.db.query('questions').withIndex('by_isActive', (q) => q.eq('isActive', true)).collect();
+		return await ctx.db.query('questions').collect();
+	},
+});
+
+/**
+ * Optimized query for admin questions table.
+ * Returns truncated questions + full hierarchy for filtering.
+ * Requires editor or admin role.
+ */
+export const listQuestionsForAdmin = editorZodQuery({
+	args: {},
+	handler: async (ctx) => {
+		const { db } = ctx;
+
+		// Fetch all data in parallel
+		const [questions, lessons, sections, chapters, subjects] = await Promise.all([
+			db.query('questions').order('desc').collect(),
+			db.query('lessons').withIndex('by_sectionId_order').collect(),
+			db.query('sections').withIndex('by_chapterId_order').collect(),
+			db.query('chapters').withIndex('by_subjectId_order').collect(),
+			db.query('subjects').withIndex('by_order').collect(),
+		]);
+
+		// Create lookup maps
+		const lessonMap = new Map(lessons.map((l) => [l._id, l]));
+		const sectionMap = new Map(sections.map((s) => [s._id, s]));
+		const chapterMap = new Map(chapters.map((c) => [c._id, c]));
+
+		// Return truncated questions for table display
+		const tableQuestions = questions.map((q) => {
+			const lesson = q.lessonId ? lessonMap.get(q.lessonId) : null;
+			const section = lesson ? sectionMap.get(lesson.sectionId) : null;
+			const chapter = section ? chapterMap.get(section.chapterId) : null;
+
+			return {
+				_id: q._id,
+				text: q.text.length > 100 ? q.text.substring(0, 100) + '...' : q.text,
+				type: q.type,
+				difficulty: q.difficulty,
+				points: q.points,
+				lessonId: q.lessonId,
+				// Hierarchy IDs for filtering
+				sectionId: section?._id ?? null,
+				chapterId: chapter?._id ?? null,
+				subjectId: chapter?.subjectId ?? null,
+				// Display names
+				lessonTitle: lesson?.title ?? null,
+			};
+		});
+
+		return {
+			questions: tableQuestions,
+			hierarchy: { subjects, chapters, sections, lessons },
+		};
 	},
 });
 
@@ -213,23 +267,22 @@ export const deleteQuestion = editorZodMutation({
 			throw new Error('Question not found');
 		}
 
-		// Check if question is linked to any tests (via junction table)
-		const linkedToTests = await db
-			.query('testQuestions')
-			.withIndex('by_questionId', (q) => q.eq('questionId', questionId))
-			.first();
+		// Delete all test-question links and options (cascade)
+		const [testQuestionLinks, options] = await Promise.all([
+			db
+				.query('testQuestions')
+				.withIndex('by_questionId', (q) => q.eq('questionId', questionId))
+				.collect(),
+			db
+				.query('questionOptions')
+				.withIndex('by_questionId', (q) => q.eq('questionId', questionId))
+				.collect()
+		]);
 
-		if (linkedToTests) {
-			throw new Error('Cannot delete question that is linked to tests. Unlink it from all tests first.');
-		}
-
-		// Delete all options first
-		const options = await db
-			.query('questionOptions')
-			.withIndex('by_questionId', (q) => q.eq('questionId', questionId))
-			.collect();
-
-		await Promise.all(options.map((opt) => db.delete(opt._id)));
+		await Promise.all([
+			...testQuestionLinks.map((link) => db.delete(link._id)),
+			...options.map((opt) => db.delete(opt._id))
+		]);
 
 		// Delete question
 		await db.delete(questionId);

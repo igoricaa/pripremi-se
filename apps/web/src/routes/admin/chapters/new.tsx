@@ -41,7 +41,6 @@ function NewChapterPage() {
 			subjectId: '',
 			name: '',
 			description: '',
-			slug: '',
 			order: 0,
 			isActive: false,
 		},
@@ -51,7 +50,7 @@ function NewChapterPage() {
 					subjectId: value.subjectId,
 					name: value.name,
 					description: value.description,
-					slug: value.slug || undefined,
+					slug: undefined, // Always auto-generated
 					order: value.order,
 					isActive: value.isActive,
 				});
@@ -191,48 +190,28 @@ function NewChapterPage() {
 							)}
 						</form.Field>
 
-						<div className="grid gap-4 sm:grid-cols-2">
-							<form.Field name="slug">
-								{(field) => (
-									<div className="space-y-2">
-										<Label htmlFor="slug">Slug (optional)</Label>
-										<Input
-											id="slug"
-											placeholder="auto-generated from name"
-											value={field.state.value}
-											onChange={(e) => field.handleChange(e.target.value)}
-											onBlur={field.handleBlur}
-										/>
+						<form.Field name="order">
+							{(field) => (
+								<div className="space-y-2">
+									<Label htmlFor="order">Display Order</Label>
+									<Input
+										id="order"
+										type="number"
+										min={0}
+										value={field.state.value}
+										onChange={(e) =>
+											field.handleChange(Number.parseInt(e.target.value) || 0)
+										}
+										onBlur={field.handleBlur}
+									/>
+									{selectedSubjectId && (
 										<p className="text-muted-foreground text-xs">
-											Leave empty to auto-generate from name
+											{chaptersInSubject.length} chapters in selected subject
 										</p>
-									</div>
-								)}
-							</form.Field>
-
-							<form.Field name="order">
-								{(field) => (
-									<div className="space-y-2">
-										<Label htmlFor="order">Display Order</Label>
-										<Input
-											id="order"
-											type="number"
-											min={0}
-											value={field.state.value}
-											onChange={(e) =>
-												field.handleChange(Number.parseInt(e.target.value) || 0)
-											}
-											onBlur={field.handleBlur}
-										/>
-										{selectedSubjectId && (
-											<p className="text-muted-foreground text-xs">
-												{chaptersInSubject.length} chapters in selected subject
-											</p>
-										)}
-									</div>
-								)}
-							</form.Field>
-						</div>
+									)}
+								</div>
+							)}
+						</form.Field>
 
 						<form.Field name="isActive">
 							{(field) => (

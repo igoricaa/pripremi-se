@@ -16,11 +16,20 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import { QueryError } from '@/components/QueryError';
 import { StatsGridSkeleton } from '@/components/admin/skeletons';
-import { useQueryWithStatus } from '@/lib/convex';
+import { convexQuery } from '@/lib/convex';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
 export const Route = createFileRoute('/admin/')({
+	loader: async ({ context }) => {
+		if (typeof window === 'undefined' || !context.userId) {
+			return;
+		}
+
+		context.queryClient.prefetchQuery(
+			convexQuery(api.dashboard.getStats, {})
+		);
+	},
 	component: AdminDashboard,
 });
 
@@ -77,17 +86,9 @@ function AdminDashboard() {
 }
 
 function StatsGrid() {
-	const { data: stats, isError, error } = useQueryWithStatus(
-		api.dashboard.getStats
+	const { data: stats } = useSuspenseQuery(
+		convexQuery(api.dashboard.getStats, {})
 	);
-
-	if (isError) {
-		return <QueryError error={error} title="Failed to load stats" />;
-	}
-
-	if (!stats) {
-		return <StatsGridSkeleton />;
-	}
 
 	const statItems = [
 		{

@@ -20,6 +20,7 @@ import { Route as AuthSettingsRouteImport } from './routes/_auth/settings'
 import { Route as AuthDashboardRouteImport } from './routes/_auth/dashboard'
 import { Route as AdminSubjectsIndexRouteImport } from './routes/admin/subjects/index'
 import { Route as AdminSectionsIndexRouteImport } from './routes/admin/sections/index'
+import { Route as AdminQuestionsIndexRouteImport } from './routes/admin/questions/index'
 import { Route as AdminLessonsIndexRouteImport } from './routes/admin/lessons/index'
 import { Route as AdminChaptersIndexRouteImport } from './routes/admin/chapters/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -27,6 +28,8 @@ import { Route as AdminSubjectsNewRouteImport } from './routes/admin/subjects/ne
 import { Route as AdminSubjectsSubjectIdRouteImport } from './routes/admin/subjects/$subjectId'
 import { Route as AdminSectionsNewRouteImport } from './routes/admin/sections/new'
 import { Route as AdminSectionsSectionIdRouteImport } from './routes/admin/sections/$sectionId'
+import { Route as AdminQuestionsNewRouteImport } from './routes/admin/questions/new'
+import { Route as AdminQuestionsQuestionIdRouteImport } from './routes/admin/questions/$questionId'
 import { Route as AdminLessonsNewRouteImport } from './routes/admin/lessons/new'
 import { Route as AdminLessonsLessonIdRouteImport } from './routes/admin/lessons/$lessonId'
 import { Route as AdminChaptersNewRouteImport } from './routes/admin/chapters/new'
@@ -86,6 +89,11 @@ const AdminSectionsIndexRoute = AdminSectionsIndexRouteImport.update({
   path: '/sections/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminQuestionsIndexRoute = AdminQuestionsIndexRouteImport.update({
+  id: '/questions/',
+  path: '/questions/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminLessonsIndexRoute = AdminLessonsIndexRouteImport.update({
   id: '/lessons/',
   path: '/lessons/',
@@ -121,6 +129,17 @@ const AdminSectionsSectionIdRoute = AdminSectionsSectionIdRouteImport.update({
   path: '/sections/$sectionId',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminQuestionsNewRoute = AdminQuestionsNewRouteImport.update({
+  id: '/questions/new',
+  path: '/questions/new',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminQuestionsQuestionIdRoute =
+  AdminQuestionsQuestionIdRouteImport.update({
+    id: '/questions/$questionId',
+    path: '/questions/$questionId',
+    getParentRoute: () => AdminRoute,
+  } as any)
 const AdminLessonsNewRoute = AdminLessonsNewRouteImport.update({
   id: '/lessons/new',
   path: '/lessons/new',
@@ -155,6 +174,8 @@ export interface FileRoutesByFullPath {
   '/admin/chapters/new': typeof AdminChaptersNewRoute
   '/admin/lessons/$lessonId': typeof AdminLessonsLessonIdRoute
   '/admin/lessons/new': typeof AdminLessonsNewRoute
+  '/admin/questions/$questionId': typeof AdminQuestionsQuestionIdRoute
+  '/admin/questions/new': typeof AdminQuestionsNewRoute
   '/admin/sections/$sectionId': typeof AdminSectionsSectionIdRoute
   '/admin/sections/new': typeof AdminSectionsNewRoute
   '/admin/subjects/$subjectId': typeof AdminSubjectsSubjectIdRoute
@@ -162,6 +183,7 @@ export interface FileRoutesByFullPath {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/admin/chapters': typeof AdminChaptersIndexRoute
   '/admin/lessons': typeof AdminLessonsIndexRoute
+  '/admin/questions': typeof AdminQuestionsIndexRoute
   '/admin/sections': typeof AdminSectionsIndexRoute
   '/admin/subjects': typeof AdminSubjectsIndexRoute
 }
@@ -177,6 +199,8 @@ export interface FileRoutesByTo {
   '/admin/chapters/new': typeof AdminChaptersNewRoute
   '/admin/lessons/$lessonId': typeof AdminLessonsLessonIdRoute
   '/admin/lessons/new': typeof AdminLessonsNewRoute
+  '/admin/questions/$questionId': typeof AdminQuestionsQuestionIdRoute
+  '/admin/questions/new': typeof AdminQuestionsNewRoute
   '/admin/sections/$sectionId': typeof AdminSectionsSectionIdRoute
   '/admin/sections/new': typeof AdminSectionsNewRoute
   '/admin/subjects/$subjectId': typeof AdminSubjectsSubjectIdRoute
@@ -184,6 +208,7 @@ export interface FileRoutesByTo {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/admin/chapters': typeof AdminChaptersIndexRoute
   '/admin/lessons': typeof AdminLessonsIndexRoute
+  '/admin/questions': typeof AdminQuestionsIndexRoute
   '/admin/sections': typeof AdminSectionsIndexRoute
   '/admin/subjects': typeof AdminSubjectsIndexRoute
 }
@@ -202,6 +227,8 @@ export interface FileRoutesById {
   '/admin/chapters/new': typeof AdminChaptersNewRoute
   '/admin/lessons/$lessonId': typeof AdminLessonsLessonIdRoute
   '/admin/lessons/new': typeof AdminLessonsNewRoute
+  '/admin/questions/$questionId': typeof AdminQuestionsQuestionIdRoute
+  '/admin/questions/new': typeof AdminQuestionsNewRoute
   '/admin/sections/$sectionId': typeof AdminSectionsSectionIdRoute
   '/admin/sections/new': typeof AdminSectionsNewRoute
   '/admin/subjects/$subjectId': typeof AdminSubjectsSubjectIdRoute
@@ -209,6 +236,7 @@ export interface FileRoutesById {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/admin/chapters/': typeof AdminChaptersIndexRoute
   '/admin/lessons/': typeof AdminLessonsIndexRoute
+  '/admin/questions/': typeof AdminQuestionsIndexRoute
   '/admin/sections/': typeof AdminSectionsIndexRoute
   '/admin/subjects/': typeof AdminSubjectsIndexRoute
 }
@@ -227,6 +255,8 @@ export interface FileRouteTypes {
     | '/admin/chapters/new'
     | '/admin/lessons/$lessonId'
     | '/admin/lessons/new'
+    | '/admin/questions/$questionId'
+    | '/admin/questions/new'
     | '/admin/sections/$sectionId'
     | '/admin/sections/new'
     | '/admin/subjects/$subjectId'
@@ -234,6 +264,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/admin/chapters'
     | '/admin/lessons'
+    | '/admin/questions'
     | '/admin/sections'
     | '/admin/subjects'
   fileRoutesByTo: FileRoutesByTo
@@ -249,6 +280,8 @@ export interface FileRouteTypes {
     | '/admin/chapters/new'
     | '/admin/lessons/$lessonId'
     | '/admin/lessons/new'
+    | '/admin/questions/$questionId'
+    | '/admin/questions/new'
     | '/admin/sections/$sectionId'
     | '/admin/sections/new'
     | '/admin/subjects/$subjectId'
@@ -256,6 +289,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/admin/chapters'
     | '/admin/lessons'
+    | '/admin/questions'
     | '/admin/sections'
     | '/admin/subjects'
   id:
@@ -273,6 +307,8 @@ export interface FileRouteTypes {
     | '/admin/chapters/new'
     | '/admin/lessons/$lessonId'
     | '/admin/lessons/new'
+    | '/admin/questions/$questionId'
+    | '/admin/questions/new'
     | '/admin/sections/$sectionId'
     | '/admin/sections/new'
     | '/admin/subjects/$subjectId'
@@ -280,6 +316,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/admin/chapters/'
     | '/admin/lessons/'
+    | '/admin/questions/'
     | '/admin/sections/'
     | '/admin/subjects/'
   fileRoutesById: FileRoutesById
@@ -373,6 +410,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSectionsIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/questions/': {
+      id: '/admin/questions/'
+      path: '/questions'
+      fullPath: '/admin/questions'
+      preLoaderRoute: typeof AdminQuestionsIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/lessons/': {
       id: '/admin/lessons/'
       path: '/lessons'
@@ -420,6 +464,20 @@ declare module '@tanstack/react-router' {
       path: '/sections/$sectionId'
       fullPath: '/admin/sections/$sectionId'
       preLoaderRoute: typeof AdminSectionsSectionIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/questions/new': {
+      id: '/admin/questions/new'
+      path: '/questions/new'
+      fullPath: '/admin/questions/new'
+      preLoaderRoute: typeof AdminQuestionsNewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/questions/$questionId': {
+      id: '/admin/questions/$questionId'
+      path: '/questions/$questionId'
+      fullPath: '/admin/questions/$questionId'
+      preLoaderRoute: typeof AdminQuestionsQuestionIdRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/lessons/new': {
@@ -471,12 +529,15 @@ interface AdminRouteChildren {
   AdminChaptersNewRoute: typeof AdminChaptersNewRoute
   AdminLessonsLessonIdRoute: typeof AdminLessonsLessonIdRoute
   AdminLessonsNewRoute: typeof AdminLessonsNewRoute
+  AdminQuestionsQuestionIdRoute: typeof AdminQuestionsQuestionIdRoute
+  AdminQuestionsNewRoute: typeof AdminQuestionsNewRoute
   AdminSectionsSectionIdRoute: typeof AdminSectionsSectionIdRoute
   AdminSectionsNewRoute: typeof AdminSectionsNewRoute
   AdminSubjectsSubjectIdRoute: typeof AdminSubjectsSubjectIdRoute
   AdminSubjectsNewRoute: typeof AdminSubjectsNewRoute
   AdminChaptersIndexRoute: typeof AdminChaptersIndexRoute
   AdminLessonsIndexRoute: typeof AdminLessonsIndexRoute
+  AdminQuestionsIndexRoute: typeof AdminQuestionsIndexRoute
   AdminSectionsIndexRoute: typeof AdminSectionsIndexRoute
   AdminSubjectsIndexRoute: typeof AdminSubjectsIndexRoute
 }
@@ -487,12 +548,15 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminChaptersNewRoute: AdminChaptersNewRoute,
   AdminLessonsLessonIdRoute: AdminLessonsLessonIdRoute,
   AdminLessonsNewRoute: AdminLessonsNewRoute,
+  AdminQuestionsQuestionIdRoute: AdminQuestionsQuestionIdRoute,
+  AdminQuestionsNewRoute: AdminQuestionsNewRoute,
   AdminSectionsSectionIdRoute: AdminSectionsSectionIdRoute,
   AdminSectionsNewRoute: AdminSectionsNewRoute,
   AdminSubjectsSubjectIdRoute: AdminSubjectsSubjectIdRoute,
   AdminSubjectsNewRoute: AdminSubjectsNewRoute,
   AdminChaptersIndexRoute: AdminChaptersIndexRoute,
   AdminLessonsIndexRoute: AdminLessonsIndexRoute,
+  AdminQuestionsIndexRoute: AdminQuestionsIndexRoute,
   AdminSectionsIndexRoute: AdminSectionsIndexRoute,
   AdminSubjectsIndexRoute: AdminSubjectsIndexRoute,
 }

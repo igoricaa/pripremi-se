@@ -9,7 +9,7 @@ import { Authenticated, AuthLoading, Unauthenticated } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { PageSkeleton } from '@/components/admin/skeletons';
-import { convexQuery, useQueryWithStatus } from '@/lib/convex';
+import { useQueryWithStatus } from '@/lib/convex';
 import {
 	SidebarInset,
 	SidebarProvider,
@@ -18,7 +18,6 @@ import {
 
 export const Route = createFileRoute('/admin')({
 	beforeLoad: ({ context, location }) => {
-		// SSR: Redirect to sign-in if not authenticated
 		if (typeof window === 'undefined' && !context.userId) {
 			throw redirect({
 				to: '/sign-in',
@@ -26,18 +25,6 @@ export const Route = createFileRoute('/admin')({
 			});
 		}
 	},
-	loader: async ({ context }) => {
-		// Skip on server - auth not available during SSR
-		if (typeof window === 'undefined') return;
-
-		// Await prefetch - with preload on hover, data is cached for instant navigation
-		await context.queryClient.prefetchQuery(
-			convexQuery(api.lessons.listLessonsWithHierarchy, {})
-		);
-	},
-	// Preload stays fresh for 60 seconds
-	// TODO: Check how this actually works
-	preloadStaleTime: 60_000,
 	component: AdminLayout,
 });
 
@@ -60,15 +47,12 @@ function AdminLayout() {
 }
 
 function AdminLayoutContent() {
-	// Single combined query instead of 2 separate
 	const accessQuery = useQueryWithStatus(api.userProfiles.getAdminAccess);
 
-	// Only block for errors (unauthorized) - don't block on isPending
 	if (accessQuery.isError) {
 		return <Navigate to="/" />;
 	}
 
-	// Access denied - redirect
 	if (accessQuery.data && !accessQuery.data.canAccess) {
 		return <Navigate to="/" />;
 	}

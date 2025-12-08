@@ -1,11 +1,13 @@
+import { Suspense, useState } from 'react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { Plus } from 'lucide-react';
+import { toast } from 'sonner';
+
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import { convexQuery } from '@/lib/convex';
 import { CardWithTableSkeleton } from '@/components/admin/skeletons';
-import { Plus, Pencil, Trash2, GripVertical } from 'lucide-react';
-import { Suspense, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -14,15 +16,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
+import { DataTable } from '@/components/ui/data-table';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -40,15 +34,15 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import { toast } from 'sonner';
+import { getChapterColumns } from './columns';
 
 export const Route = createFileRoute('/admin/chapters/')({
 	loader: async ({ context }) => {
-		// Skip on server - auth not available during SSR
-		if (typeof window === 'undefined') return;
+		if (typeof window === 'undefined' || !context.userId) {
+			return;
+		}
 
-		// Await prefetch - with preload on hover, data is cached for instant navigation
-		await context.queryClient.prefetchQuery(
+		context.queryClient.prefetchQuery(
 			convexQuery(api.chapters.listChaptersWithSubjects, {})
 		);
 	},
@@ -57,29 +51,39 @@ export const Route = createFileRoute('/admin/chapters/')({
 
 function ChaptersPage() {
 	const [deleteId, setDeleteId] = useState<string | null>(null);
-	const [isDeleting, setIsDeleting] = useState(false);
-	const deleteChapter = useMutation(api.chapters.deleteChapter);
+	const deleteChapter = useMutation(
+		api.chapters.deleteChapter
+	).withOptimisticUpdate((localStore, args) => {
+		const current = localStore.getQuery(
+			api.chapters.listChaptersWithSubjects,
+			{}
+		);
+		if (current === undefined) return;
+		const updated = {
+			...current,
+			chapters: current.chapters.filter((item) => item._id !== args.id),
+		};
+		localStore.setQuery(api.chapters.listChaptersWithSubjects, {}, updated);
+		toast.success('Chapter deleted successfully');
+	});
 
 	const handleDelete = async () => {
 		if (!deleteId) return;
 
-		setIsDeleting(true);
+		const idToDelete = deleteId;
+		setDeleteId(null);
+
 		try {
-			await deleteChapter({ id: deleteId });
-			toast.success('Chapter deleted successfully');
+			await deleteChapter({ id: idToDelete });
 		} catch (error) {
 			toast.error(
 				error instanceof Error ? error.message : 'Failed to delete chapter'
 			);
-		} finally {
-			setIsDeleting(false);
-			setDeleteId(null);
 		}
 	};
 
 	return (
 		<div className="space-y-6">
-			{/* Header renders immediately - no data needed */}
 			<div className="flex items-center justify-between">
 				<div>
 					<h1 className="font-bold text-3xl tracking-tight">Chapters</h1>
@@ -93,12 +97,10 @@ function ChaptersPage() {
 				</Button>
 			</div>
 
-			{/* Data component suspends until ready */}
-			<Suspense fallback={<CardWithTableSkeleton rows={5} filterWidth="w-[200px]" />}>
+			<Suspense fallback={<CardWithTableSkeleton preset="chapters" rows={20} filterWidth="w-[200px]" />}>
 				<ChaptersCard onDeleteRequest={(id) => setDeleteId(id)} />
 			</Suspense>
 
-			{/* Delete dialog - always available */}
 			<AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
 				<AlertDialogContent>
 					<AlertDialogHeader>
@@ -110,13 +112,12 @@ function ChaptersPage() {
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
-						<AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
 						<AlertDialogAction
 							onClick={handleDelete}
-							disabled={isDeleting}
 							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
 						>
-							{isDeleting ? 'Deleting...' : 'Delete'}
+							Delete
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>
@@ -126,7 +127,6 @@ function ChaptersPage() {
 }
 
 function ChaptersCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => void }) {
-	// Single query - data already prefetched by loader
 	const { data } = useSuspenseQuery(
 		convexQuery(api.chapters.listChaptersWithSubjects, {})
 	);
@@ -135,14 +135,14 @@ function ChaptersCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => vo
 
 	const [selectedSubjectId, setSelectedSubjectId] = useState<string>('all');
 
-	// Filter chapters by selected subject
 	const filteredChapters =
 		selectedSubjectId === 'all'
 			? chapters
 			: chapters.filter((ch) => ch.subjectId === selectedSubjectId);
 
-	// Create a lookup map for subject names
 	const subjectMap = new Map(subjects.map((s) => [s._id, s.name]));
+
+	const columns = getChapterColumns({ subjectMap, onDelete: onDeleteRequest });
 
 	return (
 		<Card>
@@ -175,72 +175,11 @@ function ChaptersCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => vo
 				</div>
 			</CardHeader>
 			<CardContent>
-				{filteredChapters.length === 0 ? (
-					<div className="py-8 text-center text-muted-foreground">
-						{selectedSubjectId === 'all'
-							? 'No chapters yet. Create your first chapter to get started.'
-							: 'No chapters in this subject. Create one to get started.'}
-					</div>
-				) : (
-					<Table>
-						<TableHeader>
-							<TableRow>
-								<TableHead className="w-12" />
-								<TableHead>Name</TableHead>
-								<TableHead>Subject</TableHead>
-								<TableHead>Slug</TableHead>
-								<TableHead>Status</TableHead>
-								<TableHead>Order</TableHead>
-								<TableHead className="w-24">Actions</TableHead>
-							</TableRow>
-						</TableHeader>
-						<TableBody>
-							{filteredChapters.map((chapter) => (
-								<TableRow key={chapter._id}>
-									<TableCell>
-										<GripVertical className="h-4 w-4 cursor-grab text-muted-foreground" />
-									</TableCell>
-									<TableCell className="font-medium">{chapter.name}</TableCell>
-									<TableCell className="text-muted-foreground">
-										{subjectMap.get(chapter.subjectId) ?? chapter.subjectName ?? 'Unknown'}
-									</TableCell>
-									<TableCell className="font-mono text-muted-foreground text-sm">
-										{chapter.slug}
-									</TableCell>
-									<TableCell>
-										<Badge
-											variant={chapter.isActive ? 'default' : 'secondary'}
-										>
-											{chapter.isActive ? 'Active' : 'Draft'}
-										</Badge>
-									</TableCell>
-									<TableCell>{chapter.order}</TableCell>
-									<TableCell>
-										<div className="flex items-center gap-2">
-											<Button variant="ghost" size="icon" asChild>
-												<Link
-													to="/admin/chapters/$chapterId"
-													params={{ chapterId: chapter._id }}
-												>
-													<Pencil className="h-4 w-4" />
-													<span className="sr-only">Edit</span>
-												</Link>
-											</Button>
-											<Button
-												variant="ghost"
-												size="icon"
-												onClick={() => onDeleteRequest(chapter._id)}
-											>
-												<Trash2 className="h-4 w-4" />
-												<span className="sr-only">Delete</span>
-											</Button>
-										</div>
-									</TableCell>
-								</TableRow>
-							))}
-						</TableBody>
-					</Table>
-				)}
+				<DataTable
+					columns={columns}
+					data={filteredChapters}
+					defaultPageSize={20}
+				/>
 			</CardContent>
 		</Card>
 	);

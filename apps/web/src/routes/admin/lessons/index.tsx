@@ -1,11 +1,13 @@
+import { Suspense, useState } from 'react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { Plus } from 'lucide-react';
+import { toast } from 'sonner';
+
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import { convexQuery } from '@/lib/convex';
 import { CardWithTableSkeleton } from '@/components/admin/skeletons';
-import { Plus, Pencil, Trash2, GripVertical, FileText, Video, Layers } from 'lucide-react';
-import { Suspense, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -14,15 +16,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
+import { DataTable } from '@/components/ui/data-table';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -40,15 +34,13 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import { toast } from 'sonner';
+import { getLessonColumns } from './columns';
 
 export const Route = createFileRoute('/admin/lessons/')({
 	loader: async ({ context }) => {
-		// Skip on server - auth not available during SSR
 		if (typeof window === 'undefined') return;
 
-		// Await prefetch - with preload on hover, data is cached for instant navigation
-		await context.queryClient.prefetchQuery(
+		context.queryClient.prefetchQuery(
 			convexQuery(api.lessons.listLessonsWithHierarchy, {})
 		);
 	},
@@ -57,29 +49,39 @@ export const Route = createFileRoute('/admin/lessons/')({
 
 function LessonsPage() {
 	const [deleteId, setDeleteId] = useState<string | null>(null);
-	const [isDeleting, setIsDeleting] = useState(false);
-	const deleteLesson = useMutation(api.lessons.deleteLesson);
+	const deleteLesson = useMutation(
+		api.lessons.deleteLesson
+	).withOptimisticUpdate((localStore, args) => {
+		const current = localStore.getQuery(
+			api.lessons.listLessonsWithHierarchy,
+			{}
+		);
+		if (current === undefined) return;
+		const updated = {
+			...current,
+			lessons: current.lessons.filter((item) => item._id !== args.id),
+		};
+		localStore.setQuery(api.lessons.listLessonsWithHierarchy, {}, updated);
+		toast.success('Lesson deleted successfully');
+	});
 
 	const handleDelete = async () => {
 		if (!deleteId) return;
 
-		setIsDeleting(true);
+		const idToDelete = deleteId;
+		setDeleteId(null);
+
 		try {
-			await deleteLesson({ id: deleteId });
-			toast.success('Lesson deleted successfully');
+			await deleteLesson({ id: idToDelete });
 		} catch (error) {
 			toast.error(
 				error instanceof Error ? error.message : 'Failed to delete lesson'
 			);
-		} finally {
-			setIsDeleting(false);
-			setDeleteId(null);
 		}
 	};
 
 	return (
 		<div className="space-y-6">
-			{/* Header renders immediately - no data needed */}
 			<div className="flex items-center justify-between">
 				<div>
 					<h1 className="font-bold text-3xl tracking-tight">Lessons</h1>
@@ -93,12 +95,10 @@ function LessonsPage() {
 				</Button>
 			</div>
 
-			{/* Data component suspends until ready */}
-			<Suspense fallback={<CardWithTableSkeleton rows={5} filterWidth="w-[320px]" />}>
+			<Suspense fallback={<CardWithTableSkeleton preset="lessons" rows={20} filterWidth="w-[320px]" />}>
 				<LessonsCard onDeleteRequest={(id) => setDeleteId(id)} />
 			</Suspense>
 
-			{/* Delete dialog - always available */}
 			<AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
 				<AlertDialogContent>
 					<AlertDialogHeader>
@@ -109,13 +109,12 @@ function LessonsPage() {
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
-						<AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
 						<AlertDialogAction
 							onClick={handleDelete}
-							disabled={isDeleting}
 							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
 						>
-							{isDeleting ? 'Deleting...' : 'Delete'}
+							Delete
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>
@@ -125,7 +124,6 @@ function LessonsPage() {
 }
 
 function LessonsCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => void }) {
-	// Single query - data already prefetched by loader
 	const { data } = useSuspenseQuery(
 		convexQuery(api.lessons.listLessonsWithHierarchy, {})
 	);
@@ -135,7 +133,6 @@ function LessonsCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => voi
 
 	const [selectedSectionId, setSelectedSectionId] = useState<string>('all');
 
-	// Filter lessons by selected section
 	const filteredLessons =
 		selectedSectionId === 'all'
 			? lessons
@@ -165,16 +162,7 @@ function LessonsCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => voi
 		chaptersBySubject.get(subjectId)?.push(chapter);
 	}
 
-	const getContentTypeIcon = (contentType: string) => {
-		switch (contentType) {
-			case 'video':
-				return <Video className="h-4 w-4" />;
-			case 'interactive':
-				return <Layers className="h-4 w-4" />;
-			default:
-				return <FileText className="h-4 w-4" />;
-		}
-	};
+	const columns = getLessonColumns({ sectionMap, chapterMap, onDelete: onDeleteRequest });
 
 	return (
 		<Card>
@@ -227,88 +215,11 @@ function LessonsCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => voi
 				</div>
 			</CardHeader>
 			<CardContent>
-				{filteredLessons.length === 0 ? (
-					<div className="py-8 text-center text-muted-foreground">
-						{selectedSectionId === 'all'
-							? 'No lessons yet. Create your first lesson to get started.'
-							: 'No lessons in this section. Create one to get started.'}
-					</div>
-				) : (
-					<Table>
-						<TableHeader>
-							<TableRow>
-								<TableHead className="w-12" />
-								<TableHead>Title</TableHead>
-								<TableHead>Section</TableHead>
-								<TableHead>Type</TableHead>
-								<TableHead>Duration</TableHead>
-								<TableHead>Status</TableHead>
-								<TableHead>Order</TableHead>
-								<TableHead className="w-24">Actions</TableHead>
-							</TableRow>
-						</TableHeader>
-						<TableBody>
-							{filteredLessons.map((lesson) => {
-								const section = sectionMap.get(lesson.sectionId);
-								const chapter = section ? chapterMap.get(section.chapterId) : null;
-								return (
-									<TableRow key={lesson._id}>
-										<TableCell>
-											<GripVertical className="h-4 w-4 cursor-grab text-muted-foreground" />
-										</TableCell>
-										<TableCell className="font-medium">
-											{lesson.title}
-										</TableCell>
-										<TableCell className="text-muted-foreground">
-											<div className="flex flex-col">
-												<span className="text-xs">{chapter?.name ?? lesson.chapterName ?? 'Unknown'}</span>
-												<span>{section?.name ?? lesson.sectionName ?? 'Unknown'}</span>
-											</div>
-										</TableCell>
-										<TableCell>
-											<div className="flex items-center gap-1.5 text-muted-foreground">
-												{getContentTypeIcon(lesson.contentType)}
-												<span className="capitalize">{lesson.contentType}</span>
-											</div>
-										</TableCell>
-										<TableCell className="text-muted-foreground">
-											{lesson.estimatedMinutes} min
-										</TableCell>
-										<TableCell>
-											<Badge
-												variant={lesson.isActive ? 'default' : 'secondary'}
-											>
-												{lesson.isActive ? 'Active' : 'Draft'}
-											</Badge>
-										</TableCell>
-										<TableCell>{lesson.order}</TableCell>
-										<TableCell>
-											<div className="flex items-center gap-2">
-												<Button variant="ghost" size="icon" asChild>
-													<Link
-														to="/admin/lessons/$lessonId"
-														params={{ lessonId: lesson._id }}
-													>
-														<Pencil className="h-4 w-4" />
-														<span className="sr-only">Edit</span>
-													</Link>
-												</Button>
-												<Button
-													variant="ghost"
-													size="icon"
-													onClick={() => onDeleteRequest(lesson._id)}
-												>
-													<Trash2 className="h-4 w-4" />
-													<span className="sr-only">Delete</span>
-												</Button>
-											</div>
-										</TableCell>
-									</TableRow>
-								);
-							})}
-						</TableBody>
-					</Table>
-				)}
+				<DataTable
+					columns={columns}
+					data={filteredLessons}
+					defaultPageSize={20}
+				/>
 			</CardContent>
 		</Card>
 	);

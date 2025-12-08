@@ -1,5 +1,12 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import {
+	DataTableSkeleton,
+	SKELETON_PRESETS,
+	col,
+	type SkeletonColumnConfig,
+	type SkeletonPreset,
+} from '@/components/ui/data-table';
 
 export function StatsGridSkeleton() {
 	return (
@@ -62,15 +69,28 @@ export function CardHeaderSkeleton({ filterWidth = 'w-[280px]' }: { filterWidth?
 	);
 }
 
+interface CardWithTableSkeletonProps {
+	rows?: number;
+	filterWidth?: string;
+	preset?: SkeletonPreset;
+	columns?: SkeletonColumnConfig[];
+}
+
 export function CardWithTableSkeleton({
 	rows = 5,
 	filterWidth = 'w-[280px]',
-}: { rows?: number; filterWidth?: string }) {
+	preset,
+	columns,
+}: CardWithTableSkeletonProps) {
+	const skeletonColumns = preset
+		? SKELETON_PRESETS[preset]
+		: columns ?? [col('text'), col('text'), col('badge'), col('actions')];
+
 	return (
 		<Card>
 			<CardHeaderSkeleton filterWidth={filterWidth} />
 			<CardContent>
-				<TableSkeleton rows={rows} />
+				<DataTableSkeleton columns={skeletonColumns} rows={rows} />
 			</CardContent>
 		</Card>
 	);

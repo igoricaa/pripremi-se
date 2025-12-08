@@ -3,6 +3,7 @@ export * from './content-types';
 export * from './file-types';
 export * from './user-roles';
 export * from './question-difficulty';
+export * from './question-labels';
 export * from './test-attempt-status';
 export * from './enrollment-status';
 export * from './lesson-progress-status';

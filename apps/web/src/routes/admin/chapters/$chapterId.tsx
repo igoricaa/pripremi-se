@@ -40,7 +40,6 @@ function EditChapterPage() {
 		defaultValues: {
 			name: chapter?.name ?? '',
 			description: chapter?.description ?? '',
-			slug: chapter?.slug ?? '',
 			order: chapter?.order ?? 0,
 			isActive: chapter?.isActive ?? false,
 		},
@@ -50,7 +49,7 @@ function EditChapterPage() {
 					id: chapterId,
 					name: value.name,
 					description: value.description || undefined,
-					slug: value.slug || undefined,
+					slug: undefined, // Slug is read-only, not updated
 					order: value.order,
 					isActive: value.isActive,
 				});
@@ -71,7 +70,6 @@ function EditChapterPage() {
 		form.reset({
 			name: chapter.name,
 			description: chapter.description ?? '',
-			slug: chapter.slug ?? '',
 			order: chapter.order ?? 0,
 			isActive: chapter.isActive ?? false,
 		});
@@ -218,23 +216,15 @@ function EditChapterPage() {
 						</form.Field>
 
 						<div className="grid gap-4 sm:grid-cols-2">
-							<form.Field name="slug">
-								{(field) => (
-									<div className="space-y-2">
-										<Label htmlFor="slug">Slug</Label>
-										<Input
-											id="slug"
-											placeholder="auto-generated from name"
-											value={field.state.value}
-											onChange={(e) => field.handleChange(e.target.value)}
-											onBlur={field.handleBlur}
-										/>
-										<p className="text-muted-foreground text-xs">
-											Leave empty to auto-generate from name
-										</p>
-									</div>
-								)}
-							</form.Field>
+							<div className="space-y-2">
+								<Label htmlFor="slug">Slug</Label>
+								<div className="text-muted-foreground text-sm rounded-md border bg-muted/50 px-3 py-2">
+									{chapter.slug}
+								</div>
+								<p className="text-muted-foreground text-xs">
+									Auto-generated from name
+								</p>
+							</div>
 
 							<form.Field name="order">
 								{(field) => (

@@ -1,11 +1,13 @@
+import { Suspense, useState } from 'react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { Plus } from 'lucide-react';
+import { toast } from 'sonner';
+
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import { convexQuery } from '@/lib/convex';
 import { CardWithTableSkeleton } from '@/components/admin/skeletons';
-import { Plus, Pencil, Trash2, GripVertical } from 'lucide-react';
-import { Suspense, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -14,15 +16,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
+import { DataTable } from '@/components/ui/data-table';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -40,15 +34,13 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import { toast } from 'sonner';
+import { getSectionColumns } from './columns';
 
 export const Route = createFileRoute('/admin/sections/')({
 	loader: async ({ context }) => {
-		// Skip on server - auth not available during SSR
 		if (typeof window === 'undefined') return;
 
-		// Await prefetch - with preload on hover, data is cached for instant navigation
-		await context.queryClient.prefetchQuery(
+		context.queryClient.prefetchQuery(
 			convexQuery(api.sections.listSectionsWithHierarchy, {})
 		);
 	},
@@ -57,23 +49,34 @@ export const Route = createFileRoute('/admin/sections/')({
 
 function SectionsPage() {
 	const [deleteId, setDeleteId] = useState<string | null>(null);
-	const [isDeleting, setIsDeleting] = useState(false);
-	const deleteSection = useMutation(api.sections.deleteSection);
+	const deleteSection = useMutation(
+		api.sections.deleteSection
+	).withOptimisticUpdate((localStore, args) => {
+		const current = localStore.getQuery(
+			api.sections.listSectionsWithHierarchy,
+			{}
+		);
+		if (current === undefined) return;
+		const updated = {
+			...current,
+			sections: current.sections.filter((item) => item._id !== args.id),
+		};
+		localStore.setQuery(api.sections.listSectionsWithHierarchy, {}, updated);
+		toast.success('Section deleted successfully');
+	});
 
 	const handleDelete = async () => {
 		if (!deleteId) return;
 
-		setIsDeleting(true);
+		const idToDelete = deleteId;
+		setDeleteId(null); // Close dialog immediately
+
 		try {
-			await deleteSection({ id: deleteId });
-			toast.success('Section deleted successfully');
+			await deleteSection({ id: idToDelete });
 		} catch (error) {
 			toast.error(
 				error instanceof Error ? error.message : 'Failed to delete section'
 			);
-		} finally {
-			setIsDeleting(false);
-			setDeleteId(null);
 		}
 	};
 
@@ -94,7 +97,7 @@ function SectionsPage() {
 			</div>
 
 			{/* Data component suspends until ready */}
-			<Suspense fallback={<CardWithTableSkeleton rows={5} filterWidth="w-[280px]" />}>
+			<Suspense fallback={<CardWithTableSkeleton preset="sections" rows={20} filterWidth="w-[280px]" />}>
 				<SectionsCard onDeleteRequest={(id) => setDeleteId(id)} />
 			</Suspense>
 
@@ -109,13 +112,12 @@ function SectionsPage() {
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
-						<AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
 						<AlertDialogAction
 							onClick={handleDelete}
-							disabled={isDeleting}
 							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
 						>
-							{isDeleting ? 'Deleting...' : 'Delete'}
+							Delete
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>
@@ -154,6 +156,8 @@ function SectionsCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => vo
 		}
 		chaptersBySubject.get(subjectId)?.push(chapter);
 	}
+
+	const columns = getSectionColumns({ chapterMap, onDelete: onDeleteRequest });
 
 	return (
 		<Card>
@@ -195,77 +199,11 @@ function SectionsCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => vo
 				</div>
 			</CardHeader>
 			<CardContent>
-				{filteredSections.length === 0 ? (
-					<div className="py-8 text-center text-muted-foreground">
-						{selectedChapterId === 'all'
-							? 'No sections yet. Create your first section to get started.'
-							: 'No sections in this chapter. Create one to get started.'}
-					</div>
-				) : (
-					<Table>
-						<TableHeader>
-							<TableRow>
-								<TableHead className="w-12" />
-								<TableHead>Name</TableHead>
-								<TableHead>Chapter</TableHead>
-								<TableHead>Slug</TableHead>
-								<TableHead>Status</TableHead>
-								<TableHead>Order</TableHead>
-								<TableHead className="w-24">Actions</TableHead>
-							</TableRow>
-						</TableHeader>
-						<TableBody>
-							{filteredSections.map((section) => {
-								const chapter = chapterMap.get(section.chapterId);
-								return (
-									<TableRow key={section._id}>
-										<TableCell>
-											<GripVertical className="h-4 w-4 cursor-grab text-muted-foreground" />
-										</TableCell>
-										<TableCell className="font-medium">
-											{section.name}
-										</TableCell>
-										<TableCell className="text-muted-foreground">
-											{chapter?.name ?? section.chapterName ?? 'Unknown'}
-										</TableCell>
-										<TableCell className="font-mono text-muted-foreground text-sm">
-											{section.slug}
-										</TableCell>
-										<TableCell>
-											<Badge
-												variant={section.isActive ? 'default' : 'secondary'}
-											>
-												{section.isActive ? 'Active' : 'Draft'}
-											</Badge>
-										</TableCell>
-										<TableCell>{section.order}</TableCell>
-										<TableCell>
-											<div className="flex items-center gap-2">
-												<Button variant="ghost" size="icon" asChild>
-													<Link
-														to="/admin/sections/$sectionId"
-														params={{ sectionId: section._id }}
-													>
-														<Pencil className="h-4 w-4" />
-														<span className="sr-only">Edit</span>
-													</Link>
-												</Button>
-												<Button
-													variant="ghost"
-													size="icon"
-													onClick={() => onDeleteRequest(section._id)}
-												>
-													<Trash2 className="h-4 w-4" />
-													<span className="sr-only">Delete</span>
-												</Button>
-											</div>
-										</TableCell>
-									</TableRow>
-								);
-							})}
-						</TableBody>
-					</Table>
-				)}
+				<DataTable
+					columns={columns}
+					data={filteredSections}
+					defaultPageSize={20}
+				/>
 			</CardContent>
 		</Card>
 	);

@@ -1,11 +1,13 @@
+import { Suspense, useState } from 'react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { Plus } from 'lucide-react';
+import { toast } from 'sonner';
+
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import { convexQuery } from '@/lib/convex';
 import { CardWithTableSkeleton } from '@/components/admin/skeletons';
-import { Plus, Pencil, Trash2, GripVertical } from 'lucide-react';
-import { Suspense, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -14,15 +16,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
+import { DataTable } from '@/components/ui/data-table';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -33,15 +27,13 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { toast } from 'sonner';
+import { getSubjectColumns } from './columns';
 
 export const Route = createFileRoute('/admin/subjects/')({
 	loader: async ({ context }) => {
-		// Skip on server - auth not available during SSR
 		if (typeof window === 'undefined') return;
 
-		// Await prefetch - with preload on hover, data is cached for instant navigation
-		await context.queryClient.prefetchQuery(
+		context.queryClient.prefetchQuery(
 			convexQuery(api.subjects.listSubjects, {})
 		);
 	},
@@ -50,23 +42,28 @@ export const Route = createFileRoute('/admin/subjects/')({
 
 function SubjectsPage() {
 	const [deleteId, setDeleteId] = useState<string | null>(null);
-	const [isDeleting, setIsDeleting] = useState(false);
-	const deleteSubject = useMutation(api.subjects.deleteSubject);
+	const deleteSubject = useMutation(
+		api.subjects.deleteSubject
+	).withOptimisticUpdate((localStore, args) => {
+		const current = localStore.getQuery(api.subjects.listSubjects, {});
+		if (current === undefined) return;
+		const updated = current.filter((item) => item._id !== args.id);
+		localStore.setQuery(api.subjects.listSubjects, {}, updated);
+		toast.success('Subject deleted successfully');
+	});
 
 	const handleDelete = async () => {
 		if (!deleteId) return;
 
-		setIsDeleting(true);
+		const idToDelete = deleteId;
+		setDeleteId(null); // Close dialog immediately
+
 		try {
-			await deleteSubject({ id: deleteId });
-			toast.success('Subject deleted successfully');
+			await deleteSubject({ id: idToDelete });
 		} catch (error) {
 			toast.error(
 				error instanceof Error ? error.message : 'Failed to delete subject'
 			);
-		} finally {
-			setIsDeleting(false);
-			setDeleteId(null);
 		}
 	};
 
@@ -87,7 +84,7 @@ function SubjectsPage() {
 			</div>
 
 			{/* Data component suspends until ready */}
-			<Suspense fallback={<CardWithTableSkeleton rows={5} />}>
+			<Suspense fallback={<CardWithTableSkeleton preset="subjects" rows={20} />}>
 				<SubjectsCard onDeleteRequest={(id) => setDeleteId(id)} />
 			</Suspense>
 
@@ -103,13 +100,12 @@ function SubjectsPage() {
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
-						<AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
 						<AlertDialogAction
 							onClick={handleDelete}
-							disabled={isDeleting}
 							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
 						>
-							{isDeleting ? 'Deleting...' : 'Delete'}
+							Delete
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>
@@ -124,6 +120,8 @@ function SubjectsCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => vo
 		convexQuery(api.subjects.listSubjects, {})
 	);
 
+	const columns = getSubjectColumns({ onDelete: onDeleteRequest });
+
 	return (
 		<Card>
 			<CardHeader>
@@ -133,68 +131,11 @@ function SubjectsCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => vo
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
-				{subjects.length === 0 ? (
-					<div className="py-8 text-center text-muted-foreground">
-						No subjects yet. Create your first subject to get started.
-					</div>
-				) : (
-					<Table>
-						<TableHeader>
-							<TableRow>
-								<TableHead className="w-12" />
-								<TableHead>Name</TableHead>
-								<TableHead>Slug</TableHead>
-								<TableHead>Status</TableHead>
-								<TableHead>Order</TableHead>
-								<TableHead className="w-24">Actions</TableHead>
-							</TableRow>
-						</TableHeader>
-						<TableBody>
-							{subjects.map((subject) => (
-								<TableRow key={subject._id}>
-									<TableCell>
-										<GripVertical className="h-4 w-4 cursor-grab text-muted-foreground" />
-									</TableCell>
-									<TableCell className="font-medium">
-										{subject.name}
-									</TableCell>
-									<TableCell className="font-mono text-muted-foreground text-sm">
-										{subject.slug}
-									</TableCell>
-									<TableCell>
-										<Badge
-											variant={subject.isActive ? 'default' : 'secondary'}
-										>
-											{subject.isActive ? 'Active' : 'Draft'}
-										</Badge>
-									</TableCell>
-									<TableCell>{subject.order}</TableCell>
-									<TableCell>
-										<div className="flex items-center gap-2">
-											<Button variant="ghost" size="icon" asChild>
-												<Link
-													to="/admin/subjects/$subjectId"
-													params={{ subjectId: subject._id }}
-												>
-													<Pencil className="h-4 w-4" />
-													<span className="sr-only">Edit</span>
-												</Link>
-											</Button>
-											<Button
-												variant="ghost"
-												size="icon"
-												onClick={() => onDeleteRequest(subject._id)}
-											>
-												<Trash2 className="h-4 w-4" />
-												<span className="sr-only">Delete</span>
-											</Button>
-										</div>
-									</TableCell>
-								</TableRow>
-							))}
-						</TableBody>
-					</Table>
-				)}
+				<DataTable
+					columns={columns}
+					data={subjects}
+					defaultPageSize={20}
+				/>
 			</CardContent>
 		</Card>
 	);
