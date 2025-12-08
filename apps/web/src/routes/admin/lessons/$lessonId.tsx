@@ -3,7 +3,7 @@ import { useMutation } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import { useForm } from '@tanstack/react-form';
 import { updateLessonSchema, CONTENT_TYPES } from '@pripremi-se/shared';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -24,10 +24,21 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { useQueryWithStatus } from '@/lib/convex';
 import { QueryError } from '@/components/QueryError';
 import { MediaLibrary } from '@/components/admin/MediaLibrary';
+import { useState } from 'react';
 
 export const Route = createFileRoute('/admin/lessons/$lessonId')({
 	component: EditLessonPage,
@@ -46,6 +57,8 @@ function EditLessonPage() {
 	const { data: chapters } = useQueryWithStatus(api.chapters.listChapters);
 	const { data: subjects } = useQueryWithStatus(api.subjects.listSubjects);
 	const updateLesson = useMutation(api.lessons.updateLesson);
+	const deleteLesson = useMutation(api.lessons.deleteLesson);
+	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
 	const form = useForm({
 		defaultValues: {
@@ -53,7 +66,6 @@ function EditLessonPage() {
 			content: lesson?.content ?? '',
 			contentType: (lesson?.contentType ?? 'text') as 'text' | 'video' | 'interactive',
 			estimatedMinutes: lesson?.estimatedMinutes ?? 5,
-			slug: lesson?.slug ?? '',
 			order: lesson?.order ?? 0,
 			isActive: lesson?.isActive ?? false,
 		},
@@ -65,7 +77,7 @@ function EditLessonPage() {
 					content: value.content,
 					contentType: value.contentType,
 					estimatedMinutes: value.estimatedMinutes,
-					slug: value.slug || undefined,
+					slug: undefined, // Slug is read-only, not updated
 					order: value.order,
 					isActive: value.isActive,
 				});
@@ -87,7 +99,6 @@ function EditLessonPage() {
 			content: lesson.content ?? '',
 			contentType: lesson.contentType as 'text' | 'video' | 'interactive',
 			estimatedMinutes: lesson.estimatedMinutes ?? 5,
-			slug: lesson.slug ?? '',
 			order: lesson.order ?? 0,
 			isActive: lesson.isActive ?? false,
 		});
@@ -154,6 +165,18 @@ function EditLessonPage() {
 	const section = sections?.find((s) => s._id === lesson.sectionId);
 	const chapter = chapters?.find((c) => c._id === section?.chapterId);
 	const subject = subjects?.find((s) => s._id === chapter?.subjectId);
+
+	const handleDelete = async () => {
+		try {
+			await deleteLesson({ id: lessonId });
+			toast.success('Lesson deleted successfully');
+			navigate({ to: '/admin/lessons' });
+		} catch (error) {
+			toast.error(
+				error instanceof Error ? error.message : 'Failed to delete lesson'
+			);
+		}
+	};
 
 	return (
 		<div className="space-y-6">
@@ -240,23 +263,33 @@ function EditLessonPage() {
 							</CardContent>
 						</Card>
 
-						<div className="flex justify-end gap-4">
+						<div className="flex justify-between gap-4">
 							<Button
 								type="button"
-								variant="outline"
-								onClick={() => navigate({ to: '/admin/lessons' })}
+								variant="destructive"
+								onClick={() => setShowDeleteDialog(true)}
 							>
-								Cancel
+								<Trash2 className="mr-2 h-4 w-4" />
+								Delete
 							</Button>
-							<form.Subscribe
-								selector={(state) => [state.canSubmit, state.isSubmitting]}
-							>
-								{([canSubmit, isSubmitting]) => (
-									<Button type="submit" disabled={!canSubmit || isSubmitting}>
-										{isSubmitting ? 'Saving...' : 'Save Changes'}
-									</Button>
-								)}
-							</form.Subscribe>
+							<div className="flex gap-4">
+								<Button
+									type="button"
+									variant="outline"
+									onClick={() => navigate({ to: '/admin/lessons' })}
+								>
+									Cancel
+								</Button>
+								<form.Subscribe
+									selector={(state) => [state.canSubmit, state.isSubmitting]}
+								>
+									{([canSubmit, isSubmitting]) => (
+										<Button type="submit" disabled={!canSubmit || isSubmitting}>
+											{isSubmitting ? 'Saving...' : 'Save Changes'}
+										</Button>
+									)}
+								</form.Subscribe>
+							</div>
 						</div>
 					</TabsContent>
 
@@ -336,23 +369,15 @@ function EditLessonPage() {
 									)}
 								</form.Field>
 
-								<form.Field name="slug">
-									{(field) => (
-										<div className="space-y-2">
-											<Label htmlFor="slug">Slug</Label>
-											<Input
-												id="slug"
-												placeholder="auto-generated from title"
-												value={field.state.value}
-												onChange={(e) => field.handleChange(e.target.value)}
-												onBlur={field.handleBlur}
-											/>
-											<p className="text-muted-foreground text-xs">
-												Leave empty to auto-generate from title
-											</p>
-										</div>
-									)}
-								</form.Field>
+								<div className="space-y-2">
+									<Label htmlFor="slug">Slug</Label>
+									<div className="text-muted-foreground text-sm rounded-md border bg-muted/50 px-3 py-2">
+										{lesson.slug}
+									</div>
+									<p className="text-muted-foreground text-xs">
+										Auto-generated from title
+									</p>
+								</div>
 
 								<form.Field name="order">
 									{(field) => (
@@ -394,27 +419,58 @@ function EditLessonPage() {
 							</CardContent>
 						</Card>
 
-						<div className="flex justify-end gap-4">
+						<div className="flex justify-between gap-4">
 							<Button
 								type="button"
-								variant="outline"
-								onClick={() => navigate({ to: '/admin/lessons' })}
+								variant="destructive"
+								onClick={() => setShowDeleteDialog(true)}
 							>
-								Cancel
+								<Trash2 className="mr-2 h-4 w-4" />
+								Delete
 							</Button>
-							<form.Subscribe
-								selector={(state) => [state.canSubmit, state.isSubmitting]}
-							>
-								{([canSubmit, isSubmitting]) => (
-									<Button type="submit" disabled={!canSubmit || isSubmitting}>
-										{isSubmitting ? 'Saving...' : 'Save Changes'}
-									</Button>
-								)}
-							</form.Subscribe>
+							<div className="flex gap-4">
+								<Button
+									type="button"
+									variant="outline"
+									onClick={() => navigate({ to: '/admin/lessons' })}
+								>
+									Cancel
+								</Button>
+								<form.Subscribe
+									selector={(state) => [state.canSubmit, state.isSubmitting]}
+								>
+									{([canSubmit, isSubmitting]) => (
+										<Button type="submit" disabled={!canSubmit || isSubmitting}>
+											{isSubmitting ? 'Saving...' : 'Save Changes'}
+										</Button>
+									)}
+								</form.Subscribe>
+							</div>
 						</div>
 					</TabsContent>
 				</form>
 			</Tabs>
+
+			<AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>Delete Lesson</AlertDialogTitle>
+						<AlertDialogDescription>
+							Are you sure you want to delete this lesson? This action cannot
+							be undone.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogAction
+							onClick={handleDelete}
+							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+						>
+							Delete
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</div>
 	);
 }

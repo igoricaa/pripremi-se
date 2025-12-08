@@ -2,8 +2,17 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useMutation, useQuery } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import { useForm } from '@tanstack/react-form';
-import { updateQuestionSchema, QUESTION_TYPES, QUESTION_DIFFICULTY, questionTypeLabels, difficultyLabels } from '@pripremi-se/shared';
-import { ArrowLeft } from 'lucide-react';
+import {
+	updateQuestionSchema,
+	QUESTION_TYPES,
+	QUESTION_DIFFICULTY,
+	questionTypeLabels,
+	difficultyLabels,
+	questionTypeRequiresOptions,
+	type QuestionType,
+	type QuestionDifficulty,
+} from '@pripremi-se/shared';
+import { ArrowLeft, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -24,6 +33,16 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import { Combobox } from '@/components/ui/combobox';
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { QuestionOptionsEditor, type QuestionOption } from '@/components/admin/QuestionOptionsEditor';
 import { useState, useEffect } from 'react';
@@ -32,15 +51,6 @@ import type { Id } from '@pripremi-se/backend/convex/_generated/dataModel';
 export const Route = createFileRoute('/admin/questions/$questionId')({
 	component: EditQuestionPage,
 });
-
-type QuestionType = typeof QUESTION_TYPES[keyof typeof QUESTION_TYPES];
-
-// Question types that require options
-const typesWithOptions: QuestionType[] = [
-	QUESTION_TYPES.SINGLE_CHOICE,
-	QUESTION_TYPES.MULTIPLE_CHOICE,
-	QUESTION_TYPES.TRUE_FALSE,
-];
 
 function EditQuestionPage() {
 	const { questionId } = Route.useParams();
@@ -91,6 +101,8 @@ function EditQuestionPage() {
 	const createQuestionOption = useMutation(api.questions.createQuestionOption);
 	const updateQuestionOption = useMutation(api.questions.updateQuestionOption);
 	const deleteQuestionOption = useMutation(api.questions.deleteQuestionOption);
+	const deleteQuestion = useMutation(api.questions.deleteQuestion);
+	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
 	// Track original options for comparison
 	const [originalOptions, setOriginalOptions] = useState<Array<QuestionOption & { _id?: string }>>([]);
@@ -108,14 +120,14 @@ function EditQuestionPage() {
 			type: QUESTION_TYPES.SINGLE_CHOICE as QuestionType,
 			points: 1,
 			allowPartialCredit: false,
-			lessonId: 'none',
-			difficulty: QUESTION_DIFFICULTY.MEDIUM as string,
+			lessonId: undefined as string | undefined,
+			difficulty: QUESTION_DIFFICULTY.MEDIUM as QuestionDifficulty,
 			isActive: false,
 		},
 		onSubmit: async ({ value }) => {
 			try {
 				const questionType = value.type;
-				const needsOptions = typesWithOptions.includes(questionType);
+				const needsOptions = questionTypeRequiresOptions(questionType);
 
 				// Validate options for types that need them
 				if (needsOptions) {
@@ -149,7 +161,7 @@ function EditQuestionPage() {
 					type: value.type,
 					points: value.points,
 					allowPartialCredit: value.allowPartialCredit,
-					lessonId: value.lessonId && value.lessonId !== 'none' ? value.lessonId : undefined,
+					lessonId: value.lessonId || undefined,
 					difficulty: value.difficulty || undefined,
 					isActive: value.isActive,
 				});
@@ -215,6 +227,18 @@ function EditQuestionPage() {
 		}
 	};
 
+	const handleDelete = async () => {
+		try {
+			await deleteQuestion({ id: questionId });
+			toast.success('Question deleted successfully');
+			navigate({ to: '/admin/questions', search: { limit: 20, type: 'all', difficulty: 'all' } });
+		} catch (error) {
+			toast.error(
+				error instanceof Error ? error.message : 'Failed to delete question'
+			);
+		}
+	};
+
 	// Initialize options and form from loaded question (single initialization)
 	useEffect(() => {
 		if (question && !isLoaded) {
@@ -238,8 +262,8 @@ function EditQuestionPage() {
 			form.setFieldValue('type', question.type as QuestionType);
 			form.setFieldValue('points', question.points ?? 1);
 			form.setFieldValue('allowPartialCredit', question.allowPartialCredit ?? false);
-			form.setFieldValue('lessonId', question.lessonId ?? 'none');
-			form.setFieldValue('difficulty', question.difficulty ?? QUESTION_DIFFICULTY.MEDIUM);
+			form.setFieldValue('lessonId', question.lessonId ?? undefined);
+			form.setFieldValue('difficulty', (question.difficulty ?? QUESTION_DIFFICULTY.MEDIUM) as QuestionDifficulty);
 			form.setFieldValue('isActive', question.isActive ?? false);
 
 			setIsLoaded(true);
@@ -262,7 +286,7 @@ function EditQuestionPage() {
 	}, [isLoaded, linkedChapter, linkedSection, linkedLesson, hierarchyInitialized]);
 
 	// Use local state for UI reactivity (form.state.values.type is not reactive outside form.Field)
-	const needsOptions = typesWithOptions.includes(currentQuestionType);
+	const needsOptions = questionTypeRequiresOptions(currentQuestionType);
 
 	// Handle question type changes - reset options appropriately
 	const handleTypeChange = (newType: QuestionType) => {
@@ -277,7 +301,7 @@ function EditQuestionPage() {
 				{ text: 'True', isCorrect: false, order: 0 },
 				{ text: 'False', isCorrect: false, order: 1 },
 			]);
-		} else if (typesWithOptions.includes(newType) && !typesWithOptions.includes(prevType)) {
+		} else if (questionTypeRequiresOptions(newType) && !questionTypeRequiresOptions(prevType)) {
 			// Switching from non-option type to option type
 			setOptions([
 				{ text: '', isCorrect: false, order: 0 },
@@ -427,6 +451,7 @@ function EditQuestionPage() {
 										<div className="space-y-2">
 											<Label htmlFor="type">Question Type *</Label>
 											<Select
+												key={isLoaded ? 'loaded' : 'loading'}
 												value={field.state.value}
 												onValueChange={(value) => handleTypeChange(value as QuestionType)}
 											>
@@ -452,7 +477,7 @@ function EditQuestionPage() {
 											<Select
 												key={isLoaded ? 'loaded' : 'loading'}
 												value={field.state.value}
-												onValueChange={field.handleChange}
+												onValueChange={(value) => field.handleChange(value as QuestionDifficulty)}
 											>
 												<SelectTrigger id="difficulty">
 													<SelectValue />
@@ -531,7 +556,7 @@ function EditQuestionPage() {
 												setSubjectId(id);
 												setChapterId(undefined);
 												setSectionId(undefined);
-												form.setFieldValue('lessonId', 'none');
+												form.setFieldValue('lessonId', undefined);
 											}}
 											placeholder="Select subject..."
 											searchPlaceholder="Search subjects..."
@@ -547,7 +572,7 @@ function EditQuestionPage() {
 											onValueChange={(id) => {
 												setChapterId(id);
 												setSectionId(undefined);
-												form.setFieldValue('lessonId', 'none');
+												form.setFieldValue('lessonId', undefined);
 											}}
 											placeholder={subjectId ? 'Select chapter...' : 'Select subject first'}
 											searchPlaceholder="Search chapters..."
@@ -563,7 +588,7 @@ function EditQuestionPage() {
 											value={sectionId}
 											onValueChange={(id) => {
 												setSectionId(id);
-												form.setFieldValue('lessonId', 'none');
+												form.setFieldValue('lessonId', undefined);
 											}}
 											placeholder={chapterId ? 'Select section...' : 'Select chapter first'}
 											searchPlaceholder="Search sections..."
@@ -577,13 +602,10 @@ function EditQuestionPage() {
 											<div className="space-y-2">
 												<Label className="text-xs text-muted-foreground">Lesson</Label>
 												<Combobox
-													options={[
-														{ value: 'none', label: 'No lesson' },
-														...(lessons?.map((l) => ({ value: l._id, label: l.title })) ?? []),
-													]}
-													value={field.state.value || 'none'}
-													onValueChange={(id) => field.handleChange(id ?? 'none')}
-													placeholder={sectionId ? 'Select lesson...' : 'Select section first'}
+													options={lessons?.map((l) => ({ value: l._id, label: l.title })) ?? []}
+													value={field.state.value}
+													onValueChange={field.handleChange}
+													placeholder={sectionId ? 'Select lesson (optional)...' : 'Select section first'}
 													searchPlaceholder="Search lessons..."
 													emptyText="No lessons found"
 													disabled={!sectionId}
@@ -619,6 +641,14 @@ function EditQuestionPage() {
 						<div className="flex gap-4">
 							<Button
 								type="button"
+								variant="destructive"
+								onClick={() => setShowDeleteDialog(true)}
+							>
+								<Trash2 className="mr-2 h-4 w-4" />
+								Delete
+							</Button>
+							<Button
+								type="button"
 								variant="outline"
 								className="flex-1"
 								onClick={() => navigate({ to: '/admin/questions', search: { limit: 20, type: 'all', difficulty: 'all' } })}
@@ -642,6 +672,27 @@ function EditQuestionPage() {
 					</div>
 				</div>
 			</form>
+
+			<AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>Delete Question</AlertDialogTitle>
+						<AlertDialogDescription>
+							Are you sure you want to delete this question? This action cannot
+							be undone.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogAction
+							onClick={handleDelete}
+							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+						>
+							Delete
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</div>
 	);
 }

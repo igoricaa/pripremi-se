@@ -3,7 +3,7 @@ import { useMutation } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import { useForm } from '@tanstack/react-form';
 import { updateChapterSchema } from '@pripremi-se/shared';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -16,9 +16,20 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { useQueryWithStatus } from '@/lib/convex';
 import { QueryError } from '@/components/QueryError';
+import { useState } from 'react';
 
 export const Route = createFileRoute('/admin/chapters/$chapterId')({
 	component: EditChapterPage,
@@ -35,6 +46,8 @@ function EditChapterPage() {
 	} = useQueryWithStatus(api.chapters.getChapterById, { id: chapterId });
 	const { data: subjects } = useQueryWithStatus(api.subjects.listSubjects);
 	const updateChapter = useMutation(api.chapters.updateChapter);
+	const deleteChapter = useMutation(api.chapters.deleteChapter);
+	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
 	const form = useForm({
 		defaultValues: {
@@ -135,6 +148,18 @@ function EditChapterPage() {
 	// Get the subject name for display
 	const subjectName =
 		subjects?.find((s) => s._id === chapter.subjectId)?.name ?? 'Unknown';
+
+	const handleDelete = async () => {
+		try {
+			await deleteChapter({ id: chapterId });
+			toast.success('Chapter deleted successfully');
+			navigate({ to: '/admin/chapters' });
+		} catch (error) {
+			toast.error(
+				error instanceof Error ? error.message : 'Failed to delete chapter'
+			);
+		}
+	};
 
 	return (
 		<div className="space-y-6">
@@ -265,25 +290,57 @@ function EditChapterPage() {
 					</CardContent>
 				</Card>
 
-				<div className="mt-6 flex justify-end gap-4">
+				<div className="mt-6 flex justify-between gap-4">
 					<Button
 						type="button"
-						variant="outline"
-						onClick={() => navigate({ to: '/admin/chapters' })}
+						variant="destructive"
+						onClick={() => setShowDeleteDialog(true)}
 					>
-						Cancel
+						<Trash2 className="mr-2 h-4 w-4" />
+						Delete
 					</Button>
-					<form.Subscribe
-						selector={(state) => [state.canSubmit, state.isSubmitting]}
-					>
-						{([canSubmit, isSubmitting]) => (
-							<Button type="submit" disabled={!canSubmit || isSubmitting}>
-								{isSubmitting ? 'Saving...' : 'Save Changes'}
-							</Button>
-						)}
-					</form.Subscribe>
+					<div className="flex gap-4">
+						<Button
+							type="button"
+							variant="outline"
+							onClick={() => navigate({ to: '/admin/chapters' })}
+						>
+							Cancel
+						</Button>
+						<form.Subscribe
+							selector={(state) => [state.canSubmit, state.isSubmitting]}
+						>
+							{([canSubmit, isSubmitting]) => (
+								<Button type="submit" disabled={!canSubmit || isSubmitting}>
+									{isSubmitting ? 'Saving...' : 'Save Changes'}
+								</Button>
+							)}
+						</form.Subscribe>
+					</div>
 				</div>
 			</form>
+
+			<AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>Delete Chapter</AlertDialogTitle>
+						<AlertDialogDescription>
+							Are you sure you want to delete this chapter? This action cannot
+							be undone. All sections and lessons under this chapter must be
+							deleted first.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogAction
+							onClick={handleDelete}
+							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+						>
+							Delete
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</div>
 	);
 }

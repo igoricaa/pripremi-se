@@ -32,3 +32,19 @@ export const questionTypeEnum = z.enum([
 	QUESTION_TYPES.SHORT_ANSWER,
 	QUESTION_TYPES.ESSAY,
 ]);
+
+/**
+ * Question types that require answer options
+ */
+export const QUESTION_TYPES_WITH_OPTIONS: readonly QuestionType[] = [
+	QUESTION_TYPES.SINGLE_CHOICE,
+	QUESTION_TYPES.MULTIPLE_CHOICE,
+	QUESTION_TYPES.TRUE_FALSE,
+];
+
+/**
+ * Check if a question type requires answer options
+ */
+export function questionTypeRequiresOptions(type: QuestionType): boolean {
+	return (QUESTION_TYPES_WITH_OPTIONS as readonly string[]).includes(type);
+}

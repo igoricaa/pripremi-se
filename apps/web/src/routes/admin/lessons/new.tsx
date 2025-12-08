@@ -45,7 +45,6 @@ function NewLessonPage() {
 			content: '',
 			contentType: 'text' as 'text' | 'video' | 'interactive',
 			estimatedMinutes: 5,
-			slug: '',
 			order: 0,
 			isActive: false,
 		},
@@ -57,7 +56,7 @@ function NewLessonPage() {
 					content: value.content,
 					contentType: value.contentType,
 					estimatedMinutes: value.estimatedMinutes,
-					slug: value.slug || undefined,
+					slug: undefined, // Always auto-generated
 					order: value.order,
 					isActive: value.isActive,
 				});
@@ -316,24 +315,6 @@ function NewLessonPage() {
 												}
 												onBlur={field.handleBlur}
 											/>
-										</div>
-									)}
-								</form.Field>
-
-								<form.Field name="slug">
-									{(field) => (
-										<div className="space-y-2">
-											<Label htmlFor="slug">Slug (optional)</Label>
-											<Input
-												id="slug"
-												placeholder="auto-generated from title"
-												value={field.state.value}
-												onChange={(e) => field.handleChange(e.target.value)}
-												onBlur={field.handleBlur}
-											/>
-											<p className="text-muted-foreground text-xs">
-												Leave empty to auto-generate from title
-											</p>
 										</div>
 									)}
 								</form.Field>

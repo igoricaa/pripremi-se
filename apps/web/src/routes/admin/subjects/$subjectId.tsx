@@ -3,7 +3,7 @@ import { useMutation } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import { useForm } from '@tanstack/react-form';
 import { updateSubjectSchema } from '@pripremi-se/shared';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -16,9 +16,20 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { useQueryWithStatus } from '@/lib/convex';
 import { QueryError } from '@/components/QueryError';
+import { useState } from 'react';
 
 export const Route = createFileRoute('/admin/subjects/$subjectId')({
 	component: EditSubjectPage,
@@ -29,13 +40,14 @@ function EditSubjectPage() {
 	const navigate = useNavigate();
 	const { data: subject, isPending, isError, error } = useQueryWithStatus(api.subjects.getSubjectById, { id: subjectId });
 	const updateSubject = useMutation(api.subjects.updateSubject);
+	const deleteSubject = useMutation(api.subjects.deleteSubject);
+	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
 	const form = useForm({
 		defaultValues: {
 			name: subject?.name ?? '',
 			description: subject?.description ?? '',
 			icon: subject?.icon ?? '',
-			slug: subject?.slug ?? '',
 			order: subject?.order ?? 0,
 			isActive: subject?.isActive ?? false,
 		},
@@ -46,7 +58,7 @@ function EditSubjectPage() {
 					name: value.name,
 					description: value.description || undefined,
 					icon: value.icon || undefined,
-					slug: value.slug || undefined,
+					slug: undefined, // Slug is read-only, not updated
 					order: value.order,
 					isActive: value.isActive,
 				});
@@ -68,7 +80,6 @@ function EditSubjectPage() {
 			name: subject.name,
 			description: subject.description ?? '',
 			icon: subject.icon ?? '',
-			slug: subject.slug ?? '',
 			order: subject.order ?? 0,
 			isActive: subject.isActive ?? false,
 		});
@@ -118,6 +129,18 @@ function EditSubjectPage() {
 			</div>
 		);
 	}
+
+	const handleDelete = async () => {
+		try {
+			await deleteSubject({ id: subjectId });
+			toast.success('Subject deleted successfully');
+			navigate({ to: '/admin/subjects' });
+		} catch (error) {
+			toast.error(
+				error instanceof Error ? error.message : 'Failed to delete subject'
+			);
+		}
+	};
 
 	return (
 		<div className="space-y-6">
@@ -200,23 +223,15 @@ function EditSubjectPage() {
 								)}
 							</form.Field>
 
-							<form.Field name="slug">
-								{(field) => (
-									<div className="space-y-2">
-										<Label htmlFor="slug">Slug</Label>
-										<Input
-											id="slug"
-											placeholder="auto-generated from name"
-											value={field.state.value}
-											onChange={(e) => field.handleChange(e.target.value)}
-											onBlur={field.handleBlur}
-										/>
-										<p className="text-muted-foreground text-xs">
-											Leave empty to auto-generate from name
-										</p>
-									</div>
-								)}
-							</form.Field>
+							<div className="space-y-2">
+								<Label htmlFor="slug">Slug</Label>
+								<div className="text-muted-foreground text-sm rounded-md border bg-muted/50 px-3 py-2">
+									{subject.slug}
+								</div>
+								<p className="text-muted-foreground text-xs">
+									Auto-generated from name
+								</p>
+							</div>
 						</div>
 
 						<div className="grid gap-4 sm:grid-cols-2">
@@ -259,25 +274,57 @@ function EditSubjectPage() {
 					</CardContent>
 				</Card>
 
-				<div className="mt-6 flex justify-end gap-4">
+				<div className="mt-6 flex justify-between gap-4">
 					<Button
 						type="button"
-						variant="outline"
-						onClick={() => navigate({ to: '/admin/subjects' })}
+						variant="destructive"
+						onClick={() => setShowDeleteDialog(true)}
 					>
-						Cancel
+						<Trash2 className="mr-2 h-4 w-4" />
+						Delete
 					</Button>
-					<form.Subscribe
-						selector={(state) => [state.canSubmit, state.isSubmitting]}
-					>
-						{([canSubmit, isSubmitting]) => (
-							<Button type="submit" disabled={!canSubmit || isSubmitting}>
-								{isSubmitting ? 'Saving...' : 'Save Changes'}
-							</Button>
-						)}
-					</form.Subscribe>
+					<div className="flex gap-4">
+						<Button
+							type="button"
+							variant="outline"
+							onClick={() => navigate({ to: '/admin/subjects' })}
+						>
+							Cancel
+						</Button>
+						<form.Subscribe
+							selector={(state) => [state.canSubmit, state.isSubmitting]}
+						>
+							{([canSubmit, isSubmitting]) => (
+								<Button type="submit" disabled={!canSubmit || isSubmitting}>
+									{isSubmitting ? 'Saving...' : 'Save Changes'}
+								</Button>
+							)}
+						</form.Subscribe>
+					</div>
 				</div>
 			</form>
+
+			<AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>Delete Subject</AlertDialogTitle>
+						<AlertDialogDescription>
+							Are you sure you want to delete this subject? This action cannot
+							be undone. All chapters, sections, and lessons under this subject
+							must be deleted first.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogAction
+							onClick={handleDelete}
+							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+						>
+							Delete
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</div>
 	);
 }

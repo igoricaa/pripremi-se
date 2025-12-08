@@ -3,7 +3,7 @@ import { useMutation } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import { useForm } from '@tanstack/react-form';
 import { updateSectionSchema } from '@pripremi-se/shared';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -16,9 +16,20 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { useQueryWithStatus } from '@/lib/convex';
 import { QueryError } from '@/components/QueryError';
+import { useState } from 'react';
 
 export const Route = createFileRoute('/admin/sections/$sectionId')({
 	component: EditSectionPage,
@@ -36,12 +47,13 @@ function EditSectionPage() {
 	const { data: chapters } = useQueryWithStatus(api.chapters.listChapters);
 	const { data: subjects } = useQueryWithStatus(api.subjects.listSubjects);
 	const updateSection = useMutation(api.sections.updateSection);
+	const deleteSection = useMutation(api.sections.deleteSection);
+	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
 	const form = useForm({
 		defaultValues: {
 			name: section?.name ?? '',
 			description: section?.description ?? '',
-			slug: section?.slug ?? '',
 			order: section?.order ?? 0,
 			isActive: section?.isActive ?? false,
 		},
@@ -51,7 +63,7 @@ function EditSectionPage() {
 					id: sectionId,
 					name: value.name,
 					description: value.description || undefined,
-					slug: value.slug || undefined,
+					slug: undefined, // Slug is read-only, not updated
 					order: value.order,
 					isActive: value.isActive,
 				});
@@ -72,7 +84,6 @@ function EditSectionPage() {
 		form.reset({
 			name: section.name,
 			description: section.description ?? '',
-			slug: section.slug ?? '',
 			order: section.order ?? 0,
 			isActive: section.isActive ?? false,
 		});
@@ -139,6 +150,18 @@ function EditSectionPage() {
 	const chapter = chapters?.find((c) => c._id === section.chapterId);
 	const chapterName = chapter?.name ?? 'Unknown';
 	const subjectName = subjects?.find((s) => s._id === chapter?.subjectId)?.name ?? 'Unknown';
+
+	const handleDelete = async () => {
+		try {
+			await deleteSection({ id: sectionId });
+			toast.success('Section deleted successfully');
+			navigate({ to: '/admin/sections' });
+		} catch (error) {
+			toast.error(
+				error instanceof Error ? error.message : 'Failed to delete section'
+			);
+		}
+	};
 
 	return (
 		<div className="space-y-6">
@@ -220,23 +243,15 @@ function EditSectionPage() {
 						</form.Field>
 
 						<div className="grid gap-4 sm:grid-cols-2">
-							<form.Field name="slug">
-								{(field) => (
-									<div className="space-y-2">
-										<Label htmlFor="slug">Slug</Label>
-										<Input
-											id="slug"
-											placeholder="auto-generated from name"
-											value={field.state.value}
-											onChange={(e) => field.handleChange(e.target.value)}
-											onBlur={field.handleBlur}
-										/>
-										<p className="text-muted-foreground text-xs">
-											Leave empty to auto-generate from name
-										</p>
-									</div>
-								)}
-							</form.Field>
+							<div className="space-y-2">
+								<Label htmlFor="slug">Slug</Label>
+								<div className="text-muted-foreground text-sm rounded-md border bg-muted/50 px-3 py-2">
+									{section.slug}
+								</div>
+								<p className="text-muted-foreground text-xs">
+									Auto-generated from name
+								</p>
+							</div>
 
 							<form.Field name="order">
 								{(field) => (
@@ -277,25 +292,56 @@ function EditSectionPage() {
 					</CardContent>
 				</Card>
 
-				<div className="mt-6 flex justify-end gap-4">
+				<div className="mt-6 flex justify-between gap-4">
 					<Button
 						type="button"
-						variant="outline"
-						onClick={() => navigate({ to: '/admin/sections' })}
+						variant="destructive"
+						onClick={() => setShowDeleteDialog(true)}
 					>
-						Cancel
+						<Trash2 className="mr-2 h-4 w-4" />
+						Delete
 					</Button>
-					<form.Subscribe
-						selector={(state) => [state.canSubmit, state.isSubmitting]}
-					>
-						{([canSubmit, isSubmitting]) => (
-							<Button type="submit" disabled={!canSubmit || isSubmitting}>
-								{isSubmitting ? 'Saving...' : 'Save Changes'}
-							</Button>
-						)}
-					</form.Subscribe>
+					<div className="flex gap-4">
+						<Button
+							type="button"
+							variant="outline"
+							onClick={() => navigate({ to: '/admin/sections' })}
+						>
+							Cancel
+						</Button>
+						<form.Subscribe
+							selector={(state) => [state.canSubmit, state.isSubmitting]}
+						>
+							{([canSubmit, isSubmitting]) => (
+								<Button type="submit" disabled={!canSubmit || isSubmitting}>
+									{isSubmitting ? 'Saving...' : 'Save Changes'}
+								</Button>
+							)}
+						</form.Subscribe>
+					</div>
 				</div>
 			</form>
+
+			<AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>Delete Section</AlertDialogTitle>
+						<AlertDialogDescription>
+							Are you sure you want to delete this section? This action cannot
+							be undone. All lessons under this section must be deleted first.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogAction
+							onClick={handleDelete}
+							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+						>
+							Delete
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</div>
 	);
 }

@@ -33,7 +33,6 @@ function NewSubjectPage() {
 			name: '',
 			description: '',
 			icon: '',
-			slug: '',
 			order: subjectsQuery.data?.length ?? 0,
 			isActive: false,
 		},
@@ -43,7 +42,7 @@ function NewSubjectPage() {
 					name: value.name,
 					description: value.description || undefined,
 					icon: value.icon || undefined,
-					slug: value.slug || undefined,
+					slug: undefined, // Always auto-generated
 					order: value.order,
 					isActive: value.isActive,
 				})
@@ -122,40 +121,20 @@ function NewSubjectPage() {
 							)}
 						</form.Field>
 
-						<div className="grid gap-4 sm:grid-cols-2">
-							<form.Field name="icon">
-								{(field) => (
-									<div className='space-y-2'>
-										<Label htmlFor="icon">Icon (emoji)</Label>
-										<Input
-											id='icon'
-											placeholder='e.g., emoji'
-											value={field.state.value}
-											onChange={(e) => field.handleChange(e.target.value)}
-											onBlur={field.handleBlur}
-										/>
-									</div>
-								)}
-							</form.Field>
-
-							<form.Field name="slug">
-								{(field) => (
-									<div className='space-y-2'>
-										<Label htmlFor="slug">Slug (optional)</Label>
-										<Input
-											id='slug'
-											placeholder="auto-generated from name"
-											value={field.state.value}
-											onChange={(e) => field.handleChange(e.target.value)}
-											onBlur={field.handleBlur}
-										/>
-										<p className="text-muted-foreground text-xs">
-											Leave empty to auto-generate from name
-										</p>
-									</div>
-								)}
-							</form.Field>
-						</div>
+						<form.Field name="icon">
+							{(field) => (
+								<div className='space-y-2'>
+									<Label htmlFor="icon">Icon (emoji)</Label>
+									<Input
+										id='icon'
+										placeholder='e.g., emoji'
+										value={field.state.value}
+										onChange={(e) => field.handleChange(e.target.value)}
+										onBlur={field.handleBlur}
+									/>
+								</div>
+							)}
+						</form.Field>
 
 						<div className="grid gap-4 sm:grid-cols-2">
 							<form.Field name="order">

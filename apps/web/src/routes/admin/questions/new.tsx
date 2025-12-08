@@ -3,7 +3,16 @@ import { useMutation, useQuery } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import type { Id } from '@pripremi-se/backend/convex/_generated/dataModel';
 import { useForm } from '@tanstack/react-form';
-import { createQuestionWithOptionsSchema, QUESTION_TYPES, QUESTION_DIFFICULTY, questionTypeLabels, difficultyLabels } from '@pripremi-se/shared';
+import {
+	createQuestionWithOptionsSchema,
+	QUESTION_TYPES,
+	QUESTION_DIFFICULTY,
+	questionTypeLabels,
+	difficultyLabels,
+	questionTypeRequiresOptions,
+	type QuestionType,
+	type QuestionDifficulty,
+} from '@pripremi-se/shared';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,15 +41,6 @@ import { useState } from 'react';
 export const Route = createFileRoute('/admin/questions/new')({
 	component: NewQuestionPage,
 });
-
-type QuestionType = typeof QUESTION_TYPES[keyof typeof QUESTION_TYPES];
-
-// Question types that require options
-const typesWithOptions: QuestionType[] = [
-	QUESTION_TYPES.SINGLE_CHOICE,
-	QUESTION_TYPES.MULTIPLE_CHOICE,
-	QUESTION_TYPES.TRUE_FALSE,
-];
 
 function NewQuestionPage() {
 	const navigate = useNavigate();
@@ -82,14 +82,14 @@ function NewQuestionPage() {
 			type: QUESTION_TYPES.SINGLE_CHOICE as QuestionType,
 			points: 1,
 			allowPartialCredit: false,
-			lessonId: '',
-			difficulty: QUESTION_DIFFICULTY.MEDIUM as string,
+			lessonId: undefined as string | undefined,
+			difficulty: QUESTION_DIFFICULTY.MEDIUM as QuestionDifficulty,
 			isActive: false,
 		},
 		onSubmit: async ({ value }) => {
 			try {
 				const questionType = value.type;
-				const needsOptions = typesWithOptions.includes(questionType);
+				const needsOptions = questionTypeRequiresOptions(questionType);
 
 				// Validate options for types that need them
 				if (needsOptions) {
@@ -121,7 +121,7 @@ function NewQuestionPage() {
 					type: value.type,
 					points: value.points,
 					allowPartialCredit: value.allowPartialCredit,
-					lessonId: value.lessonId && value.lessonId !== 'none' ? value.lessonId : undefined,
+					lessonId: value.lessonId || undefined,
 					difficulty: value.difficulty || undefined,
 					isActive: value.isActive,
 				};
@@ -143,7 +143,7 @@ function NewQuestionPage() {
 	});
 
 	// Use local state for UI reactivity (form.state.values.type is not reactive outside form.Field)
-	const needsOptions = typesWithOptions.includes(currentQuestionType);
+	const needsOptions = questionTypeRequiresOptions(currentQuestionType);
 
 	return (
 		<div className="space-y-6">
@@ -272,7 +272,7 @@ function NewQuestionPage() {
 															{ text: 'True', isCorrect: false, order: 0 },
 															{ text: 'False', isCorrect: false, order: 1 },
 														]);
-													} else if (typesWithOptions.includes(newType)) {
+													} else if (questionTypeRequiresOptions(newType)) {
 														// Compatible types - preserve options when switching between single/multiple choice
 														const compatibleTypes: QuestionType[] = [
 															QUESTION_TYPES.SINGLE_CHOICE,
@@ -311,7 +311,7 @@ function NewQuestionPage() {
 											<Label htmlFor="difficulty">Difficulty</Label>
 											<Select
 												value={field.state.value}
-												onValueChange={field.handleChange}
+												onValueChange={(value) => field.handleChange(value as QuestionDifficulty)}
 											>
 												<SelectTrigger id="difficulty">
 													<SelectValue />
@@ -390,7 +390,7 @@ function NewQuestionPage() {
 												setSubjectId(id);
 												setChapterId(undefined);
 												setSectionId(undefined);
-												form.setFieldValue('lessonId', 'none');
+												form.setFieldValue('lessonId', undefined);
 											}}
 											placeholder="Select subject..."
 											searchPlaceholder="Search subjects..."
@@ -406,7 +406,7 @@ function NewQuestionPage() {
 											onValueChange={(id) => {
 												setChapterId(id);
 												setSectionId(undefined);
-												form.setFieldValue('lessonId', 'none');
+												form.setFieldValue('lessonId', undefined);
 											}}
 											placeholder={subjectId ? 'Select chapter...' : 'Select subject first'}
 											searchPlaceholder="Search chapters..."
@@ -422,7 +422,7 @@ function NewQuestionPage() {
 											value={sectionId}
 											onValueChange={(id) => {
 												setSectionId(id);
-												form.setFieldValue('lessonId', 'none');
+												form.setFieldValue('lessonId', undefined);
 											}}
 											placeholder={chapterId ? 'Select section...' : 'Select chapter first'}
 											searchPlaceholder="Search sections..."
@@ -436,13 +436,10 @@ function NewQuestionPage() {
 											<div className="space-y-2">
 												<Label className="text-xs text-muted-foreground">Lesson</Label>
 												<Combobox
-													options={[
-														{ value: 'none', label: 'No lesson' },
-														...(lessons?.map((l) => ({ value: l._id, label: l.title })) ?? []),
-													]}
-													value={field.state.value || 'none'}
-													onValueChange={(id) => field.handleChange(id ?? 'none')}
-													placeholder={sectionId ? 'Select lesson...' : 'Select section first'}
+													options={lessons?.map((l) => ({ value: l._id, label: l.title })) ?? []}
+													value={field.state.value}
+													onValueChange={field.handleChange}
+													placeholder={sectionId ? 'Select lesson (optional)...' : 'Select section first'}
 													searchPlaceholder="Search lessons..."
 													emptyText="No lessons found"
 													disabled={!sectionId}
