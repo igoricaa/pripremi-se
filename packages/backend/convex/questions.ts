@@ -155,14 +155,18 @@ export const getQuestionFilterOptions = editorQuery({
 });
 
 /**
- * Paginated questions query for admin panel with server-side filtering.
- * Uses native Convex pagination with .withIndex().eq() for exact filtering.
+ * Paginated questions query for admin panel with server-side filtering and search.
+ * Supports two modes:
+ * - SEARCH MODE: Uses full-text search index (results ordered by relevance)
+ * - BROWSE MODE: Uses regular indexes (results ordered by creation time)
  * Requires editor or admin role.
  */
 export const listQuestionsPaginated = editorQuery({
 	args: {
 		cursor: v.optional(v.string()),
 		pageSize: v.optional(v.number()),
+		// Search term (min 2 chars for search to trigger)
+		searchTerm: v.optional(v.string()),
 		// Filters
 		type: v.optional(v.string()),
 		difficulty: v.optional(v.string()),
@@ -175,75 +179,104 @@ export const listQuestionsPaginated = editorQuery({
 		const { db } = ctx;
 		const pageSize = args.pageSize ?? 20;
 
-		// Build query with exact filter matching using .withIndex().eq()
-		// Priority: most selective index first (lessonId > sectionId > chapterId > subjectId > type > difficulty)
-		// We need to track which index we're using to know if post-filtering is needed
-		let usedIndexForDifficulty = false;
+		// Minimum 2 characters for search to trigger
+		const effectiveSearch = (args.searchTerm?.trim().length ?? 0) >= 2
+			? args.searchTerm?.trim()
+			: null;
 
-		// Build the base query with the optimal index using .eq() for exact matching
-		let baseQuery;
+		let paginationResult;
 
-		if (args.lessonId && args.type) {
-			baseQuery = db.query('questions')
-				.withIndex('by_lessonId_type', (q) => q.eq('lessonId', args.lessonId!).eq('type', args.type!));
-		} else if (args.lessonId) {
-			baseQuery = db.query('questions')
-				.withIndex('by_lessonId', (q) => q.eq('lessonId', args.lessonId!));
-		} else if (args.sectionId && args.type) {
-			baseQuery = db.query('questions')
-				.withIndex('by_sectionId_type', (q) => q.eq('sectionId', args.sectionId!).eq('type', args.type!));
-		} else if (args.sectionId) {
-			baseQuery = db.query('questions')
-				.withIndex('by_sectionId', (q) => q.eq('sectionId', args.sectionId!));
-		} else if (args.chapterId && args.type) {
-			baseQuery = db.query('questions')
-				.withIndex('by_chapterId_type', (q) => q.eq('chapterId', args.chapterId!).eq('type', args.type!));
-		} else if (args.chapterId) {
-			baseQuery = db.query('questions')
-				.withIndex('by_chapterId', (q) => q.eq('chapterId', args.chapterId!));
-		} else if (args.subjectId && args.type) {
-			baseQuery = db.query('questions')
-				.withIndex('by_subjectId_type', (q) => q.eq('subjectId', args.subjectId!).eq('type', args.type!));
-		} else if (args.subjectId) {
-			baseQuery = db.query('questions')
-				.withIndex('by_subjectId', (q) => q.eq('subjectId', args.subjectId!));
-		} else if (args.type && args.difficulty) {
-			baseQuery = db.query('questions')
-				.withIndex('by_type_difficulty', (q) => q.eq('type', args.type!).eq('difficulty', args.difficulty!));
-			usedIndexForDifficulty = true;
-		} else if (args.type) {
-			baseQuery = db.query('questions')
-				.withIndex('by_type', (q) => q.eq('type', args.type!));
-		} else if (args.difficulty) {
-			baseQuery = db.query('questions')
-				.withIndex('by_difficulty', (q) => q.eq('difficulty', args.difficulty!));
-			usedIndexForDifficulty = true;
-		} else {
-			// No filters - use default ordering
-			baseQuery = db.query('questions');
-		}
+		if (effectiveSearch) {
+			// SEARCH MODE: Use search index (relevance-ordered)
+			const searchQuery = db.query('questions')
+				.withSearchIndex('search_text', (q) => {
+					let sq = q.search('text', effectiveSearch);
+					// Apply filters via search index filterFields
+					if (args.type) sq = sq.eq('type', args.type);
+					if (args.difficulty) sq = sq.eq('difficulty', args.difficulty);
+					if (args.subjectId) sq = sq.eq('subjectId', args.subjectId);
+					if (args.chapterId) sq = sq.eq('chapterId', args.chapterId);
+					if (args.sectionId) sq = sq.eq('sectionId', args.sectionId);
+					if (args.lessonId) sq = sq.eq('lessonId', args.lessonId);
+					return sq;
+				});
 
-		// Use Convex's native pagination with cursor
-		const paginationResult = await baseQuery
-			.order('desc')
-			.paginate({
+			// Note: Search results are relevance-ordered automatically (BM25)
+			paginationResult = await searchQuery.paginate({
 				cursor: args.cursor ?? null,
 				numItems: pageSize,
 			});
+		} else {
+			// BROWSE MODE: Use regular indexes (creation-time ordered)
+			// Build query with exact filter matching using .withIndex().eq()
+			// Priority: most selective index first (lessonId > sectionId > chapterId > subjectId > type > difficulty)
+			let usedIndexForDifficulty = false;
+			let baseQuery;
 
-		// Post-filter for difficulty if we used a non-difficulty index
-		let filteredPage = paginationResult.page;
-		if (args.difficulty && !usedIndexForDifficulty) {
-			filteredPage = filteredPage.filter((q) => q.difficulty === args.difficulty);
+			if (args.lessonId && args.type) {
+				baseQuery = db.query('questions')
+					.withIndex('by_lessonId_type', (q) => q.eq('lessonId', args.lessonId!).eq('type', args.type!));
+			} else if (args.lessonId) {
+				baseQuery = db.query('questions')
+					.withIndex('by_lessonId', (q) => q.eq('lessonId', args.lessonId!));
+			} else if (args.sectionId && args.type) {
+				baseQuery = db.query('questions')
+					.withIndex('by_sectionId_type', (q) => q.eq('sectionId', args.sectionId!).eq('type', args.type!));
+			} else if (args.sectionId) {
+				baseQuery = db.query('questions')
+					.withIndex('by_sectionId', (q) => q.eq('sectionId', args.sectionId!));
+			} else if (args.chapterId && args.type) {
+				baseQuery = db.query('questions')
+					.withIndex('by_chapterId_type', (q) => q.eq('chapterId', args.chapterId!).eq('type', args.type!));
+			} else if (args.chapterId) {
+				baseQuery = db.query('questions')
+					.withIndex('by_chapterId', (q) => q.eq('chapterId', args.chapterId!));
+			} else if (args.subjectId && args.type) {
+				baseQuery = db.query('questions')
+					.withIndex('by_subjectId_type', (q) => q.eq('subjectId', args.subjectId!).eq('type', args.type!));
+			} else if (args.subjectId) {
+				baseQuery = db.query('questions')
+					.withIndex('by_subjectId', (q) => q.eq('subjectId', args.subjectId!));
+			} else if (args.type && args.difficulty) {
+				baseQuery = db.query('questions')
+					.withIndex('by_type_difficulty', (q) => q.eq('type', args.type!).eq('difficulty', args.difficulty!));
+				usedIndexForDifficulty = true;
+			} else if (args.type) {
+				baseQuery = db.query('questions')
+					.withIndex('by_type', (q) => q.eq('type', args.type!));
+			} else if (args.difficulty) {
+				baseQuery = db.query('questions')
+					.withIndex('by_difficulty', (q) => q.eq('difficulty', args.difficulty!));
+				usedIndexForDifficulty = true;
+			} else {
+				// No filters - use default ordering
+				baseQuery = db.query('questions');
+			}
+
+			// Use Convex's native pagination with cursor
+			paginationResult = await baseQuery
+				.order('desc')
+				.paginate({
+					cursor: args.cursor ?? null,
+					numItems: pageSize,
+				});
+
+			// Post-filter for difficulty if we used a non-difficulty index
+			if (args.difficulty && !usedIndexForDifficulty) {
+				paginationResult = {
+					...paginationResult,
+					page: paginationResult.page.filter((q) => q.difficulty === args.difficulty),
+				};
+			}
 		}
 
 		// Fetch lessons for display names
-		const lessonIds = [...new Set(filteredPage.map((q) => q.lessonId).filter(Boolean))] as Id<'lessons'>[];
+		const lessonIds = [...new Set(paginationResult.page.map((q) => q.lessonId).filter(Boolean))] as Id<'lessons'>[];
 		const lessons = await Promise.all(lessonIds.map((id) => db.get(id)));
 		const lessonMap = new Map(lessons.filter(Boolean).map((l) => [l!._id, l!]));
 
 		// Return truncated questions for table display
-		const questions = filteredPage.map((q) => {
+		const questions = paginationResult.page.map((q) => {
 			const lesson = q.lessonId ? lessonMap.get(q.lessonId) : null;
 			return {
 				_id: q._id,
@@ -269,12 +302,13 @@ export const listQuestionsPaginated = editorQuery({
 });
 
 /**
- * Get total count of questions matching filters.
+ * Get total count of questions matching filters and/or search.
  * Used for pagination UI to show "Page X of Y".
  * Requires editor or admin role.
  */
 export const countQuestionsForAdmin = editorQuery({
 	args: {
+		searchTerm: v.optional(v.string()),
 		type: v.optional(v.string()),
 		difficulty: v.optional(v.string()),
 		subjectId: v.optional(v.id('subjects')),
@@ -284,6 +318,30 @@ export const countQuestionsForAdmin = editorQuery({
 	},
 	handler: async (ctx, args) => {
 		const { db } = ctx;
+
+		// Minimum 2 characters for search to trigger
+		const effectiveSearch = (args.searchTerm?.trim().length ?? 0) >= 2
+			? args.searchTerm?.trim()
+			: null;
+
+		if (effectiveSearch) {
+			// Count via search - need to collect and count
+			// Search index can scan up to 1024 results
+			const results = await db.query('questions')
+				.withSearchIndex('search_text', (q) => {
+					let sq = q.search('text', effectiveSearch);
+					if (args.type) sq = sq.eq('type', args.type);
+					if (args.difficulty) sq = sq.eq('difficulty', args.difficulty);
+					if (args.subjectId) sq = sq.eq('subjectId', args.subjectId);
+					if (args.chapterId) sq = sq.eq('chapterId', args.chapterId);
+					if (args.sectionId) sq = sq.eq('sectionId', args.sectionId);
+					if (args.lessonId) sq = sq.eq('lessonId', args.lessonId);
+					return sq;
+				})
+				.collect();
+
+			return { count: results.length };
+		}
 
 		// For accurate counts with filters, we need to query and count
 		// This is acceptable for admin use with moderate data sizes

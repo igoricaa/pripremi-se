@@ -173,7 +173,12 @@ export default defineSchema({
 		.index('by_chapterId_type', ['chapterId', 'type'])
 		.index('by_sectionId_type', ['sectionId', 'type'])
 		.index('by_lessonId_type', ['lessonId', 'type'])
-		.index('by_type_difficulty', ['type', 'difficulty']),
+		.index('by_type_difficulty', ['type', 'difficulty'])
+		// Full-text search index for question text with filter fields
+		.searchIndex('search_text', {
+			searchField: 'text',
+			filterFields: ['type', 'difficulty', 'subjectId', 'chapterId', 'sectionId', 'lessonId', 'isActive'],
+		}),
 
 	// Assessment: Question Options (answer choices for multiple choice/true-false questions)
 	questionOptions: defineTable({

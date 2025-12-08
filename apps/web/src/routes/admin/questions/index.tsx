@@ -5,6 +5,8 @@ import { useSuspenseQuery, useQueryClient } from '@tanstack/react-query';
 import { Plus, X } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { useDebounce } from '@/hooks/use-debounce';
+import { SearchInput } from '@/components/ui/search-input';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import type { Id } from '@pripremi-se/backend/convex/_generated/dataModel';
 import { QUESTION_TYPES, QUESTION_DIFFICULTY, questionTypeLabels, difficultyLabels } from '@pripremi-se/shared';
@@ -40,6 +42,7 @@ import { getQuestionColumns } from './columns';
 
 // URL search params schema for server-side pagination
 interface QuestionsSearch {
+	q?: string; // Search term
 	page?: number;
 	pageSize?: number;
 	type?: string;
@@ -52,6 +55,7 @@ interface QuestionsSearch {
 
 export const Route = createFileRoute('/admin/questions/')({
 	validateSearch: (search: Record<string, unknown>): QuestionsSearch => ({
+		q: search.q as string | undefined,
 		page: search.page ? Number(search.page) : undefined,
 		pageSize: search.pageSize ? Number(search.pageSize) : undefined,
 		type: search.type as string | undefined,
@@ -76,6 +80,7 @@ export const Route = createFileRoute('/admin/questions/')({
 		context.queryClient.prefetchQuery(
 			convexQuery(api.questions.listQuestionsPaginated, {
 				pageSize: deps.pageSize ?? 20,
+				searchTerm: deps.q,
 				type: deps.type,
 				difficulty: deps.difficulty,
 				subjectId: deps.subjectId as Id<'subjects'> | undefined,
@@ -88,6 +93,7 @@ export const Route = createFileRoute('/admin/questions/')({
 		// Prefetch total count
 		context.queryClient.prefetchQuery(
 			convexQuery(api.questions.countQuestionsForAdmin, {
+				searchTerm: deps.q,
 				type: deps.type,
 				difficulty: deps.difficulty,
 				subjectId: deps.subjectId as Id<'subjects'> | undefined,
@@ -185,6 +191,12 @@ function QuestionsCard({
 	// Index 0 = page 1 (null cursor), Index 1 = page 2 cursor, etc.
 	const [cursorStack, setCursorStack] = useState<Array<string | null>>([null]);
 
+	// Local search input state (updates on every keystroke)
+	const [searchInput, setSearchInput] = useState(search.q ?? '');
+
+	// Debounced value (updates URL after 300ms pause)
+	const debouncedSearch = useDebounce(searchInput, 300);
+
 	// Get hierarchy data for filter dropdowns (cached with 30 min staleTime)
 	const { data: filterOptions } = useSuspenseQuery({
 		...convexQuery(api.questions.getQuestionFilterOptions, {}),
@@ -206,18 +218,22 @@ function QuestionsCard({
 	// Get cursor for current page
 	const currentCursor = cursorStack[pageIndex] ?? null;
 
-	// Fetch paginated data
+	// Fetch paginated data (include searchTerm from URL)
 	const { data: pageData } = useSuspenseQuery(
 		convexQuery(api.questions.listQuestionsPaginated, {
 			cursor: currentCursor ?? undefined,
 			pageSize,
+			searchTerm: search.q,
 			...filters,
 		})
 	);
 
-	// Fetch total count for pagination UI
+	// Fetch total count for pagination UI (include searchTerm from URL)
 	const { data: countData } = useSuspenseQuery({
-		...convexQuery(api.questions.countQuestionsForAdmin, filters),
+		...convexQuery(api.questions.countQuestionsForAdmin, {
+			searchTerm: search.q,
+			...filters,
+		}),
 		staleTime: 60 * 60 * 1000, // 1 hour
 	});
 
@@ -232,11 +248,12 @@ function QuestionsCard({
 				convexQuery(api.questions.listQuestionsPaginated, {
 					cursor: nextCursor,
 					pageSize,
+					searchTerm: search.q,
 					...filters,
 				})
 			);
 		}
-	}, [nextCursor, pageSize, filters, queryClient]);
+	}, [nextCursor, pageSize, search.q, filters, queryClient]);
 
 	// Build hierarchy maps for cascading filters
 	const chaptersBySubject = (() => {
@@ -288,6 +305,18 @@ function QuestionsCard({
 			},
 		});
 	};
+
+	// Sync debounced search to URL
+	useEffect(() => {
+		if (debouncedSearch !== (search.q ?? '')) {
+			setCursorStack([null]); // Reset pagination
+			updateSearch({
+				q: debouncedSearch || undefined,
+				page: undefined,
+			});
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [debouncedSearch]);
 
 	// Reset filters and pagination
 	const handleFilterChange = (filterKey: keyof QuestionsSearch, value: string | undefined) => {
@@ -359,12 +388,13 @@ function QuestionsCard({
 
 	const columns = getQuestionColumns({ onDelete: onDeleteRequest });
 
-	// Check if any filter is active
-	const hasActiveFilters = search.type || search.difficulty ||
+	// Check if any filter or search is active
+	const hasActiveFilters = search.q || search.type || search.difficulty ||
 		search.subjectId || search.chapterId ||
 		search.sectionId || search.lessonId;
 
 	const clearAllFilters = () => {
+		setSearchInput(''); // Clear local search input
 		setCursorStack([null]);
 		navigate({ to: '/admin/questions', search: {} });
 	};
@@ -378,7 +408,8 @@ function QuestionsCard({
 							<CardTitle>All Questions</CardTitle>
 							<CardDescription>
 								{totalCount} question{totalCount !== 1 ? 's' : ''}
-								{hasActiveFilters && ' matching filters'}
+								{search.q && ' matching search'}
+								{(search.type || search.difficulty || search.subjectId || search.chapterId || search.sectionId || search.lessonId) && ' with filters'}
 							</CardDescription>
 						</div>
 						{hasActiveFilters && (
@@ -388,6 +419,14 @@ function QuestionsCard({
 							</Button>
 						)}
 					</div>
+
+					{/* Search Input */}
+					<SearchInput
+						value={searchInput}
+						onChange={setSearchInput}
+						placeholder="Search questions..."
+						className="max-w-sm"
+					/>
 
 					{/* Filter Row 1: Type & Difficulty */}
 					<div className="flex flex-wrap gap-2">
