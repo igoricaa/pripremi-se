@@ -2,7 +2,7 @@ import { Suspense, useState } from 'react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Plus } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { api } from '@pripremi-se/backend/convex/_generated/api';
@@ -34,6 +34,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
+import { SearchInput } from '@/components/ui/search-input';
 import { getLessonColumns } from './columns';
 
 export const Route = createFileRoute('/admin/lessons/')({
@@ -137,6 +138,7 @@ function LessonsCard({
 	const [selectedSubjectId, setSelectedSubjectId] = useState<string>('all');
 	const [selectedChapterId, setSelectedChapterId] = useState<string>('all');
 	const [selectedSectionId, setSelectedSectionId] = useState<string>('all');
+	const [searchTerm, setSearchTerm] = useState('');
 
 	// Create lookup maps for table rendering
 	const sectionMap = new Map(sections.map((s) => [s._id, s]));
@@ -176,20 +178,20 @@ function LessonsCard({
 		return sections;
 	})();
 
-	// Filter lessons based on all selected levels
+	// Filter lessons based on all selected levels and search
 	const filteredLessons = (() => {
+		let result = lessons;
+
 		if (selectedSectionId !== 'all') {
-			return lessons.filter((l) => l.sectionId === selectedSectionId);
-		}
-		if (selectedChapterId !== 'all') {
+			result = result.filter((l) => l.sectionId === selectedSectionId);
+		} else if (selectedChapterId !== 'all') {
 			const sectionIds = new Set(
 				sections
 					.filter((s) => s.chapterId === selectedChapterId)
 					.map((s) => s._id)
 			);
-			return lessons.filter((l) => sectionIds.has(l.sectionId));
-		}
-		if (selectedSubjectId !== 'all') {
+			result = result.filter((l) => sectionIds.has(l.sectionId));
+		} else if (selectedSubjectId !== 'all') {
 			const chapterIds = new Set(
 				chapters
 					.filter((c) => c.subjectId === selectedSubjectId)
@@ -198,14 +200,35 @@ function LessonsCard({
 			const sectionIds = new Set(
 				sections.filter((s) => chapterIds.has(s.chapterId)).map((s) => s._id)
 			);
-			return lessons.filter((l) => sectionIds.has(l.sectionId));
+			result = result.filter((l) => sectionIds.has(l.sectionId));
 		}
-		return lessons;
+
+		if (searchTerm) {
+			result = result.filter((l) =>
+				l.title.toLowerCase().includes(searchTerm.toLowerCase())
+			);
+		}
+
+		return result;
 	})();
 
+	const hasActiveFilters =
+		selectedSubjectId !== 'all' ||
+		selectedChapterId !== 'all' ||
+		selectedSectionId !== 'all' ||
+		searchTerm;
+
+	const clearAllFilters = () => {
+		setSelectedSubjectId('all');
+		setSelectedChapterId('all');
+		setSelectedSectionId('all');
+		setSearchTerm('');
+	};
+
 	// Determine description text
-	const filterDescription =
-		selectedSectionId !== 'all'
+	const filterDescription = searchTerm
+		? 'matching search'
+		: selectedSectionId !== 'all'
 			? 'in selected section'
 			: selectedChapterId !== 'all'
 				? 'in selected chapter'
@@ -222,69 +245,85 @@ function LessonsCard({
 	return (
 		<Card>
 			<CardHeader>
-				<div className="flex items-center justify-between">
-					<div>
-						<CardTitle>All Lessons</CardTitle>
-						<CardDescription>
-							{filteredLessons.length} lesson
-							{filteredLessons.length !== 1 ? 's' : ''} {filterDescription}
-						</CardDescription>
-					</div>
-					<div className="flex flex-wrap items-center gap-2">
-						{/* Subject Filter */}
-						<Select
-							value={selectedSubjectId}
-							onValueChange={handleSubjectChange}
-						>
-							<SelectTrigger className="w-[160px]">
-								<SelectValue placeholder="All Subjects" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="all">All Subjects</SelectItem>
-								{subjects.map((s) => (
-									<SelectItem key={s._id} value={s._id}>
-										{s.name}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
+				<div className="flex flex-col gap-4">
+					<div className="flex items-center justify-between">
+						<div>
+							<CardTitle>All Lessons</CardTitle>
+							<CardDescription>
+								{filteredLessons.length} lesson
+								{filteredLessons.length !== 1 ? 's' : ''} {filterDescription}
+							</CardDescription>
+						</div>
+						<div className="flex flex-wrap items-center gap-2">
+							{/* Subject Filter */}
+							<Select
+								value={selectedSubjectId}
+								onValueChange={handleSubjectChange}
+							>
+								<SelectTrigger className="w-[160px]">
+									<SelectValue placeholder="All Subjects" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="all">All Subjects</SelectItem>
+									{subjects.map((s) => (
+										<SelectItem key={s._id} value={s._id}>
+											{s.name}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
 
-						{/* Chapter Filter */}
-						<Select
-							value={selectedChapterId}
-							onValueChange={handleChapterChange}
-						>
-							<SelectTrigger className="w-[160px]">
-								<SelectValue placeholder="All Chapters" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="all">All Chapters</SelectItem>
-								{availableChapters.map((c) => (
-									<SelectItem key={c._id} value={c._id}>
-										{c.name}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
+							{/* Chapter Filter */}
+							<Select
+								value={selectedChapterId}
+								onValueChange={handleChapterChange}
+							>
+								<SelectTrigger className="w-[160px]">
+									<SelectValue placeholder="All Chapters" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="all">All Chapters</SelectItem>
+									{availableChapters.map((c) => (
+										<SelectItem key={c._id} value={c._id}>
+											{c.name}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
 
-						{/* Section Filter */}
-						<Select
-							value={selectedSectionId}
-							onValueChange={setSelectedSectionId}
-						>
-							<SelectTrigger className="w-[160px]">
-								<SelectValue placeholder="All Sections" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="all">All Sections</SelectItem>
-								{availableSections.map((s) => (
-									<SelectItem key={s._id} value={s._id}>
-										{s.name}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
+							{/* Section Filter */}
+							<Select
+								value={selectedSectionId}
+								onValueChange={setSelectedSectionId}
+							>
+								<SelectTrigger className="w-[160px]">
+									<SelectValue placeholder="All Sections" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="all">All Sections</SelectItem>
+									{availableSections.map((s) => (
+										<SelectItem key={s._id} value={s._id}>
+											{s.name}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+
+							{hasActiveFilters && (
+								<Button variant="outline" size="sm" onClick={clearAllFilters}>
+									<X className="mr-2 h-4 w-4" />
+									Clear
+								</Button>
+							)}
+						</div>
 					</div>
+
+					<SearchInput
+						value={searchTerm}
+						onChange={setSearchTerm}
+						placeholder="Search lessons..."
+						className="max-w-sm"
+					/>
 				</div>
 			</CardHeader>
 			<CardContent>

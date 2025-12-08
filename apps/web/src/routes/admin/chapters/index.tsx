@@ -2,7 +2,7 @@ import { Suspense, useState } from 'react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Plus } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { api } from '@pripremi-se/backend/convex/_generated/api';
@@ -34,6 +34,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
+import { SearchInput } from '@/components/ui/search-input';
 import { getChapterColumns } from './columns';
 
 export const Route = createFileRoute('/admin/chapters/')({
@@ -134,11 +135,24 @@ function ChaptersCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => vo
 	const { chapters, subjects } = data;
 
 	const [selectedSubjectId, setSelectedSubjectId] = useState<string>('all');
+	const [searchTerm, setSearchTerm] = useState('');
 
-	const filteredChapters =
-		selectedSubjectId === 'all'
-			? chapters
-			: chapters.filter((ch) => ch.subjectId === selectedSubjectId);
+	const filteredChapters = chapters.filter((ch) => {
+		if (selectedSubjectId !== 'all' && ch.subjectId !== selectedSubjectId) {
+			return false;
+		}
+		if (searchTerm && !ch.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+			return false;
+		}
+		return true;
+	});
+
+	const hasActiveFilters = selectedSubjectId !== 'all' || searchTerm;
+
+	const clearAllFilters = () => {
+		setSelectedSubjectId('all');
+		setSearchTerm('');
+	};
 
 	const subjectMap = new Map(subjects.map((s) => [s._id, s.name]));
 
@@ -147,31 +161,50 @@ function ChaptersCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => vo
 	return (
 		<Card>
 			<CardHeader>
-				<div className="flex items-center justify-between">
-					<div>
-						<CardTitle>All Chapters</CardTitle>
-						<CardDescription>
-							{filteredChapters.length} chapter
-							{filteredChapters.length !== 1 ? 's' : ''}{' '}
-							{selectedSubjectId !== 'all' ? 'in selected subject' : 'total'}
-						</CardDescription>
+				<div className="flex flex-col gap-4">
+					<div className="flex items-center justify-between">
+						<div>
+							<CardTitle>All Chapters</CardTitle>
+							<CardDescription>
+								{filteredChapters.length} chapter
+								{filteredChapters.length !== 1 ? 's' : ''}
+								{searchTerm && ' matching search'}
+								{selectedSubjectId !== 'all' && !searchTerm && ' in selected subject'}
+								{!searchTerm && selectedSubjectId === 'all' && ' total'}
+							</CardDescription>
+						</div>
+						<div className="flex items-center gap-2">
+							<Select
+								value={selectedSubjectId}
+								onValueChange={setSelectedSubjectId}
+							>
+								<SelectTrigger className="w-[200px]">
+									<SelectValue placeholder="Filter by subject" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="all">All Subjects</SelectItem>
+									{subjects.map((subject) => (
+										<SelectItem key={subject._id} value={subject._id}>
+											{subject.name}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+							{hasActiveFilters && (
+								<Button variant="outline" size="sm" onClick={clearAllFilters}>
+									<X className="mr-2 h-4 w-4" />
+									Clear
+								</Button>
+							)}
+						</div>
 					</div>
-					<Select
-						value={selectedSubjectId}
-						onValueChange={setSelectedSubjectId}
-					>
-						<SelectTrigger className="w-[200px]">
-							<SelectValue placeholder="Filter by subject" />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectItem value="all">All Subjects</SelectItem>
-							{subjects.map((subject) => (
-								<SelectItem key={subject._id} value={subject._id}>
-									{subject.name}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
+
+					<SearchInput
+						value={searchTerm}
+						onChange={setSearchTerm}
+						placeholder="Search chapters..."
+						className="max-w-sm"
+					/>
 				</div>
 			</CardHeader>
 			<CardContent>

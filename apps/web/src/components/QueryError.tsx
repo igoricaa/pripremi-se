@@ -40,15 +40,3 @@ export function QueryError({
 		</Alert>
 	);
 }
-
-/**
- * Inline error message for smaller contexts.
- */
-export function QueryErrorInline({ error }: { error: Error }) {
-	return (
-		<span className="flex items-center gap-1 text-destructive text-sm">
-			<AlertTriangle className="h-3 w-3" />
-			{error.message || 'Error'}
-		</span>
-	);
-}

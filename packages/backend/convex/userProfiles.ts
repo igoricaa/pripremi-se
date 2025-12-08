@@ -30,19 +30,6 @@ export const isAdmin = authedQuery({
 })
 
 /**
- * Check if the current user can access curriculum (editor or admin).
- * Returns true if user is editor or admin, false otherwise.
- */
-export const canAccessCurriculum = authedQuery({
-	args: {},
-	handler: async (ctx) => {
-		const { user, db } = ctx;
-		const profile = await getOneFrom(db, 'userProfiles', 'by_userId', user._id);
-		return profile?.role === USER_ROLES.ADMIN || profile?.role === USER_ROLES.EDITOR;
-	}
-})
-
-/**
  * Get admin access info for the current user.
  * Returns canAccess (editor or admin) and isAdmin flags.
  * Combined query to reduce multiple permission checks to one.
