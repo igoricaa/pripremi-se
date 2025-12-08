@@ -1,7 +1,6 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
-import { useMutation, useQuery } from 'convex/react';
+import { useMutation } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
-import type { Id } from '@pripremi-se/backend/convex/_generated/dataModel';
 import { useForm } from '@tanstack/react-form';
 import {
 	createQuestionWithOptionsSchema,
@@ -33,10 +32,12 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import { Combobox } from '@/components/ui/combobox';
 import { toast } from 'sonner';
 import { QuestionOptionsEditor, type QuestionOption } from '@/components/admin/QuestionOptionsEditor';
-import { useState } from 'react';
+import { CurriculumSelector } from '@/components/admin/CurriculumSelector';
+import { useCurriculumHierarchy } from '@/hooks/use-curriculum-hierarchy';
+import { validateQuestionOptions } from '@/lib/validations/question-validation';
+import { useState, useEffect } from 'react';
 
 export const Route = createFileRoute('/admin/questions/new')({
 	component: NewQuestionPage,
@@ -46,25 +47,8 @@ function NewQuestionPage() {
 	const navigate = useNavigate();
 	const createQuestionWithOptions = useMutation(api.questions.createQuestionWithOptions);
 
-	// Hierarchy state for curriculum linking
-	const [subjectId, setSubjectId] = useState<string>();
-	const [chapterId, setChapterId] = useState<string>();
-	const [sectionId, setSectionId] = useState<string>();
-
-	// Hierarchical queries - each level only loads when parent is selected
-	const subjects = useQuery(api.subjects.listSubjects, {});
-	const chapters = useQuery(
-		api.chapters.listChaptersBySubject,
-		subjectId ? { subjectId: subjectId as Id<'subjects'> } : 'skip'
-	);
-	const sections = useQuery(
-		api.sections.listSectionsByChapter,
-		chapterId ? { chapterId: chapterId as Id<'chapters'> } : 'skip'
-	);
-	const lessons = useQuery(
-		api.lessons.listLessonsBySection,
-		sectionId ? { sectionId: sectionId as Id<'sections'> } : 'skip'
-	);
+	// Curriculum hierarchy hook
+	const curriculum = useCurriculumHierarchy();
 
 	const [options, setOptions] = useState<QuestionOption[]>([
 		{ text: '', isCorrect: false, order: 0 },
@@ -92,27 +76,8 @@ function NewQuestionPage() {
 				const needsOptions = questionTypeRequiresOptions(questionType);
 
 				// Validate options for types that need them
-				if (needsOptions) {
-					const correctCount = options.filter((o) => o.isCorrect).length;
-
-					if (questionType === QUESTION_TYPES.SINGLE_CHOICE || questionType === QUESTION_TYPES.TRUE_FALSE) {
-						if (correctCount !== 1) {
-							toast.error('Please select exactly one correct answer');
-							return;
-						}
-					} else if (questionType === QUESTION_TYPES.MULTIPLE_CHOICE) {
-						if (correctCount < 1) {
-							toast.error('Please select at least one correct answer');
-							return;
-						}
-					}
-
-					// Validate option text
-					const emptyOptions = options.filter((o) => !o.text.trim());
-					if (emptyOptions.length > 0 && questionType !== QUESTION_TYPES.TRUE_FALSE) {
-						toast.error('Please fill in all option texts');
-						return;
-					}
+				if (!validateQuestionOptions(questionType, options)) {
+					return;
 				}
 
 				const questionData = {
@@ -133,7 +98,7 @@ function NewQuestionPage() {
 
 				await createQuestionWithOptions(data);
 				toast.success('Question created successfully');
-				navigate({ to: '/admin/questions', search: { limit: 20, type: 'all', difficulty: 'all' } });
+				navigate({ to: '/admin/questions' });
 			} catch (error) {
 				toast.error(
 					error instanceof Error ? error.message : 'Failed to create question'
@@ -145,13 +110,19 @@ function NewQuestionPage() {
 	// Use local state for UI reactivity (form.state.values.type is not reactive outside form.Field)
 	const needsOptions = questionTypeRequiresOptions(currentQuestionType);
 
+	// Connect curriculum hook to form for cascading resets
+	useEffect(() => {
+		curriculum.setResetLessonCallback(() => {
+			form.setFieldValue('lessonId', undefined);
+		});
+	}, [curriculum, form]);
+
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center gap-4">
 				<Button variant="ghost" size="icon" asChild>
 					<Link 
 						to="/admin/questions" 
-						search={{ limit: 20, type: 'all', difficulty: 'all' }}
 					>
 						<ArrowLeft className="h-4 w-4" />
 					</Link>
@@ -374,83 +345,24 @@ function NewQuestionPage() {
 									</form.Field>
 								)}
 
-								{/* Curriculum Hierarchy - Cascading Comboboxes */}
-								<div className="space-y-4">
-									<Label className="text-sm font-medium">Link to Curriculum (optional)</Label>
-									<p className="text-muted-foreground text-xs -mt-2">
-										Select a subject, then chapter, section, and optionally a lesson
-									</p>
-
-									<div className="space-y-2">
-										<Label className="text-xs text-muted-foreground">Subject</Label>
-										<Combobox
-											options={subjects?.map((s) => ({ value: s._id, label: s.name })) ?? []}
-											value={subjectId}
-											onValueChange={(id) => {
-												setSubjectId(id);
-												setChapterId(undefined);
-												setSectionId(undefined);
-												form.setFieldValue('lessonId', undefined);
-											}}
-											placeholder="Select subject..."
-											searchPlaceholder="Search subjects..."
-											emptyText="No subjects found"
+								<form.Field name="lessonId">
+									{(field) => (
+										<CurriculumSelector
+											subjectId={curriculum.subjectId}
+											chapterId={curriculum.chapterId}
+											sectionId={curriculum.sectionId}
+											lessonId={field.state.value}
+											onSubjectChange={curriculum.setSubjectId}
+											onChapterChange={curriculum.setChapterId}
+											onSectionChange={curriculum.setSectionId}
+											onLessonChange={field.handleChange}
+											subjects={curriculum.subjects}
+											chapters={curriculum.chapters}
+											sections={curriculum.sections}
+											lessons={curriculum.lessons}
 										/>
-									</div>
-
-									<div className="space-y-2">
-										<Label className="text-xs text-muted-foreground">Chapter</Label>
-										<Combobox
-											options={chapters?.map((c) => ({ value: c._id, label: c.name })) ?? []}
-											value={chapterId}
-											onValueChange={(id) => {
-												setChapterId(id);
-												setSectionId(undefined);
-												form.setFieldValue('lessonId', undefined);
-											}}
-											placeholder={subjectId ? 'Select chapter...' : 'Select subject first'}
-											searchPlaceholder="Search chapters..."
-											emptyText="No chapters found"
-											disabled={!subjectId}
-										/>
-									</div>
-
-									<div className="space-y-2">
-										<Label className="text-xs text-muted-foreground">Section</Label>
-										<Combobox
-											options={sections?.map((s) => ({ value: s._id, label: s.name })) ?? []}
-											value={sectionId}
-											onValueChange={(id) => {
-												setSectionId(id);
-												form.setFieldValue('lessonId', undefined);
-											}}
-											placeholder={chapterId ? 'Select section...' : 'Select chapter first'}
-											searchPlaceholder="Search sections..."
-											emptyText="No sections found"
-											disabled={!chapterId}
-										/>
-									</div>
-
-									<form.Field name="lessonId">
-										{(field) => (
-											<div className="space-y-2">
-												<Label className="text-xs text-muted-foreground">Lesson</Label>
-												<Combobox
-													options={lessons?.map((l) => ({ value: l._id, label: l.title })) ?? []}
-													value={field.state.value}
-													onValueChange={field.handleChange}
-													placeholder={sectionId ? 'Select lesson (optional)...' : 'Select section first'}
-													searchPlaceholder="Search lessons..."
-													emptyText="No lessons found"
-													disabled={!sectionId}
-												/>
-												<p className="text-muted-foreground text-xs">
-													Link to a lesson for "Learn More" on incorrect answers
-												</p>
-											</div>
-										)}
-									</form.Field>
-								</div>
+									)}
+								</form.Field>
 
 								<form.Field name="isActive">
 									{(field) => (
@@ -479,7 +391,7 @@ function NewQuestionPage() {
 								className="flex-1"
 								asChild
 							>
-								<Link to="/admin/questions" search={{ limit: 20, type: 'all', difficulty: 'all' }}>
+								<Link to="/admin/questions">
 									Cancel
 								</Link>
 							</Button>

@@ -32,7 +32,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import { Combobox } from '@/components/ui/combobox';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -45,6 +44,9 @@ import {
 } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { QuestionOptionsEditor, type QuestionOption } from '@/components/admin/QuestionOptionsEditor';
+import { CurriculumSelector } from '@/components/admin/CurriculumSelector';
+import { useCurriculumHierarchy } from '@/hooks/use-curriculum-hierarchy';
+import { validateQuestionOptions } from '@/lib/validations/question-validation';
 import { useState, useEffect } from 'react';
 import type { Id } from '@pripremi-se/backend/convex/_generated/dataModel';
 
@@ -61,40 +63,10 @@ function EditQuestionPage() {
 		questionId: questionId as Id<'questions'>
 	});
 
-	// Hierarchy state for curriculum linking
-	const [subjectId, setSubjectId] = useState<string>();
-	const [chapterId, setChapterId] = useState<string>();
-	const [sectionId, setSectionId] = useState<string>();
-	const [hierarchyInitialized, setHierarchyInitialized] = useState(false);
-
-	// Hierarchical queries - each level only loads when parent is selected
-	const subjects = useQuery(api.subjects.listSubjects, {});
-	const chapters = useQuery(
-		api.chapters.listChaptersBySubject,
-		subjectId ? { subjectId: subjectId as Id<'subjects'> } : 'skip'
-	);
-	const sections = useQuery(
-		api.sections.listSectionsByChapter,
-		chapterId ? { chapterId: chapterId as Id<'chapters'> } : 'skip'
-	);
-	const lessons = useQuery(
-		api.lessons.listLessonsBySection,
-		sectionId ? { sectionId: sectionId as Id<'sections'> } : 'skip'
-	);
-
-	// Reverse-lookup queries to initialize hierarchy from existing lessonId
-	const linkedLesson = useQuery(
-		api.lessons.getLessonById,
-		question?.lessonId ? { id: question.lessonId as string } : 'skip'
-	);
-	const linkedSection = useQuery(
-		api.sections.getSectionById,
-		linkedLesson?.sectionId ? { id: linkedLesson.sectionId as string } : 'skip'
-	);
-	const linkedChapter = useQuery(
-		api.chapters.getChapterById,
-		linkedSection?.chapterId ? { id: linkedSection.chapterId as string } : 'skip'
-	);
+	// Curriculum hierarchy hook with reverse-lookup initialization
+	const curriculum = useCurriculumHierarchy({
+		initialLessonId: question?.lessonId ?? null,
+	});
 
 	// Mutations
 	const updateQuestion = useMutation(api.questions.updateQuestion);
@@ -130,27 +102,8 @@ function EditQuestionPage() {
 				const needsOptions = questionTypeRequiresOptions(questionType);
 
 				// Validate options for types that need them
-				if (needsOptions) {
-					const correctCount = options.filter((o) => o.isCorrect).length;
-
-					if (questionType === QUESTION_TYPES.SINGLE_CHOICE || questionType === QUESTION_TYPES.TRUE_FALSE) {
-						if (correctCount !== 1) {
-							toast.error('Please select exactly one correct answer');
-							return;
-						}
-					} else if (questionType === QUESTION_TYPES.MULTIPLE_CHOICE) {
-						if (correctCount < 1) {
-							toast.error('Please select at least one correct answer');
-							return;
-						}
-					}
-
-					// Validate option text
-					const emptyOptions = options.filter((o) => !o.text.trim());
-					if (emptyOptions.length > 0 && questionType !== QUESTION_TYPES.TRUE_FALSE) {
-						toast.error('Please fill in all option texts');
-						return;
-					}
+				if (!validateQuestionOptions(questionType, options)) {
+					return;
 				}
 
 				// Update question
@@ -181,7 +134,7 @@ function EditQuestionPage() {
 				}
 
 				toast.success('Question updated successfully');
-				navigate({ to: '/admin/questions', search: { limit: 20, type: 'all', difficulty: 'all' } });
+				navigate({ to: '/admin/questions' });
 			} catch (error) {
 				toast.error(
 					error instanceof Error ? error.message : 'Failed to update question'
@@ -231,7 +184,7 @@ function EditQuestionPage() {
 		try {
 			await deleteQuestion({ id: questionId });
 			toast.success('Question deleted successfully');
-			navigate({ to: '/admin/questions', search: { limit: 20, type: 'all', difficulty: 'all' } });
+			navigate({ to: '/admin/questions' });
 		} catch (error) {
 			toast.error(
 				error instanceof Error ? error.message : 'Failed to delete question'
@@ -270,20 +223,12 @@ function EditQuestionPage() {
 		}
 	}, [question, isLoaded, form]);
 
-	// Initialize hierarchy from reverse-lookup when data is available
+	// Connect curriculum hook to form for cascading resets
 	useEffect(() => {
-		if (isLoaded && linkedChapter && !hierarchyInitialized) {
-			// Set all hierarchy values at once to avoid cascading updates
-			setSubjectId(linkedChapter.subjectId as string);
-			if (linkedSection) {
-				setChapterId(linkedSection.chapterId as string);
-			}
-			if (linkedLesson) {
-				setSectionId(linkedLesson.sectionId as string);
-			}
-			setHierarchyInitialized(true);
-		}
-	}, [isLoaded, linkedChapter, linkedSection, linkedLesson, hierarchyInitialized]);
+		curriculum.setResetLessonCallback(() => {
+			form.setFieldValue('lessonId', undefined);
+		});
+	}, [curriculum, form]);
 
 	// Use local state for UI reactivity (form.state.values.type is not reactive outside form.Field)
 	const needsOptions = questionTypeRequiresOptions(currentQuestionType);
@@ -323,7 +268,7 @@ function EditQuestionPage() {
 			<div className="space-y-6">
 				<div className="flex items-center gap-4">
 					<Button variant="ghost" size="icon" asChild>
-						<Link to="/admin/questions" search={{ limit: 20, type: 'all', difficulty: 'all' }}>
+						<Link to="/admin/questions">
 							<ArrowLeft className="h-4 w-4" />
 						</Link>
 					</Button>
@@ -342,7 +287,7 @@ function EditQuestionPage() {
 		<div className="space-y-6">
 			<div className="flex items-center gap-4">
 				<Button variant="ghost" size="icon" asChild>
-					<Link to="/admin/questions" search={{ limit: 20, type: 'all', difficulty: 'all' }}>
+					<Link to="/admin/questions">
 						<ArrowLeft className="h-4 w-4" />
 					</Link>
 				</Button>
@@ -536,83 +481,24 @@ function EditQuestionPage() {
 									</form.Field>
 								)}
 
-								{/* Curriculum Hierarchy - Cascading Comboboxes */}
-								<div className="space-y-4">
-									<Label className="text-sm font-medium">Link to Curriculum (optional)</Label>
-									<p className="text-muted-foreground text-xs -mt-2">
-										Select a subject, then chapter, section, and optionally a lesson
-									</p>
-
-									<div className="space-y-2">
-										<Label className="text-xs text-muted-foreground">Subject</Label>
-										<Combobox
-											options={subjects?.map((s) => ({ value: s._id, label: s.name })) ?? []}
-											value={subjectId}
-											onValueChange={(id) => {
-												setSubjectId(id);
-												setChapterId(undefined);
-												setSectionId(undefined);
-												form.setFieldValue('lessonId', undefined);
-											}}
-											placeholder="Select subject..."
-											searchPlaceholder="Search subjects..."
-											emptyText="No subjects found"
+								<form.Field name="lessonId">
+									{(field) => (
+										<CurriculumSelector
+											subjectId={curriculum.subjectId}
+											chapterId={curriculum.chapterId}
+											sectionId={curriculum.sectionId}
+											lessonId={field.state.value}
+											onSubjectChange={curriculum.setSubjectId}
+											onChapterChange={curriculum.setChapterId}
+											onSectionChange={curriculum.setSectionId}
+											onLessonChange={field.handleChange}
+											subjects={curriculum.subjects}
+											chapters={curriculum.chapters}
+											sections={curriculum.sections}
+											lessons={curriculum.lessons}
 										/>
-									</div>
-
-									<div className="space-y-2">
-										<Label className="text-xs text-muted-foreground">Chapter</Label>
-										<Combobox
-											options={chapters?.map((c) => ({ value: c._id, label: c.name })) ?? []}
-											value={chapterId}
-											onValueChange={(id) => {
-												setChapterId(id);
-												setSectionId(undefined);
-												form.setFieldValue('lessonId', undefined);
-											}}
-											placeholder={subjectId ? 'Select chapter...' : 'Select subject first'}
-											searchPlaceholder="Search chapters..."
-											emptyText="No chapters found"
-											disabled={!subjectId}
-										/>
-									</div>
-
-									<div className="space-y-2">
-										<Label className="text-xs text-muted-foreground">Section</Label>
-										<Combobox
-											options={sections?.map((s) => ({ value: s._id, label: s.name })) ?? []}
-											value={sectionId}
-											onValueChange={(id) => {
-												setSectionId(id);
-												form.setFieldValue('lessonId', undefined);
-											}}
-											placeholder={chapterId ? 'Select section...' : 'Select chapter first'}
-											searchPlaceholder="Search sections..."
-											emptyText="No sections found"
-											disabled={!chapterId}
-										/>
-									</div>
-
-									<form.Field name="lessonId">
-										{(field) => (
-											<div className="space-y-2">
-												<Label className="text-xs text-muted-foreground">Lesson</Label>
-												<Combobox
-													options={lessons?.map((l) => ({ value: l._id, label: l.title })) ?? []}
-													value={field.state.value}
-													onValueChange={field.handleChange}
-													placeholder={sectionId ? 'Select lesson (optional)...' : 'Select section first'}
-													searchPlaceholder="Search lessons..."
-													emptyText="No lessons found"
-													disabled={!sectionId}
-												/>
-												<p className="text-muted-foreground text-xs">
-													Link to a lesson for "Learn More" on incorrect answers
-												</p>
-											</div>
-										)}
-									</form.Field>
-								</div>
+									)}
+								</form.Field>
 
 								<form.Field name="isActive">
 									{(field) => (
@@ -649,7 +535,7 @@ function EditQuestionPage() {
 								className="flex-1"
 								asChild
 							>
-								<Link to="/admin/questions" search={{ limit: 20, type: 'all', difficulty: 'all' }}>
+								<Link to="/admin/questions">
 									Cancel
 								</Link>
 							</Button>

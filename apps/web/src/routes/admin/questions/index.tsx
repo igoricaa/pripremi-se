@@ -1,11 +1,12 @@
-import { Suspense, useState } from 'react';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { Suspense, useState, useEffect } from 'react';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { Plus } from 'lucide-react';
+import { useSuspenseQuery, useQueryClient } from '@tanstack/react-query';
+import { Plus, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { api } from '@pripremi-se/backend/convex/_generated/api';
+import type { Id } from '@pripremi-se/backend/convex/_generated/dataModel';
 import { QUESTION_TYPES, QUESTION_DIFFICULTY, questionTypeLabels, difficultyLabels } from '@pripremi-se/shared';
 import { convexQuery } from '@/lib/convex';
 import { CardWithTableSkeleton } from '@/components/admin/skeletons';
@@ -17,7 +18,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import { DataTable } from '@/components/ui/data-table';
+import { DataTable, type PaginationState } from '@/components/ui/data-table';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -37,14 +38,63 @@ import {
 } from '@/components/ui/select';
 import { getQuestionColumns } from './columns';
 
+// URL search params schema for server-side pagination
+interface QuestionsSearch {
+	page?: number;
+	pageSize?: number;
+	type?: string;
+	difficulty?: string;
+	subjectId?: string;
+	chapterId?: string;
+	sectionId?: string;
+	lessonId?: string;
+}
+
 export const Route = createFileRoute('/admin/questions/')({
-	loader: async ({ context }) => {
+	validateSearch: (search: Record<string, unknown>): QuestionsSearch => ({
+		page: search.page ? Number(search.page) : undefined,
+		pageSize: search.pageSize ? Number(search.pageSize) : undefined,
+		type: search.type as string | undefined,
+		difficulty: search.difficulty as string | undefined,
+		subjectId: search.subjectId as string | undefined,
+		chapterId: search.chapterId as string | undefined,
+		sectionId: search.sectionId as string | undefined,
+		lessonId: search.lessonId as string | undefined,
+	}),
+	loaderDeps: ({ search }) => search,
+	loader: async ({ context, deps }) => {
 		if (typeof window === 'undefined' || !context.userId) {
 			return;
 		}
 
+		// Prefetch filter options (cached longer - 30 min staleTime on frontend)
 		context.queryClient.prefetchQuery(
-			convexQuery(api.questions.listQuestionsForAdmin, {})
+			convexQuery(api.questions.getQuestionFilterOptions, {})
+		);
+
+		// Prefetch first page of paginated data
+		context.queryClient.prefetchQuery(
+			convexQuery(api.questions.listQuestionsPaginated, {
+				pageSize: deps.pageSize ?? 20,
+				type: deps.type,
+				difficulty: deps.difficulty,
+				subjectId: deps.subjectId as Id<'subjects'> | undefined,
+				chapterId: deps.chapterId as Id<'chapters'> | undefined,
+				sectionId: deps.sectionId as Id<'sections'> | undefined,
+				lessonId: deps.lessonId as Id<'lessons'> | undefined,
+			})
+		);
+
+		// Prefetch total count
+		context.queryClient.prefetchQuery(
+			convexQuery(api.questions.countQuestionsForAdmin, {
+				type: deps.type,
+				difficulty: deps.difficulty,
+				subjectId: deps.subjectId as Id<'subjects'> | undefined,
+				chapterId: deps.chapterId as Id<'chapters'> | undefined,
+				sectionId: deps.sectionId as Id<'sections'> | undefined,
+				lessonId: deps.lessonId as Id<'lessons'> | undefined,
+			})
 		);
 	},
 	component: QuestionsPage,
@@ -54,16 +104,9 @@ function QuestionsPage() {
 	const [deleteId, setDeleteId] = useState<string | null>(null);
 	const deleteQuestion = useMutation(
 		api.questions.deleteQuestion
-	).withOptimisticUpdate((localStore, args) => {
-		const current = localStore.getQuery(api.questions.listQuestionsForAdmin, {});
-		
-		if (current === undefined) return;
-		
-		const updated = {
-			...current,
-			questions: current.questions.filter((item) => item._id !== args.id),
-		};
-		localStore.setQuery(api.questions.listQuestionsForAdmin, {}, updated);
+	).withOptimisticUpdate(() => {
+		// Invalidate paginated query cache on delete
+		// Note: We can't easily update paginated results, so we just show toast
 		toast.success('Question deleted successfully');
 	});
 
@@ -130,20 +173,70 @@ function QuestionsCard({
 }: {
 	onDeleteRequest: (id: string) => void;
 }) {
-	const { data } = useSuspenseQuery(
-		convexQuery(api.questions.listQuestionsForAdmin, {})
+	const search = Route.useSearch();
+	const navigate = useNavigate();
+	const queryClient = useQueryClient();
+
+	// Pagination state from URL
+	const pageSize = search.pageSize ?? 20;
+	const pageIndex = (search.page ?? 1) - 1; // URL is 1-indexed, internal is 0-indexed
+
+	// Cursor stack for pagination navigation
+	// Index 0 = page 1 (null cursor), Index 1 = page 2 cursor, etc.
+	const [cursorStack, setCursorStack] = useState<Array<string | null>>([null]);
+
+	// Get hierarchy data for filter dropdowns (cached with 30 min staleTime)
+	const { data: filterOptions } = useSuspenseQuery({
+		...convexQuery(api.questions.getQuestionFilterOptions, {}),
+		staleTime: 30 * 60 * 1000, // 30 minutes
+	});
+
+	const { subjects, chapters, sections, lessons } = filterOptions;
+
+	// Current filter values from URL
+	const filters = {
+		type: search.type,
+		difficulty: search.difficulty,
+		subjectId: search.subjectId as Id<'subjects'> | undefined,
+		chapterId: search.chapterId as Id<'chapters'> | undefined,
+		sectionId: search.sectionId as Id<'sections'> | undefined,
+		lessonId: search.lessonId as Id<'lessons'> | undefined,
+	};
+
+	// Get cursor for current page
+	const currentCursor = cursorStack[pageIndex] ?? null;
+
+	// Fetch paginated data
+	const { data: pageData } = useSuspenseQuery(
+		convexQuery(api.questions.listQuestionsPaginated, {
+			cursor: currentCursor ?? undefined,
+			pageSize,
+			...filters,
+		})
 	);
 
-	const { questions, hierarchy } = data;
-	const { subjects, chapters, sections, lessons } = hierarchy;
+	// Fetch total count for pagination UI
+	const { data: countData } = useSuspenseQuery({
+		...convexQuery(api.questions.countQuestionsForAdmin, filters),
+		staleTime: 60 * 60 * 1000, // 1 hour
+	});
 
-	// Filter state
-	const [selectedType, setSelectedType] = useState<string>('all');
-	const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
-	const [selectedSubject, setSelectedSubject] = useState<string>('all');
-	const [selectedChapter, setSelectedChapter] = useState<string>('all');
-	const [selectedSection, setSelectedSection] = useState<string>('all');
-	const [selectedLesson, setSelectedLesson] = useState<string>('all');
+	const { questions, nextCursor } = pageData;
+	const totalCount = countData.count;
+	const pageCount = Math.ceil(totalCount / pageSize);
+
+	// Prefetch next page when we have a nextCursor for instant navigation
+	useEffect(() => {
+		if (nextCursor) {
+			queryClient.prefetchQuery(
+				convexQuery(api.questions.listQuestionsPaginated, {
+					cursor: nextCursor,
+					pageSize,
+					...filters,
+				})
+			);
+		}
+	}, [nextCursor, pageSize, filters, queryClient]);
 
 	// Build hierarchy maps for cascading filters
 	const chaptersBySubject = (() => {
@@ -179,69 +272,129 @@ function QuestionsCard({
 		return map;
 	})();
 
-	// Reset child filters when parent changes
-	const handleSubjectChange = (value: string) => {
-		setSelectedSubject(value);
-		setSelectedChapter('all');
-		setSelectedSection('all');
-		setSelectedLesson('all');
+	// Navigation helper - updates URL search params
+	const updateSearch = (updates: Partial<QuestionsSearch>) => {
+		navigate({
+			to: '/admin/questions',
+			search: (prev) => {
+				const newSearch = { ...prev, ...updates };
+				// Remove undefined/null values
+				for (const [key, value] of Object.entries(newSearch)) {
+					if (value === undefined || value === null || value === 'all') {
+						delete newSearch[key as keyof QuestionsSearch];
+					}
+				}
+				return newSearch;
+			},
+		});
 	};
 
-	const handleChapterChange = (value: string) => {
-		setSelectedChapter(value);
-		setSelectedSection('all');
-		setSelectedLesson('all');
+	// Reset filters and pagination
+	const handleFilterChange = (filterKey: keyof QuestionsSearch, value: string | undefined) => {
+		// Reset cursor stack when filters change
+		setCursorStack([null]);
+
+		// Build updates based on filter hierarchy
+		const updates: Partial<QuestionsSearch> = {
+			[filterKey]: value === 'all' ? undefined : value,
+			page: undefined, // Reset to page 1
+		};
+
+		// Cascade reset child filters when parent changes
+		if (filterKey === 'subjectId') {
+			updates.chapterId = undefined;
+			updates.sectionId = undefined;
+			updates.lessonId = undefined;
+		} else if (filterKey === 'chapterId') {
+			updates.sectionId = undefined;
+			updates.lessonId = undefined;
+		} else if (filterKey === 'sectionId') {
+			updates.lessonId = undefined;
+		}
+
+		updateSearch(updates);
 	};
 
-	const handleSectionChange = (value: string) => {
-		setSelectedSection(value);
-		setSelectedLesson('all');
-	};
+	// Handle pagination changes
+	const handlePaginationChange = (pagination: PaginationState) => {
+		const newPageIndex = pagination.pageIndex;
+		const newPageSize = pagination.pageSize;
 
-	// Client-side filtering
-	const filteredQuestions = questions.filter((q) => {
-		if (selectedType !== 'all' && q.type !== selectedType) return false;
-		if (selectedDifficulty !== 'all' && q.difficulty !== selectedDifficulty) return false;
-		if (selectedSubject !== 'all' && q.subjectId !== selectedSubject) return false;
-		if (selectedChapter !== 'all' && q.chapterId !== selectedChapter) return false;
-		if (selectedSection !== 'all' && q.sectionId !== selectedSection) return false;
-		if (selectedLesson !== 'all' && q.lessonId !== selectedLesson) return false;
-		return true;
-	});
+		// Handle page size change - reset to page 1
+		if (newPageSize !== pageSize) {
+			setCursorStack([null]);
+			updateSearch({ page: undefined, pageSize: newPageSize === 20 ? undefined : newPageSize });
+			return;
+		}
+
+		// Handle going to first page - reset cursor stack for cleanliness
+		if (newPageIndex === 0 && pageIndex > 0) {
+			setCursorStack([null]);
+			updateSearch({ page: undefined });
+			return;
+		}
+
+		// Handle page navigation
+		if (newPageIndex > pageIndex) {
+			// Moving forward - add next cursor to stack if we have it
+			if (nextCursor && newPageIndex === cursorStack.length) {
+				setCursorStack((prev) => [...prev, nextCursor]);
+			}
+		}
+		// Moving backward uses existing cursor from stack
+
+		updateSearch({ page: newPageIndex === 0 ? undefined : newPageIndex + 1 });
+	};
 
 	// Get available options for cascading dropdowns
-	const availableChapters = selectedSubject !== 'all'
-		? chaptersBySubject.get(selectedSubject) ?? []
+	const availableChapters = search.subjectId
+		? chaptersBySubject.get(search.subjectId) ?? []
 		: chapters;
-	const availableSections = selectedChapter !== 'all'
-		? sectionsByChapter.get(selectedChapter) ?? []
+	const availableSections = search.chapterId
+		? sectionsByChapter.get(search.chapterId) ?? []
 		: sections;
-	const availableLessons = selectedSection !== 'all'
-		? lessonsBySection.get(selectedSection) ?? []
+	const availableLessons = search.sectionId
+		? lessonsBySection.get(search.sectionId) ?? []
 		: lessons;
 
 	const columns = getQuestionColumns({ onDelete: onDeleteRequest });
 
 	// Check if any filter is active
-	const hasActiveFilters = selectedType !== 'all' || selectedDifficulty !== 'all' ||
-		selectedSubject !== 'all' || selectedChapter !== 'all' ||
-		selectedSection !== 'all' || selectedLesson !== 'all';
+	const hasActiveFilters = search.type || search.difficulty ||
+		search.subjectId || search.chapterId ||
+		search.sectionId || search.lessonId;
+
+	const clearAllFilters = () => {
+		setCursorStack([null]);
+		navigate({ to: '/admin/questions', search: {} });
+	};
 
 	return (
 		<Card>
 			<CardHeader>
 				<div className="flex flex-col gap-4">
-					<div>
-						<CardTitle>All Questions</CardTitle>
-						<CardDescription>
-							{filteredQuestions.length} question{filteredQuestions.length !== 1 ? 's' : ''}
-							{hasActiveFilters && ' matching filters'}
-						</CardDescription>
+					<div className="flex items-center justify-between">
+						<div>
+							<CardTitle>All Questions</CardTitle>
+							<CardDescription>
+								{totalCount} question{totalCount !== 1 ? 's' : ''}
+								{hasActiveFilters && ' matching filters'}
+							</CardDescription>
+						</div>
+						{hasActiveFilters && (
+							<Button variant="outline" size="sm" onClick={clearAllFilters}>
+								<X className="mr-2 h-4 w-4" />
+								Clear Filters
+							</Button>
+						)}
 					</div>
 
 					{/* Filter Row 1: Type & Difficulty */}
 					<div className="flex flex-wrap gap-2">
-						<Select value={selectedType} onValueChange={setSelectedType}>
+						<Select
+							value={search.type ?? 'all'}
+							onValueChange={(value) => handleFilterChange('type', value)}
+						>
 							<SelectTrigger className="w-[150px]">
 								<SelectValue placeholder="Type" />
 							</SelectTrigger>
@@ -255,7 +408,10 @@ function QuestionsCard({
 							</SelectContent>
 						</Select>
 
-						<Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
+						<Select
+							value={search.difficulty ?? 'all'}
+							onValueChange={(value) => handleFilterChange('difficulty', value)}
+						>
 							<SelectTrigger className="w-[140px]">
 								<SelectValue placeholder="Difficulty" />
 							</SelectTrigger>
@@ -272,7 +428,10 @@ function QuestionsCard({
 
 					{/* Filter Row 2: Hierarchy */}
 					<div className="flex flex-wrap gap-2">
-						<Select value={selectedSubject} onValueChange={handleSubjectChange}>
+						<Select
+							value={search.subjectId ?? 'all'}
+							onValueChange={(value) => handleFilterChange('subjectId', value)}
+						>
 							<SelectTrigger className="w-[150px]">
 								<SelectValue placeholder="Subject" />
 							</SelectTrigger>
@@ -284,7 +443,10 @@ function QuestionsCard({
 							</SelectContent>
 						</Select>
 
-						<Select value={selectedChapter} onValueChange={handleChapterChange}>
+						<Select
+							value={search.chapterId ?? 'all'}
+							onValueChange={(value) => handleFilterChange('chapterId', value)}
+						>
 							<SelectTrigger className="w-[150px]">
 								<SelectValue placeholder="Chapter" />
 							</SelectTrigger>
@@ -296,7 +458,10 @@ function QuestionsCard({
 							</SelectContent>
 						</Select>
 
-						<Select value={selectedSection} onValueChange={handleSectionChange}>
+						<Select
+							value={search.sectionId ?? 'all'}
+							onValueChange={(value) => handleFilterChange('sectionId', value)}
+						>
 							<SelectTrigger className="w-[150px]">
 								<SelectValue placeholder="Section" />
 							</SelectTrigger>
@@ -308,7 +473,10 @@ function QuestionsCard({
 							</SelectContent>
 						</Select>
 
-						<Select value={selectedLesson} onValueChange={setSelectedLesson}>
+						<Select
+							value={search.lessonId ?? 'all'}
+							onValueChange={(value) => handleFilterChange('lessonId', value)}
+						>
 							<SelectTrigger className="w-[150px]">
 								<SelectValue placeholder="Lesson" />
 							</SelectTrigger>
@@ -325,8 +493,16 @@ function QuestionsCard({
 			<CardContent>
 				<DataTable
 					columns={columns}
-					data={filteredQuestions}
+					data={questions}
 					defaultPageSize={20}
+					// Server-side pagination
+					manualPagination
+					pageCount={pageCount}
+					rowCount={totalCount}
+					pageIndex={pageIndex}
+					pageSize={pageSize}
+					onPaginationChange={handlePaginationChange}
+					disableRandomAccess
 				/>
 			</CardContent>
 		</Card>

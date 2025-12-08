@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -27,6 +27,15 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
   defaultPageSize?: number
   pageSizeOptions?: number[]
+  // Server-side pagination props
+  manualPagination?: boolean
+  pageCount?: number
+  rowCount?: number
+  pageIndex?: number
+  pageSize?: number
+  onPaginationChange?: (pagination: PaginationState) => void
+  // For cursor-based pagination, disable random access (first/last/jump) buttons
+  disableRandomAccess?: boolean
 }
 
 export function DataTable<TData, TValue>({
@@ -34,29 +43,60 @@ export function DataTable<TData, TValue>({
   data,
   defaultPageSize = 20,
   pageSizeOptions,
+  // Server-side pagination props
+  manualPagination = false,
+  pageCount: externalPageCount,
+  rowCount: externalRowCount,
+  pageIndex: externalPageIndex,
+  pageSize: externalPageSize,
+  onPaginationChange,
+  disableRandomAccess = false,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [pagination, setPagination] = useState<PaginationState>({
+  const [internalPagination, setInternalPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: defaultPageSize,
   })
 
-  // Reset to first page when data changes (e.g., when external filters change)
+  // Use external pagination state if in manual mode
+  const pagination = manualPagination && externalPageIndex !== undefined && externalPageSize !== undefined
+    ? { pageIndex: externalPageIndex, pageSize: externalPageSize }
+    : internalPagination
+
+  // Reset to first page when data changes (only for client-side pagination)
   useEffect(() => {
-    setPagination((prev) => ({ ...prev, pageIndex: 0 }))
-  }, [data.length])
+    if (!manualPagination) {
+      setInternalPagination((prev) => ({ ...prev, pageIndex: 0 }))
+    }
+  }, [data.length, manualPagination])
+
+  const handlePaginationChange = useCallback((updater: PaginationState | ((prev: PaginationState) => PaginationState)) => {
+    const newPagination = typeof updater === 'function' ? updater(pagination) : updater
+    if (manualPagination && onPaginationChange) {
+      onPaginationChange(newPagination)
+    } else {
+      setInternalPagination(newPagination)
+    }
+  }, [manualPagination, onPaginationChange, pagination])
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    // Only use client-side pagination/filtering if not in manual mode
+    ...(manualPagination ? {} : {
+      getPaginationRowModel: getPaginationRowModel(),
+      getFilteredRowModel: getFilteredRowModel(),
+    }),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
-    onPaginationChange: setPagination,
+    onPaginationChange: handlePaginationChange,
+    // Manual pagination settings
+    manualPagination,
+    pageCount: manualPagination ? externalPageCount : undefined,
+    rowCount: manualPagination ? externalRowCount : undefined,
     state: {
       sorting,
       columnFilters,
@@ -66,6 +106,17 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-end">
+        <DataTablePagination
+          table={table}
+          pageSizeOptions={pageSizeOptions}
+          pageSize={pagination.pageSize}
+          pageIndex={pagination.pageIndex}
+          totalRowCount={manualPagination ? externalRowCount : undefined}
+          disableRandomAccess={manualPagination && disableRandomAccess}
+          hideRowCount={true}
+        />
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -116,6 +167,8 @@ export function DataTable<TData, TValue>({
         pageSizeOptions={pageSizeOptions}
         pageSize={pagination.pageSize}
         pageIndex={pagination.pageIndex}
+        totalRowCount={manualPagination ? externalRowCount : undefined}
+        disableRandomAccess={manualPagination && disableRandomAccess}
       />
     </div>
   )

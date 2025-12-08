@@ -150,6 +150,11 @@ export default defineSchema({
 		lessonId: v.optional(v.id('lessons')), // Link to lesson for "Learn More" when answer is incorrect
 		difficulty: v.optional(v.string()), // Question difficulty: "easy", "medium", "hard"
 
+		// Denormalized hierarchy fields for efficient filtering
+		sectionId: v.optional(v.id('sections')), // Auto-populated from lessonId
+		chapterId: v.optional(v.id('chapters')), // Auto-populated from lessonId
+		subjectId: v.optional(v.id('subjects')), // Auto-populated from lessonId
+
 		// Metadata
 		isActive: v.boolean(), // Whether question is published
 		createdAt: v.number(),
@@ -158,7 +163,17 @@ export default defineSchema({
 		.index('by_isActive', ['isActive'])
 		.index('by_type', ['type'])
 		.index('by_lessonId', ['lessonId'])
-		.index('by_difficulty', ['difficulty']),
+		.index('by_difficulty', ['difficulty'])
+		// Hierarchy indexes for filtering
+		.index('by_subjectId', ['subjectId'])
+		.index('by_chapterId', ['chapterId'])
+		.index('by_sectionId', ['sectionId'])
+		// Composite indexes for multi-filter queries (most common patterns)
+		.index('by_subjectId_type', ['subjectId', 'type'])
+		.index('by_chapterId_type', ['chapterId', 'type'])
+		.index('by_sectionId_type', ['sectionId', 'type'])
+		.index('by_lessonId_type', ['lessonId', 'type'])
+		.index('by_type_difficulty', ['type', 'difficulty']),
 
 	// Assessment: Question Options (answer choices for multiple choice/true-false questions)
 	questionOptions: defineTable({

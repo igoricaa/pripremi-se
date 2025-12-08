@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useMutation } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import {
@@ -67,7 +67,7 @@ export function FileUploader({
 	const generateUploadUrl = useMutation(api.lessonFiles.generateUploadUrl);
 	const createLessonFile = useMutation(api.lessonFiles.createLessonFile);
 
-	const validateFile = useCallback((file: File): string | null => {
+	function validateFile(file: File): string | null {
 		const fileType = getFileTypeFromMime(file.type);
 
 		if (!fileType) {
@@ -80,151 +80,142 @@ export function FileUploader({
 		}
 
 		return null;
-	}, []);
+	}
 
-	const uploadFile = useCallback(
-		async (file: File, index: number) => {
-			// Update status to uploading
+	async function uploadFile(file: File, index: number) {
+		// Update status to uploading
+		setUploadingFiles((prev) =>
+			prev.map((f, i) => (i === index ? { ...f, status: 'uploading' } : f))
+		);
+
+		try {
+			// Get upload URL from Convex
+			const uploadUrl = await generateUploadUrl();
+
+			// Create XMLHttpRequest for progress tracking
+			const xhr = new XMLHttpRequest();
+
+			const uploadPromise = new Promise<string>((resolve, reject) => {
+				xhr.upload.addEventListener('progress', (event) => {
+					if (event.lengthComputable) {
+						const progress = Math.round((event.loaded / event.total) * 100);
+						setUploadingFiles((prev) =>
+							prev.map((f, i) => (i === index ? { ...f, progress } : f))
+						);
+					}
+				});
+
+				xhr.addEventListener('load', () => {
+					if (xhr.status >= 200 && xhr.status < 300) {
+						const response = JSON.parse(xhr.responseText);
+						resolve(response.storageId);
+					} else {
+						reject(new Error(`Upload failed: ${xhr.statusText}`));
+					}
+				});
+
+				xhr.addEventListener('error', () => {
+					reject(new Error('Upload failed'));
+				});
+			});
+
+			xhr.open('POST', uploadUrl);
+			xhr.send(file);
+
+			const storageId = await uploadPromise;
+
+			// Get file type
+			const fileType = getFileTypeFromMime(file.type);
+			if (!fileType) {
+				throw new Error('Invalid file type');
+			}
+
+			// Create file record in database
+			const fileId = await createLessonFile({
+				lessonId,
+				storageId,
+				fileName: file.name,
+				fileType,
+				mimeType: file.type,
+				fileSize: file.size,
+			});
+
+			// Update status to success
 			setUploadingFiles((prev) =>
-				prev.map((f, i) => (i === index ? { ...f, status: 'uploading' } : f))
+				prev.map((f, i) =>
+					i === index ? { ...f, status: 'success', progress: 100 } : f
+				)
 			);
 
-			try {
-				// Get upload URL from Convex
-				const uploadUrl = await generateUploadUrl();
+			onUploadComplete?.(fileId);
+			toast.success(`Uploaded: ${file.name}`);
+		} catch (error) {
+			const errorMessage =
+				error instanceof Error ? error.message : 'Upload failed';
+			setUploadingFiles((prev) =>
+				prev.map((f, i) =>
+					i === index ? { ...f, status: 'error', error: errorMessage } : f
+				)
+			);
+			toast.error(`Failed to upload ${file.name}: ${errorMessage}`);
+		}
+	}
 
-				// Create XMLHttpRequest for progress tracking
-				const xhr = new XMLHttpRequest();
+	function handleFiles(files: FileList | null) {
+		if (!files) return;
 
-				const uploadPromise = new Promise<string>((resolve, reject) => {
-					xhr.upload.addEventListener('progress', (event) => {
-						if (event.lengthComputable) {
-							const progress = Math.round((event.loaded / event.total) * 100);
-							setUploadingFiles((prev) =>
-								prev.map((f, i) => (i === index ? { ...f, progress } : f))
-							);
-						}
-					});
+		const fileArray = Array.from(files);
+		const remainingSlots = maxFiles - uploadingFiles.length;
 
-					xhr.addEventListener('load', () => {
-						if (xhr.status >= 200 && xhr.status < 300) {
-							const response = JSON.parse(xhr.responseText);
-							resolve(response.storageId);
-						} else {
-							reject(new Error(`Upload failed: ${xhr.statusText}`));
-						}
-					});
+		if (fileArray.length > remainingSlots) {
+			toast.error(`Maximum ${maxFiles} files allowed`);
+			return;
+		}
 
-					xhr.addEventListener('error', () => {
-						reject(new Error('Upload failed'));
-					});
-				});
-
-				xhr.open('POST', uploadUrl);
-				xhr.send(file);
-
-				const storageId = await uploadPromise;
-
-				// Get file type
-				const fileType = getFileTypeFromMime(file.type);
-				if (!fileType) {
-					throw new Error('Invalid file type');
-				}
-
-				// Create file record in database
-				const fileId = await createLessonFile({
-					lessonId,
-					storageId,
-					fileName: file.name,
-					fileType,
-					mimeType: file.type,
-					fileSize: file.size,
-				});
-
-				// Update status to success
-				setUploadingFiles((prev) =>
-					prev.map((f, i) =>
-						i === index ? { ...f, status: 'success', progress: 100 } : f
-					)
-				);
-
-				onUploadComplete?.(fileId);
-				toast.success(`Uploaded: ${file.name}`);
-			} catch (error) {
-				const errorMessage =
-					error instanceof Error ? error.message : 'Upload failed';
-				setUploadingFiles((prev) =>
-					prev.map((f, i) =>
-						i === index ? { ...f, status: 'error', error: errorMessage } : f
-					)
-				);
-				toast.error(`Failed to upload ${file.name}: ${errorMessage}`);
+		// Validate and add files
+		const newFiles: UploadingFile[] = [];
+		for (const file of fileArray) {
+			const error = validateFile(file);
+			if (error) {
+				toast.error(`${file.name}: ${error}`);
+				continue;
 			}
-		},
-		[generateUploadUrl, createLessonFile, lessonId, onUploadComplete]
-	);
+			newFiles.push({ file, progress: 0, status: 'pending' });
+		}
 
-	const handleFiles = useCallback(
-		(files: FileList | null) => {
-			if (!files) return;
+		if (newFiles.length === 0) return;
 
-			const fileArray = Array.from(files);
-			const remainingSlots = maxFiles - uploadingFiles.length;
+		setUploadingFiles((prev) => [...prev, ...newFiles]);
 
-			if (fileArray.length > remainingSlots) {
-				toast.error(`Maximum ${maxFiles} files allowed`);
-				return;
+		// Start uploading
+		const startIndex = uploadingFiles.length;
+		for (let i = 0; i < newFiles.length; i++) {
+			const newFile = newFiles[i];
+			if (newFile) {
+				uploadFile(newFile.file, startIndex + i);
 			}
+		}
+	}
 
-			// Validate and add files
-			const newFiles: UploadingFile[] = [];
-			for (const file of fileArray) {
-				const error = validateFile(file);
-				if (error) {
-					toast.error(`${file.name}: ${error}`);
-					continue;
-				}
-				newFiles.push({ file, progress: 0, status: 'pending' });
-			}
-
-			if (newFiles.length === 0) return;
-
-			setUploadingFiles((prev) => [...prev, ...newFiles]);
-
-			// Start uploading
-			const startIndex = uploadingFiles.length;
-			for (let i = 0; i < newFiles.length; i++) {
-				const newFile = newFiles[i];
-				if (newFile) {
-					uploadFile(newFile.file, startIndex + i);
-				}
-			}
-		},
-		[maxFiles, uploadingFiles.length, validateFile, uploadFile]
-	);
-
-	const handleDrop = useCallback(
-		(e: React.DragEvent) => {
-			e.preventDefault();
-			setIsDragging(false);
-			handleFiles(e.dataTransfer.files);
-		},
-		[handleFiles]
-	);
-
-	const handleDragOver = useCallback((e: React.DragEvent) => {
-		e.preventDefault();
-		setIsDragging(true);
-	}, []);
-
-	const handleDragLeave = useCallback((e: React.DragEvent) => {
+	function handleDrop(e: React.DragEvent) {
 		e.preventDefault();
 		setIsDragging(false);
-	}, []);
+		handleFiles(e.dataTransfer.files);
+	}
 
-	const removeFile = useCallback((index: number) => {
+	function handleDragOver(e: React.DragEvent) {
+		e.preventDefault();
+		setIsDragging(true);
+	}
+
+	function handleDragLeave(e: React.DragEvent) {
+		e.preventDefault();
+		setIsDragging(false);
+	}
+
+	function removeFile(index: number) {
 		setUploadingFiles((prev) => prev.filter((_, i) => i !== index));
-	}, []);
+	}
 
 	const acceptedTypes = accept || Object.keys(MIME_TYPE_MAP).join(',');
 

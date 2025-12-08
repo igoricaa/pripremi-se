@@ -16,7 +16,7 @@ const difficultyColors: Record<
 	[QUESTION_DIFFICULTY.HARD]: 'destructive',
 };
 
-// Type matching the truncated question from listQuestionsForAdmin
+// Type matching the truncated question from listQuestionsPaginated
 interface QuestionForTable {
 	_id: string;
 	text: string;
@@ -24,9 +24,9 @@ interface QuestionForTable {
 	difficulty: string | undefined;
 	points: number;
 	lessonId: string | undefined;
-	sectionId: string | null;
-	chapterId: string | null;
-	subjectId: string | null;
+	sectionId: string | undefined;
+	chapterId: string | undefined;
+	subjectId: string | undefined;
 	lessonTitle: string | null;
 }
 

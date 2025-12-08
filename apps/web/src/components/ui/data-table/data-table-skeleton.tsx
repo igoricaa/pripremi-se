@@ -123,11 +123,12 @@ function SkeletonCell({ config }: { config: SkeletonColumnConfig }) {
 }
 
 // Pagination skeleton matching DataTablePagination layout
-function DataTablePaginationSkeleton() {
+function DataTablePaginationSkeleton({ hideRowCount = false }: { hideRowCount?: boolean }) {
 	return (
-		<div className="flex items-center justify-between px-2">
-			{/* Left: Row count */}
-			<Skeleton className="h-4 w-24" />
+		<div className={`flex items-center px-2 ${hideRowCount ? 'justify-end' : 'justify-between'}`}>
+			{!hideRowCount && (
+				<Skeleton className="h-4 w-24" />
+			)}
 
 			<div className="flex items-center space-x-6 lg:space-x-8">
 				{/* Rows per page */}
@@ -161,6 +162,11 @@ export function DataTableSkeleton({
 }: DataTableSkeletonProps) {
 	return (
 		<div className="space-y-4">
+			{showPagination && (
+				<div className="flex justify-end">
+					<DataTablePaginationSkeleton hideRowCount={true} />
+				</div>
+			)}
 			<div className="rounded-md border">
 				<Table>
 					<TableHeader>

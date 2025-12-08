@@ -22,6 +22,12 @@ interface DataTablePaginationProps<TData> {
   pageSizeOptions?: number[]
   pageSize: number
   pageIndex: number
+  // For server-side pagination, we need to accept the total count externally
+  totalRowCount?: number
+  // For cursor-based pagination, disable random access (first/last/jump) buttons
+  disableRandomAccess?: boolean
+  // Hide the row count display for a more compact layout
+  hideRowCount?: boolean
 }
 
 export function DataTablePagination<TData>({
@@ -29,8 +35,12 @@ export function DataTablePagination<TData>({
   pageSizeOptions = [10, 20, 50, 100],
   pageSize,
   pageIndex,
+  totalRowCount,
+  disableRandomAccess = false,
+  hideRowCount = false,
 }: DataTablePaginationProps<TData>) {
-  const rowCount = table.getFilteredRowModel().rows.length
+  // Use totalRowCount for server-side pagination, otherwise use filtered row count
+  const rowCount = totalRowCount ?? table.getFilteredRowModel().rows.length
   const pageCount = table.getPageCount()
   const currentPage = pageIndex + 1
 
@@ -67,10 +77,12 @@ export function DataTablePagination<TData>({
   }, [currentPage])
 
   return (
-    <div className="flex items-center justify-between px-2">
-      <div className="text-muted-foreground text-sm">
-        {rowCount} row(s) total
-      </div>
+    <div className={`flex items-center px-2 ${hideRowCount ? 'justify-end' : 'justify-between'}`}>
+      {!hideRowCount && (
+        <div className="text-muted-foreground text-sm">
+          {rowCount} row(s) total
+        </div>
+      )}
       <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Rows per page</p>
@@ -91,7 +103,9 @@ export function DataTablePagination<TData>({
           </Select>
         </div>
         <div className="flex w-[140px] items-center justify-center text-sm font-medium">
-          {showPageInput ? (
+          {disableRandomAccess ? (
+            <span>Page {currentPage} of {pageCount}</span>
+          ) : showPageInput ? (
             <div className="flex items-center gap-1">
               <span>Page</span>
               <Input
@@ -117,6 +131,7 @@ export function DataTablePagination<TData>({
           )}
         </div>
         <div className="flex items-center space-x-2">
+          {/* First button always works - cursor for page 1 is always null */}
           <Button
             variant="outline"
             size="icon"
@@ -144,15 +159,17 @@ export function DataTablePagination<TData>({
             <span className="sr-only">Go to next page</span>
             <ChevronRight className="h-4 w-4" />
           </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-            disabled={pageIndex >= pageCount - 1}
-          >
-            <span className="sr-only">Go to last page</span>
-            <ChevronsRight className="h-4 w-4" />
-          </Button>
+          {!disableRandomAccess && (
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+              disabled={pageIndex >= pageCount - 1}
+            >
+              <span className="sr-only">Go to last page</span>
+              <ChevronsRight className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </div>
     </div>

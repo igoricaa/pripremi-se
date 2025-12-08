@@ -97,7 +97,7 @@ function SectionsPage() {
 			</div>
 
 			{/* Data component suspends until ready */}
-			<Suspense fallback={<CardWithTableSkeleton preset="sections" rows={20} filterWidth="w-[280px]" />}>
+			<Suspense fallback={<CardWithTableSkeleton preset="sections" rows={20} filterWidth="w-[340px]" />}>
 				<SectionsCard onDeleteRequest={(id) => setDeleteId(id)} />
 			</Suspense>
 
@@ -126,7 +126,9 @@ function SectionsPage() {
 	);
 }
 
-function SectionsCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => void }) {
+function SectionsCard({
+	onDeleteRequest,
+}: { onDeleteRequest: (id: string) => void }) {
 	// Single query - data already prefetched by loader
 	const { data } = useSuspenseQuery(
 		convexQuery(api.sections.listSectionsWithHierarchy, {})
@@ -135,27 +137,48 @@ function SectionsCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => vo
 	const { sections, hierarchy } = data;
 	const { subjects, chapters } = hierarchy;
 
+	// Filter states for cascading dropdowns
+	const [selectedSubjectId, setSelectedSubjectId] = useState<string>('all');
 	const [selectedChapterId, setSelectedChapterId] = useState<string>('all');
 
-	// Filter sections by selected chapter
-	const filteredSections =
-		selectedChapterId === 'all'
-			? sections
-			: sections.filter((s) => s.chapterId === selectedChapterId);
-
-	// Create lookup maps for table rendering
+	// Create lookup map for table rendering
 	const chapterMap = new Map(chapters.map((c) => [c._id, c]));
-	const subjectMap = new Map(subjects.map((s) => [s._id as string, s.name]));
 
-	// Group chapters by subject for the dropdown
-	const chaptersBySubject = new Map<string, typeof chapters>();
-	for (const chapter of chapters) {
-		const subjectId = chapter.subjectId as string;
-		if (!chaptersBySubject.has(subjectId)) {
-			chaptersBySubject.set(subjectId, []);
+	// Cascading reset handler
+	const handleSubjectChange = (value: string) => {
+		setSelectedSubjectId(value);
+		setSelectedChapterId('all');
+	};
+
+	// Chapters available based on selected subject
+	const availableChapters =
+		selectedSubjectId === 'all'
+			? chapters
+			: chapters.filter((c) => c.subjectId === selectedSubjectId);
+
+	// Filter sections based on all selected levels
+	const filteredSections = (() => {
+		if (selectedChapterId !== 'all') {
+			return sections.filter((s) => s.chapterId === selectedChapterId);
 		}
-		chaptersBySubject.get(subjectId)?.push(chapter);
-	}
+		if (selectedSubjectId !== 'all') {
+			const chapterIds = new Set(
+				chapters
+					.filter((c) => c.subjectId === selectedSubjectId)
+					.map((c) => c._id)
+			);
+			return sections.filter((s) => chapterIds.has(s.chapterId));
+		}
+		return sections;
+	})();
+
+	// Determine description text
+	const filterDescription =
+		selectedChapterId !== 'all'
+			? 'in selected chapter'
+			: selectedSubjectId !== 'all'
+				? 'in selected subject'
+				: 'total';
 
 	const columns = getSectionColumns({ chapterMap, onDelete: onDeleteRequest });
 
@@ -167,35 +190,46 @@ function SectionsCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => vo
 						<CardTitle>All Sections</CardTitle>
 						<CardDescription>
 							{filteredSections.length} section
-							{filteredSections.length !== 1 ? 's' : ''}{' '}
-							{selectedChapterId !== 'all' ? 'in selected chapter' : 'total'}
+							{filteredSections.length !== 1 ? 's' : ''} {filterDescription}
 						</CardDescription>
 					</div>
-					<Select
-						value={selectedChapterId}
-						onValueChange={setSelectedChapterId}
-					>
-						<SelectTrigger className="w-[280px]">
-							<SelectValue placeholder="Filter by chapter" />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectItem value="all">All Chapters</SelectItem>
-							{Array.from(chaptersBySubject.entries()).map(
-								([subjectId, subjectChapters]) => (
-									<div key={subjectId}>
-										<div className="px-2 py-1.5 font-semibold text-muted-foreground text-xs">
-											{subjectMap.get(subjectId) ?? 'Unknown Subject'}
-										</div>
-										{subjectChapters?.map((chapter) => (
-											<SelectItem key={chapter._id} value={chapter._id}>
-												{chapter.name}
-											</SelectItem>
-										))}
-									</div>
-								)
-							)}
-						</SelectContent>
-					</Select>
+					<div className="flex flex-wrap items-center gap-2">
+						{/* Subject Filter */}
+						<Select
+							value={selectedSubjectId}
+							onValueChange={handleSubjectChange}
+						>
+							<SelectTrigger className="w-[160px]">
+								<SelectValue placeholder="All Subjects" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="all">All Subjects</SelectItem>
+								{subjects.map((s) => (
+									<SelectItem key={s._id} value={s._id}>
+										{s.name}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+
+						{/* Chapter Filter */}
+						<Select
+							value={selectedChapterId}
+							onValueChange={setSelectedChapterId}
+						>
+							<SelectTrigger className="w-[160px]">
+								<SelectValue placeholder="All Chapters" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="all">All Chapters</SelectItem>
+								{availableChapters.map((c) => (
+									<SelectItem key={c._id} value={c._id}>
+										{c.name}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</div>
 				</div>
 			</CardHeader>
 			<CardContent>
