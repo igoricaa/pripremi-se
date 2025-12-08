@@ -11,7 +11,7 @@ import { api } from '@pripremi-se/backend/convex/_generated/api';
 import type { Id } from '@pripremi-se/backend/convex/_generated/dataModel';
 import { QUESTION_TYPES, QUESTION_DIFFICULTY, questionTypeLabels, difficultyLabels } from '@pripremi-se/shared';
 import { convexQuery } from '@/lib/convex';
-import { CardWithTableSkeleton } from '@/components/admin/skeletons';
+import { QuestionsFiltersSkeleton, TableContentSkeleton } from '@/components/admin/skeletons';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -146,9 +146,17 @@ function QuestionsPage() {
 				</Button>
 			</div>
 
-			<Suspense fallback={<CardWithTableSkeleton preset="questions" rows={20} filterWidth="w-[600px]" />}>
-				<QuestionsCard onDeleteRequest={(id) => setDeleteId(id)} />
-			</Suspense>
+			<Card>
+				{/* Filters - wrapped in own Suspense for filter options loading */}
+				<Suspense fallback={<QuestionsFiltersSkeleton />}>
+					<QuestionsFilters />
+				</Suspense>
+
+				{/* Table - wrapped in Suspense, only this shows skeleton on filter/search change */}
+				<Suspense fallback={<TableContentSkeleton preset="questions" rows={20} />}>
+					<QuestionsTable onDeleteRequest={(id) => setDeleteId(id)} />
+				</Suspense>
+			</Card>
 
 			<AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
 				<AlertDialogContent>
@@ -174,22 +182,13 @@ function QuestionsPage() {
 	);
 }
 
-function QuestionsCard({
-	onDeleteRequest,
-}: {
-	onDeleteRequest: (id: string) => void;
-}) {
+/**
+ * QuestionsFilters - Header section with search and filter dropdowns
+ * Wrapped in its own Suspense boundary to stay visible during table loading
+ */
+function QuestionsFilters() {
 	const search = Route.useSearch();
 	const navigate = useNavigate();
-	const queryClient = useQueryClient();
-
-	// Pagination state from URL
-	const pageSize = search.pageSize ?? 20;
-	const pageIndex = (search.page ?? 1) - 1; // URL is 1-indexed, internal is 0-indexed
-
-	// Cursor stack for pagination navigation
-	// Index 0 = page 1 (null cursor), Index 1 = page 2 cursor, etc.
-	const [cursorStack, setCursorStack] = useState<Array<string | null>>([null]);
 
 	// Local search input state (updates on every keystroke)
 	const [searchInput, setSearchInput] = useState(search.q ?? '');
@@ -204,56 +203,6 @@ function QuestionsCard({
 	});
 
 	const { subjects, chapters, sections, lessons } = filterOptions;
-
-	// Current filter values from URL
-	const filters = {
-		type: search.type,
-		difficulty: search.difficulty,
-		subjectId: search.subjectId as Id<'subjects'> | undefined,
-		chapterId: search.chapterId as Id<'chapters'> | undefined,
-		sectionId: search.sectionId as Id<'sections'> | undefined,
-		lessonId: search.lessonId as Id<'lessons'> | undefined,
-	};
-
-	// Get cursor for current page
-	const currentCursor = cursorStack[pageIndex] ?? null;
-
-	// Fetch paginated data (include searchTerm from URL)
-	const { data: pageData } = useSuspenseQuery(
-		convexQuery(api.questions.listQuestionsPaginated, {
-			cursor: currentCursor ?? undefined,
-			pageSize,
-			searchTerm: search.q,
-			...filters,
-		})
-	);
-
-	// Fetch total count for pagination UI (include searchTerm from URL)
-	const { data: countData } = useSuspenseQuery({
-		...convexQuery(api.questions.countQuestionsForAdmin, {
-			searchTerm: search.q,
-			...filters,
-		}),
-		staleTime: 60 * 60 * 1000, // 1 hour
-	});
-
-	const { questions, nextCursor } = pageData;
-	const totalCount = countData.count;
-	const pageCount = Math.ceil(totalCount / pageSize);
-
-	// Prefetch next page when we have a nextCursor for instant navigation
-	useEffect(() => {
-		if (nextCursor) {
-			queryClient.prefetchQuery(
-				convexQuery(api.questions.listQuestionsPaginated, {
-					cursor: nextCursor,
-					pageSize,
-					searchTerm: search.q,
-					...filters,
-				})
-			);
-		}
-	}, [nextCursor, pageSize, search.q, filters, queryClient]);
 
 	// Build hierarchy maps for cascading filters
 	const chaptersBySubject = (() => {
@@ -309,7 +258,6 @@ function QuestionsCard({
 	// Sync debounced search to URL
 	useEffect(() => {
 		if (debouncedSearch !== (search.q ?? '')) {
-			setCursorStack([null]); // Reset pagination
 			updateSearch({
 				q: debouncedSearch || undefined,
 				page: undefined,
@@ -320,9 +268,6 @@ function QuestionsCard({
 
 	// Reset filters and pagination
 	const handleFilterChange = (filterKey: keyof QuestionsSearch, value: string | undefined) => {
-		// Reset cursor stack when filters change
-		setCursorStack([null]);
-
 		// Build updates based on filter hierarchy
 		const updates: Partial<QuestionsSearch> = {
 			[filterKey]: value === 'all' ? undefined : value,
@@ -342,6 +287,253 @@ function QuestionsCard({
 		}
 
 		updateSearch(updates);
+	};
+
+	// Get available options for cascading dropdowns
+	const availableChapters = search.subjectId
+		? chaptersBySubject.get(search.subjectId) ?? []
+		: chapters;
+	const availableSections = search.chapterId
+		? sectionsByChapter.get(search.chapterId) ?? []
+		: sections;
+	const availableLessons = search.sectionId
+		? lessonsBySection.get(search.sectionId) ?? []
+		: lessons;
+
+	// Check if any filter or search is active
+	const hasActiveFilters = search.q || search.type || search.difficulty ||
+		search.subjectId || search.chapterId ||
+		search.sectionId || search.lessonId;
+
+	const clearAllFilters = () => {
+		setSearchInput(''); // Clear local search input
+		navigate({ to: '/admin/questions', search: {} });
+	};
+
+	return (
+		<CardHeader>
+			<div className="flex flex-col gap-4">
+				<div className="flex items-center justify-between">
+					<div>
+						<CardTitle>All Questions</CardTitle>
+						<CardDescription>
+							Manage questions
+							{search.q && ' matching search'}
+							{(search.type || search.difficulty || search.subjectId || search.chapterId || search.sectionId || search.lessonId) && ' with filters'}
+						</CardDescription>
+					</div>
+					{hasActiveFilters && (
+						<Button variant="outline" size="sm" onClick={clearAllFilters}>
+							<X className="mr-2 h-4 w-4" />
+							Clear Filters
+						</Button>
+					)}
+				</div>
+
+				{/* Search Input */}
+				<SearchInput
+					value={searchInput}
+					onChange={setSearchInput}
+					placeholder="Search questions..."
+					className="max-w-sm"
+				/>
+
+				{/* Filter Row 1: Type & Difficulty */}
+				<div className="flex flex-wrap gap-2">
+					<Select
+						value={search.type ?? 'all'}
+						onValueChange={(value) => handleFilterChange('type', value)}
+					>
+						<SelectTrigger className="w-[150px]">
+							<SelectValue placeholder="Type" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="all">All Types</SelectItem>
+							{Object.entries(QUESTION_TYPES).map(([, value]) => (
+								<SelectItem key={value} value={value}>
+									{questionTypeLabels[value]}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+
+					<Select
+						value={search.difficulty ?? 'all'}
+						onValueChange={(value) => handleFilterChange('difficulty', value)}
+					>
+						<SelectTrigger className="w-[140px]">
+							<SelectValue placeholder="Difficulty" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="all">All Levels</SelectItem>
+							{Object.entries(QUESTION_DIFFICULTY).map(([, value]) => (
+								<SelectItem key={value} value={value}>
+									{difficultyLabels[value]}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</div>
+
+				{/* Filter Row 2: Hierarchy */}
+				<div className="flex flex-wrap gap-2">
+					<Select
+						value={search.subjectId ?? 'all'}
+						onValueChange={(value) => handleFilterChange('subjectId', value)}
+					>
+						<SelectTrigger className="w-[150px]">
+							<SelectValue placeholder="Subject" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="all">All Subjects</SelectItem>
+							{subjects.map((s) => (
+								<SelectItem key={s._id} value={s._id}>{s.name}</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+
+					<Select
+						value={search.chapterId ?? 'all'}
+						onValueChange={(value) => handleFilterChange('chapterId', value)}
+					>
+						<SelectTrigger className="w-[150px]">
+							<SelectValue placeholder="Chapter" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="all">All Chapters</SelectItem>
+							{availableChapters.map((c) => (
+								<SelectItem key={c._id} value={c._id}>{c.name}</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+
+					<Select
+						value={search.sectionId ?? 'all'}
+						onValueChange={(value) => handleFilterChange('sectionId', value)}
+					>
+						<SelectTrigger className="w-[150px]">
+							<SelectValue placeholder="Section" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="all">All Sections</SelectItem>
+							{availableSections.map((s) => (
+								<SelectItem key={s._id} value={s._id}>{s.name}</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+
+					<Select
+						value={search.lessonId ?? 'all'}
+						onValueChange={(value) => handleFilterChange('lessonId', value)}
+					>
+						<SelectTrigger className="w-[150px]">
+							<SelectValue placeholder="Lesson" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="all">All Lessons</SelectItem>
+							{availableLessons.map((l) => (
+								<SelectItem key={l._id} value={l._id}>{l.title}</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</div>
+			</div>
+		</CardHeader>
+	);
+}
+
+/**
+ * QuestionsTable - Table with pagination, fetches data based on URL params
+ * Wrapped in Suspense - shows skeleton when filters/search change
+ */
+function QuestionsTable({
+	onDeleteRequest,
+}: {
+	onDeleteRequest: (id: string) => void;
+}) {
+	const search = Route.useSearch();
+	const navigate = useNavigate();
+	const queryClient = useQueryClient();
+
+	// Pagination state from URL
+	const pageSize = search.pageSize ?? 20;
+	const pageIndex = (search.page ?? 1) - 1; // URL is 1-indexed, internal is 0-indexed
+
+	// Cursor stack for pagination navigation
+	// Index 0 = page 1 (null cursor), Index 1 = page 2 cursor, etc.
+	const [cursorStack, setCursorStack] = useState<Array<string | null>>([null]);
+
+	// Current filter values from URL
+	const filters = {
+		type: search.type,
+		difficulty: search.difficulty,
+		subjectId: search.subjectId as Id<'subjects'> | undefined,
+		chapterId: search.chapterId as Id<'chapters'> | undefined,
+		sectionId: search.sectionId as Id<'sections'> | undefined,
+		lessonId: search.lessonId as Id<'lessons'> | undefined,
+	};
+
+	// Get cursor for current page
+	const currentCursor = cursorStack[pageIndex] ?? null;
+
+	// Fetch paginated data (include searchTerm from URL)
+	const { data: pageData } = useSuspenseQuery(
+		convexQuery(api.questions.listQuestionsPaginated, {
+			cursor: currentCursor ?? undefined,
+			pageSize,
+			searchTerm: search.q,
+			...filters,
+		})
+	);
+
+	// Fetch total count for pagination UI (include searchTerm from URL)
+	const { data: countData } = useSuspenseQuery({
+		...convexQuery(api.questions.countQuestionsForAdmin, {
+			searchTerm: search.q,
+			...filters,
+		}),
+		staleTime: 60 * 60 * 1000, // 1 hour
+	});
+
+	const { questions, nextCursor } = pageData;
+	const totalCount = countData.count;
+	const pageCount = Math.ceil(totalCount / pageSize);
+
+	// Reset cursor stack when filters/search change
+	useEffect(() => {
+		setCursorStack([null]);
+	}, [search.q, search.type, search.difficulty, search.subjectId,
+		search.chapterId, search.sectionId, search.lessonId]);
+
+	// Prefetch next page when we have a nextCursor for instant navigation
+	useEffect(() => {
+		if (nextCursor) {
+			queryClient.prefetchQuery(
+				convexQuery(api.questions.listQuestionsPaginated, {
+					cursor: nextCursor,
+					pageSize,
+					searchTerm: search.q,
+					...filters,
+				})
+			);
+		}
+	}, [nextCursor, pageSize, search.q, filters, queryClient]);
+
+	// Navigation helper - updates URL search params
+	const updateSearch = (updates: Partial<QuestionsSearch>) => {
+		navigate({
+			to: '/admin/questions',
+			search: (prev) => {
+				const newSearch = { ...prev, ...updates };
+				// Remove undefined/null values
+				for (const [key, value] of Object.entries(newSearch)) {
+					if (value === undefined || value === null || value === 'all') {
+						delete newSearch[key as keyof QuestionsSearch];
+					}
+				}
+				return newSearch;
+			},
+		});
 	};
 
 	// Handle pagination changes
@@ -375,175 +567,28 @@ function QuestionsCard({
 		updateSearch({ page: newPageIndex === 0 ? undefined : newPageIndex + 1 });
 	};
 
-	// Get available options for cascading dropdowns
-	const availableChapters = search.subjectId
-		? chaptersBySubject.get(search.subjectId) ?? []
-		: chapters;
-	const availableSections = search.chapterId
-		? sectionsByChapter.get(search.chapterId) ?? []
-		: sections;
-	const availableLessons = search.sectionId
-		? lessonsBySection.get(search.sectionId) ?? []
-		: lessons;
-
 	const columns = getQuestionColumns({ onDelete: onDeleteRequest });
 
-	// Check if any filter or search is active
-	const hasActiveFilters = search.q || search.type || search.difficulty ||
-		search.subjectId || search.chapterId ||
-		search.sectionId || search.lessonId;
-
-	const clearAllFilters = () => {
-		setSearchInput(''); // Clear local search input
-		setCursorStack([null]);
-		navigate({ to: '/admin/questions', search: {} });
-	};
-
 	return (
-		<Card>
-			<CardHeader>
-				<div className="flex flex-col gap-4">
-					<div className="flex items-center justify-between">
-						<div>
-							<CardTitle>All Questions</CardTitle>
-							<CardDescription>
-								{totalCount} question{totalCount !== 1 ? 's' : ''}
-								{search.q && ' matching search'}
-								{(search.type || search.difficulty || search.subjectId || search.chapterId || search.sectionId || search.lessonId) && ' with filters'}
-							</CardDescription>
-						</div>
-						{hasActiveFilters && (
-							<Button variant="outline" size="sm" onClick={clearAllFilters}>
-								<X className="mr-2 h-4 w-4" />
-								Clear Filters
-							</Button>
-						)}
-					</div>
+		<CardContent>
+			{/* Show count here since we have it */}
+			<p className="mb-4 text-muted-foreground text-sm">
+				{totalCount} question{totalCount !== 1 ? 's' : ''} found
+			</p>
 
-					{/* Search Input */}
-					<SearchInput
-						value={searchInput}
-						onChange={setSearchInput}
-						placeholder="Search questions..."
-						className="max-w-sm"
-					/>
-
-					{/* Filter Row 1: Type & Difficulty */}
-					<div className="flex flex-wrap gap-2">
-						<Select
-							value={search.type ?? 'all'}
-							onValueChange={(value) => handleFilterChange('type', value)}
-						>
-							<SelectTrigger className="w-[150px]">
-								<SelectValue placeholder="Type" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="all">All Types</SelectItem>
-								{Object.entries(QUESTION_TYPES).map(([, value]) => (
-									<SelectItem key={value} value={value}>
-										{questionTypeLabels[value]}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-
-						<Select
-							value={search.difficulty ?? 'all'}
-							onValueChange={(value) => handleFilterChange('difficulty', value)}
-						>
-							<SelectTrigger className="w-[140px]">
-								<SelectValue placeholder="Difficulty" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="all">All Levels</SelectItem>
-								{Object.entries(QUESTION_DIFFICULTY).map(([, value]) => (
-									<SelectItem key={value} value={value}>
-										{difficultyLabels[value]}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					</div>
-
-					{/* Filter Row 2: Hierarchy */}
-					<div className="flex flex-wrap gap-2">
-						<Select
-							value={search.subjectId ?? 'all'}
-							onValueChange={(value) => handleFilterChange('subjectId', value)}
-						>
-							<SelectTrigger className="w-[150px]">
-								<SelectValue placeholder="Subject" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="all">All Subjects</SelectItem>
-								{subjects.map((s) => (
-									<SelectItem key={s._id} value={s._id}>{s.name}</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-
-						<Select
-							value={search.chapterId ?? 'all'}
-							onValueChange={(value) => handleFilterChange('chapterId', value)}
-						>
-							<SelectTrigger className="w-[150px]">
-								<SelectValue placeholder="Chapter" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="all">All Chapters</SelectItem>
-								{availableChapters.map((c) => (
-									<SelectItem key={c._id} value={c._id}>{c.name}</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-
-						<Select
-							value={search.sectionId ?? 'all'}
-							onValueChange={(value) => handleFilterChange('sectionId', value)}
-						>
-							<SelectTrigger className="w-[150px]">
-								<SelectValue placeholder="Section" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="all">All Sections</SelectItem>
-								{availableSections.map((s) => (
-									<SelectItem key={s._id} value={s._id}>{s.name}</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-
-						<Select
-							value={search.lessonId ?? 'all'}
-							onValueChange={(value) => handleFilterChange('lessonId', value)}
-						>
-							<SelectTrigger className="w-[150px]">
-								<SelectValue placeholder="Lesson" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="all">All Lessons</SelectItem>
-								{availableLessons.map((l) => (
-									<SelectItem key={l._id} value={l._id}>{l.title}</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					</div>
-				</div>
-			</CardHeader>
-			<CardContent>
-				<DataTable
-					columns={columns}
-					data={questions}
-					defaultPageSize={20}
-					// Server-side pagination
-					manualPagination
-					pageCount={pageCount}
-					rowCount={totalCount}
-					pageIndex={pageIndex}
-					pageSize={pageSize}
-					onPaginationChange={handlePaginationChange}
-					disableRandomAccess
-				/>
-			</CardContent>
-		</Card>
+			<DataTable
+				columns={columns}
+				data={questions}
+				defaultPageSize={20}
+				// Server-side pagination
+				manualPagination
+				pageCount={pageCount}
+				rowCount={totalCount}
+				pageIndex={pageIndex}
+				pageSize={pageSize}
+				onPaginationChange={handlePaginationChange}
+				disableRandomAccess
+			/>
+		</CardContent>
 	);
 }

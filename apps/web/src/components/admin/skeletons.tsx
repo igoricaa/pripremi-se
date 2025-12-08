@@ -69,6 +69,66 @@ export function CardHeaderSkeleton({ filterWidth = 'w-[280px]' }: { filterWidth?
 	);
 }
 
+/**
+ * Skeleton for QuestionsFilters component - shows header, search input, and filter dropdowns
+ */
+export function QuestionsFiltersSkeleton() {
+	return (
+		<CardHeader>
+			<div className="flex flex-col gap-4">
+				{/* Header row */}
+				<div className="flex items-center justify-between">
+					<div>
+						<Skeleton className="h-6 w-32" />
+						<Skeleton className="mt-1 h-4 w-40" />
+					</div>
+				</div>
+
+				{/* Search Input */}
+				<Skeleton className="h-10 w-80" />
+
+				{/* Filter Row 1: Type & Difficulty */}
+				<div className="flex flex-wrap gap-2">
+					<Skeleton className="h-10 w-[150px]" />
+					<Skeleton className="h-10 w-[140px]" />
+				</div>
+
+				{/* Filter Row 2: Hierarchy */}
+				<div className="flex flex-wrap gap-2">
+					<Skeleton className="h-10 w-[150px]" />
+					<Skeleton className="h-10 w-[150px]" />
+					<Skeleton className="h-10 w-[150px]" />
+					<Skeleton className="h-10 w-[150px]" />
+				</div>
+			</div>
+		</CardHeader>
+	);
+}
+
+/**
+ * Skeleton for table content area only (without card header)
+ * Used when filters are visible but table is loading
+ */
+export function TableContentSkeleton({
+	rows = 10,
+	preset,
+	columns,
+}: {
+	rows?: number;
+	preset?: SkeletonPreset;
+	columns?: SkeletonColumnConfig[];
+}) {
+	const skeletonColumns = preset
+		? SKELETON_PRESETS[preset]
+		: columns ?? [col('text'), col('text'), col('badge'), col('actions')];
+
+	return (
+		<CardContent>
+			<DataTableSkeleton columns={skeletonColumns} rows={rows} />
+		</CardContent>
+	);
+}
+
 interface CardWithTableSkeletonProps {
 	rows?: number;
 	filterWidth?: string;
