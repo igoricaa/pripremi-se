@@ -19,21 +19,28 @@ interface Chapter {
 interface GetColumnsOptions {
 	chapterMap: Map<Id<'chapters'>, Chapter>;
 	onDelete: (id: string) => void;
+	sortableEnabled?: boolean;
 }
 
 export function getSectionColumns({
 	chapterMap,
 	onDelete,
+	sortableEnabled = true,
 }: GetColumnsOptions): ColumnDef<Section>[] {
 	return [
-		{
-			id: 'drag',
-			header: '',
-			cell: () => (
-				<GripVertical className="h-4 w-4 cursor-grab text-muted-foreground" />
-			),
-			enableSorting: false,
-		},
+		// Only include drag column when sortable is enabled
+		...(sortableEnabled
+			? [
+					{
+						id: 'drag',
+						header: '',
+						cell: () => (
+							<GripVertical className="h-4 w-4 cursor-grab text-muted-foreground" />
+						),
+						enableSorting: false,
+					} as ColumnDef<Section>,
+				]
+			: []),
 		{
 			accessorKey: 'name',
 			header: ({ column }) => (

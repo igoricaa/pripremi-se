@@ -15,7 +15,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import { DataTable } from '@/components/ui/data-table';
+import { SortableDataTable } from '@/components/ui/data-table/sortable-data-table';
 import { SearchInput } from '@/components/ui/search-input';
 import {
 	Select,
@@ -121,6 +121,35 @@ function ChaptersCard({
 		convexQuery(api.chapters.listChaptersWithSubjects, {})
 	);
 
+	const reorderChapters = useMutation(
+		api.chapters.reorderChapters
+	).withOptimisticUpdate((localStore, args) => {
+		const current = localStore.getQuery(
+			api.chapters.listChaptersWithSubjects,
+			{}
+		);
+		if (current === undefined) return;
+
+		const orderMap = new Map(args.items.map((item) => [item.id, item.order]));
+		const updated = {
+			...current,
+			chapters: current.chapters
+				.map((chapter) => ({
+					...chapter,
+					order: orderMap.get(chapter._id) ?? chapter.order,
+				}))
+				.sort((a, b) => {
+					// Sort by (subjectId, order) to match backend
+					if (a.subjectId !== b.subjectId) {
+						return a.subjectId.localeCompare(b.subjectId);
+					}
+					return a.order - b.order;
+				}),
+		};
+
+		localStore.setQuery(api.chapters.listChaptersWithSubjects, {}, updated);
+	});
+
 	const { chapters, subjects } = data;
 
 	const [selectedSubjectId, setSelectedSubjectId] = useState<string>('all');
@@ -148,7 +177,23 @@ function ChaptersCard({
 
 	const subjectMap = new Map(subjects.map((s) => [s._id, s.name]));
 
-	const columns = getChapterColumns({ subjectMap, onDelete: onDeleteRequest });
+	// Enable drag-and-drop when a specific subject is selected OR only one subject exists
+	const sortableEnabled = selectedSubjectId !== 'all' || subjects.length === 1;
+
+	const columns = getChapterColumns({
+		subjectMap,
+		onDelete: onDeleteRequest,
+		sortableEnabled,
+	});
+
+	const handleReorder = async (items: Array<{ id: string; order: number }>) => {
+		try {
+			await reorderChapters({ items });
+			toast.success('Order updated');
+		} catch {
+			toast.error('Failed to update order');
+		}
+	};
 
 	return (
 		<Card>
@@ -202,10 +247,12 @@ function ChaptersCard({
 				</div>
 			</CardHeader>
 			<CardContent>
-				<DataTable
+				<SortableDataTable
 					columns={columns}
 					data={filteredChapters}
 					defaultPageSize={20}
+					onReorder={handleReorder}
+					sortableEnabled={sortableEnabled}
 				/>
 			</CardContent>
 		</Card>

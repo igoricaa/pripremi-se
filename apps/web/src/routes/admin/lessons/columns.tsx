@@ -46,22 +46,29 @@ interface GetColumnsOptions {
 	sectionMap: Map<Id<'sections'>, Section>;
 	chapterMap: Map<Id<'chapters'>, Chapter>;
 	onDelete: (id: string) => void;
+	sortableEnabled?: boolean;
 }
 
 export function getLessonColumns({
 	sectionMap,
 	chapterMap,
 	onDelete,
+	sortableEnabled = true,
 }: GetColumnsOptions): ColumnDef<Lesson>[] {
 	return [
-		{
-			id: 'drag',
-			header: '',
-			cell: () => (
-				<GripVertical className="h-4 w-4 cursor-grab text-muted-foreground" />
-			),
-			enableSorting: false,
-		},
+		// Only include drag column when sortable is enabled
+		...(sortableEnabled
+			? [
+					{
+						id: 'drag',
+						header: '',
+						cell: () => (
+							<GripVertical className="h-4 w-4 cursor-grab text-muted-foreground" />
+						),
+						enableSorting: false,
+					} as ColumnDef<Lesson>,
+				]
+			: []),
 		{
 			accessorKey: 'title',
 			header: ({ column }) => (

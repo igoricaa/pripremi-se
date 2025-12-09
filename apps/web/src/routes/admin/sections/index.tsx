@@ -15,7 +15,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import { DataTable } from '@/components/ui/data-table';
+import { SortableDataTable } from '@/components/ui/data-table/sortable-data-table';
 import { SearchInput } from '@/components/ui/search-input';
 import {
 	Select,
@@ -123,6 +123,35 @@ function SectionsCard({
 		convexQuery(api.sections.listSectionsWithHierarchy, {})
 	);
 
+	const reorderSections = useMutation(
+		api.sections.reorderSections
+	).withOptimisticUpdate((localStore, args) => {
+		const current = localStore.getQuery(
+			api.sections.listSectionsWithHierarchy,
+			{}
+		);
+		if (current === undefined) return;
+
+		const orderMap = new Map(args.items.map((item) => [item.id, item.order]));
+		const updated = {
+			...current,
+			sections: current.sections
+				.map((section) => ({
+					...section,
+					order: orderMap.get(section._id) ?? section.order,
+				}))
+				.sort((a, b) => {
+					// Sort by (chapterId, order) to match backend
+					if (a.chapterId !== b.chapterId) {
+						return a.chapterId.localeCompare(b.chapterId);
+					}
+					return a.order - b.order;
+				}),
+		};
+
+		localStore.setQuery(api.sections.listSectionsWithHierarchy, {}, updated);
+	});
+
 	const { sections, hierarchy } = data;
 	const { subjects, chapters } = hierarchy;
 
@@ -188,7 +217,24 @@ function SectionsCard({
 				? 'in selected subject'
 				: 'total';
 
-	const columns = getSectionColumns({ chapterMap, onDelete: onDeleteRequest });
+	// Enable drag-and-drop when a specific chapter is selected OR only one chapter available
+	const sortableEnabled =
+		selectedChapterId !== 'all' || availableChapters.length === 1;
+
+	const columns = getSectionColumns({
+		chapterMap,
+		onDelete: onDeleteRequest,
+		sortableEnabled,
+	});
+
+	const handleReorder = async (items: Array<{ id: string; order: number }>) => {
+		try {
+			await reorderSections({ items });
+			toast.success('Order updated');
+		} catch {
+			toast.error('Failed to update order');
+		}
+	};
 
 	return (
 		<Card>
@@ -257,10 +303,12 @@ function SectionsCard({
 				</div>
 			</CardHeader>
 			<CardContent>
-				<DataTable
+				<SortableDataTable
 					columns={columns}
 					data={filteredSections}
 					defaultPageSize={20}
+					onReorder={handleReorder}
+					sortableEnabled={sortableEnabled}
 				/>
 			</CardContent>
 		</Card>

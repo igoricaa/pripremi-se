@@ -14,21 +14,28 @@ type Chapter = Doc<'chapters'> & {
 interface GetColumnsOptions {
 	subjectMap: Map<Id<'subjects'>, string>;
 	onDelete: (id: string) => void;
+	sortableEnabled?: boolean;
 }
 
 export function getChapterColumns({
 	subjectMap,
 	onDelete,
+	sortableEnabled = true,
 }: GetColumnsOptions): ColumnDef<Chapter>[] {
 	return [
-		{
-			id: 'drag',
-			header: '',
-			cell: () => (
-				<GripVertical className="h-4 w-4 cursor-grab text-muted-foreground" />
-			),
-			enableSorting: false,
-		},
+		// Only include drag column when sortable is enabled
+		...(sortableEnabled
+			? [
+					{
+						id: 'drag',
+						header: '',
+						cell: () => (
+							<GripVertical className="h-4 w-4 cursor-grab text-muted-foreground" />
+						),
+						enableSorting: false,
+					} as ColumnDef<Chapter>,
+				]
+			: []),
 		{
 			accessorKey: 'name',
 			header: ({ column }) => (

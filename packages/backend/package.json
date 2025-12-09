@@ -12,7 +12,10 @@
     "dev": "convex dev",
     "seed:generate": "tsx scripts/seed-runner.ts",
     "seed:run": "tsx scripts/run-seed.ts",
-    "seed:clear": "npx convex run seed/index:runClear"
+    "seed:clear": "npx convex run seed/index:runClear",
+    "migrate:lesson-order": "npx convex run seed/index:reorderLessonsPerSection",
+    "migrate:chapter-order": "npx convex run seed/index:reorderChaptersPerSubject",
+    "migrate:section-order": "npx convex run seed/index:reorderSectionsPerChapter"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

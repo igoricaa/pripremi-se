@@ -15,7 +15,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import { DataTable } from '@/components/ui/data-table';
+import { SortableDataTable } from '@/components/ui/data-table/sortable-data-table';
 import { DELETE_MESSAGES } from '@/lib/constants/admin-ui';
 import { convexQuery } from '@/lib/convex';
 import { getSubjectColumns } from './columns';
@@ -99,6 +99,32 @@ function SubjectsCard({
 		convexQuery(api.subjects.listSubjects, {})
 	);
 
+	const reorderSubjects = useMutation(
+		api.subjects.reorderSubjects
+	).withOptimisticUpdate((localStore, args) => {
+		const current = localStore.getQuery(api.subjects.listSubjects, {});
+		if (current === undefined) return;
+
+		const orderMap = new Map(args.items.map((item) => [item.id, item.order]));
+		const updated = current
+			.map((subject) => ({
+				...subject,
+				order: orderMap.get(subject._id) ?? subject.order,
+			}))
+			.sort((a, b) => a.order - b.order);
+
+		localStore.setQuery(api.subjects.listSubjects, {}, updated);
+	});
+
+	const handleReorder = async (items: Array<{ id: string; order: number }>) => {
+		try {
+			await reorderSubjects({ items });
+			toast.success('Order updated');
+		} catch {
+			toast.error('Failed to update order');
+		}
+	};
+
 	const columns = getSubjectColumns({ onDelete: onDeleteRequest });
 
 	return (
@@ -110,7 +136,12 @@ function SubjectsCard({
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
-				<DataTable columns={columns} data={subjects} defaultPageSize={20} />
+				<SortableDataTable
+					columns={columns}
+					data={subjects}
+					defaultPageSize={20}
+					onReorder={handleReorder}
+				/>
 			</CardContent>
 		</Card>
 	);

@@ -15,7 +15,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import { DataTable } from '@/components/ui/data-table';
+import { SortableDataTable } from '@/components/ui/data-table/sortable-data-table';
 import { SearchInput } from '@/components/ui/search-input';
 import {
 	Select,
@@ -118,6 +118,39 @@ function LessonsCard({
 	const { data } = useSuspenseQuery(
 		convexQuery(api.lessons.listLessonsWithHierarchy, {})
 	);
+	const reorderLessons = useMutation(
+		api.lessons.reorderLessons
+	).withOptimisticUpdate((localStore, args) => {
+		const current = localStore.getQuery(
+			api.lessons.listLessonsWithHierarchy,
+			{}
+		);
+		if (current === undefined) return;
+
+		const orderMap = new Map(args.items.map((item) => [item.id, item.order]));
+
+		// Update lessons with new order values and sort by (sectionId, order) to match backend
+		const updatedLessons = current.lessons
+			.map((lesson) => ({
+				...lesson,
+				order: orderMap.get(lesson._id) ?? lesson.order,
+			}))
+			.sort((a, b) => {
+				if (a.sectionId !== b.sectionId) {
+					return a.sectionId.localeCompare(b.sectionId);
+				}
+				return a.order - b.order;
+			});
+
+		localStore.setQuery(
+			api.lessons.listLessonsWithHierarchy,
+			{},
+			{
+				...current,
+				lessons: updatedLessons,
+			}
+		);
+	});
 
 	const { lessons, hierarchy } = data;
 	const { subjects, chapters, sections } = hierarchy;
@@ -224,11 +257,25 @@ function LessonsCard({
 					? 'in selected subject'
 					: 'total';
 
+	// Enable drag-and-drop when a specific section is selected OR only one section available
+	const sortableEnabled =
+		selectedSectionId !== 'all' || availableSections.length === 1;
+
 	const columns = getLessonColumns({
 		sectionMap,
 		chapterMap,
 		onDelete: onDeleteRequest,
+		sortableEnabled,
 	});
+
+	const handleReorder = async (items: Array<{ id: string; order: number }>) => {
+		try {
+			await reorderLessons({ items });
+			toast.success('Order updated');
+		} catch (error) {
+			toast.error('Failed to update order');
+		}
+	};
 
 	return (
 		<Card>
@@ -315,10 +362,12 @@ function LessonsCard({
 				</div>
 			</CardHeader>
 			<CardContent>
-				<DataTable
+				<SortableDataTable
 					columns={columns}
 					data={filteredLessons}
 					defaultPageSize={20}
+					onReorder={handleReorder}
+					sortableEnabled={sortableEnabled}
 				/>
 			</CardContent>
 		</Card>

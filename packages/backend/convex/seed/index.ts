@@ -240,6 +240,123 @@ export const clearCurriculum = internalMutation({
 });
 
 /**
+ * One-time migration to fix lesson order values.
+ * Recomputes order values per-section (0, 1, 2... within each section).
+ *
+ * Usage: npx convex run seed/index:reorderLessonsPerSection
+ */
+export const reorderLessonsPerSection = internalMutation({
+	args: {},
+	handler: async (ctx): Promise<{ updated: number; sections: number }> => {
+		const { db } = ctx;
+
+		// Get all sections
+		const sections = await db.query('sections').collect();
+
+		let totalUpdated = 0;
+
+		for (const section of sections) {
+			// Get lessons for this section, sorted by current order
+			const lessons = await db
+				.query('lessons')
+				.withIndex('by_sectionId_order', (q) => q.eq('sectionId', section._id))
+				.collect();
+
+			// Re-assign order values starting from 0
+			for (let i = 0; i < lessons.length; i++) {
+				if (lessons[i].order !== i) {
+					await db.patch(lessons[i]._id, {
+						order: i,
+						updatedAt: Date.now(),
+					});
+					totalUpdated++;
+				}
+			}
+		}
+
+		return { updated: totalUpdated, sections: sections.length };
+	},
+});
+
+/**
+ * One-time migration to fix chapter order values.
+ * Recomputes order values per-subject (0, 1, 2... within each subject).
+ *
+ * Usage: npx convex run seed/index:reorderChaptersPerSubject
+ */
+export const reorderChaptersPerSubject = internalMutation({
+	args: {},
+	handler: async (ctx): Promise<{ updated: number; subjects: number }> => {
+		const { db } = ctx;
+
+		// Get all subjects
+		const subjects = await db.query('subjects').collect();
+
+		let totalUpdated = 0;
+
+		for (const subject of subjects) {
+			// Get chapters for this subject, sorted by current order
+			const chapters = await db
+				.query('chapters')
+				.withIndex('by_subjectId_order', (q) => q.eq('subjectId', subject._id))
+				.collect();
+
+			// Re-assign order values starting from 0
+			for (let i = 0; i < chapters.length; i++) {
+				if (chapters[i].order !== i) {
+					await db.patch(chapters[i]._id, {
+						order: i,
+						updatedAt: Date.now(),
+					});
+					totalUpdated++;
+				}
+			}
+		}
+
+		return { updated: totalUpdated, subjects: subjects.length };
+	},
+});
+
+/**
+ * One-time migration to fix section order values.
+ * Recomputes order values per-chapter (0, 1, 2... within each chapter).
+ *
+ * Usage: npx convex run seed/index:reorderSectionsPerChapter
+ */
+export const reorderSectionsPerChapter = internalMutation({
+	args: {},
+	handler: async (ctx): Promise<{ updated: number; chapters: number }> => {
+		const { db } = ctx;
+
+		// Get all chapters
+		const chapters = await db.query('chapters').collect();
+
+		let totalUpdated = 0;
+
+		for (const chapter of chapters) {
+			// Get sections for this chapter, sorted by current order
+			const sections = await db
+				.query('sections')
+				.withIndex('by_chapterId_order', (q) => q.eq('chapterId', chapter._id))
+				.collect();
+
+			// Re-assign order values starting from 0
+			for (let i = 0; i < sections.length; i++) {
+				if (sections[i].order !== i) {
+					await db.patch(sections[i]._id, {
+						order: i,
+						updatedAt: Date.now(),
+					});
+					totalUpdated++;
+				}
+			}
+		}
+
+		return { updated: totalUpdated, chapters: chapters.length };
+	},
+});
+
+/**
  * Development action to run seed with JSON data.
  * This wraps the internal mutation for CLI testing.
  *
