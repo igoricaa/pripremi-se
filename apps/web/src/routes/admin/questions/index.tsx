@@ -13,6 +13,7 @@ import { Plus, X } from 'lucide-react';
 import { Suspense, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { DeleteConfirmDialog } from '@/components/admin/DeleteConfirmDialog';
+import { HierarchyFilterBar } from '@/components/admin/HierarchyFilterBar';
 import {
 	QuestionsFiltersSkeleton,
 	TableContentSkeleton,
@@ -35,6 +36,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import { useDebounce } from '@/hooks/use-debounce';
+import { createUrlHierarchyState } from '@/hooks/use-hierarchy-filter-state';
 import { DELETE_MESSAGES } from '@/lib/constants/admin-ui';
 import { convexQuery } from '@/lib/convex';
 import { getQuestionColumns } from './columns';
@@ -187,40 +189,6 @@ function QuestionsFilters() {
 
 	const { subjects, chapters, sections, lessons } = filterOptions;
 
-	// Build hierarchy maps for cascading filters
-	const chaptersBySubject = (() => {
-		const map = new Map<string, typeof chapters>();
-		for (const chapter of chapters) {
-			const subjectId = chapter.subjectId as string;
-			const list = map.get(subjectId) ?? [];
-			list.push(chapter);
-			map.set(subjectId, list);
-		}
-		return map;
-	})();
-
-	const sectionsByChapter = (() => {
-		const map = new Map<string, typeof sections>();
-		for (const section of sections) {
-			const chapterId = section.chapterId as string;
-			const list = map.get(chapterId) ?? [];
-			list.push(section);
-			map.set(chapterId, list);
-		}
-		return map;
-	})();
-
-	const lessonsBySection = (() => {
-		const map = new Map<string, typeof lessons>();
-		for (const lesson of lessons) {
-			const sectionId = lesson.sectionId as string;
-			const list = map.get(sectionId) ?? [];
-			list.push(lesson);
-			map.set(sectionId, list);
-		}
-		return map;
-	})();
-
 	// Navigation helper - updates URL search params
 	const updateSearch = (updates: Partial<QuestionsSearch>) => {
 		navigate({
@@ -249,52 +217,28 @@ function QuestionsFilters() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [debouncedSearch]);
 
-	// Reset filters and pagination
+	// Handle type/difficulty filter changes
 	const handleFilterChange = (
-		filterKey: keyof QuestionsSearch,
+		filterKey: 'type' | 'difficulty',
 		value: string | undefined
 	) => {
-		// Build updates based on filter hierarchy
-		const updates: Partial<QuestionsSearch> = {
+		updateSearch({
 			[filterKey]: value === 'all' ? undefined : value,
-			page: undefined, // Reset to page 1
-		};
-
-		// Cascade reset child filters when parent changes
-		if (filterKey === 'subjectId') {
-			updates.chapterId = undefined;
-			updates.sectionId = undefined;
-			updates.lessonId = undefined;
-		} else if (filterKey === 'chapterId') {
-			updates.sectionId = undefined;
-			updates.lessonId = undefined;
-		} else if (filterKey === 'sectionId') {
-			updates.lessonId = undefined;
-		}
-
-		updateSearch(updates);
+			page: undefined,
+		});
 	};
 
-	// Get available options for cascading dropdowns
-	const availableChapters = search.subjectId
-		? (chaptersBySubject.get(search.subjectId) ?? [])
-		: chapters;
-	const availableSections = search.chapterId
-		? (sectionsByChapter.get(search.chapterId) ?? [])
-		: sections;
-	const availableLessons = search.sectionId
-		? (lessonsBySection.get(search.sectionId) ?? [])
-		: lessons;
+	// Create URL-based hierarchy filter state with page reset
+	const hierarchyFilterState = createUrlHierarchyState(search, (updates) => {
+		updateSearch({ ...updates, page: undefined });
+	});
 
 	// Check if any filter or search is active
 	const hasActiveFilters =
 		search.q ||
 		search.type ||
 		search.difficulty ||
-		search.subjectId ||
-		search.chapterId ||
-		search.sectionId ||
-		search.lessonId;
+		hierarchyFilterState.hasActiveFilters;
 
 	const clearAllFilters = () => {
 		setSearchInput(''); // Clear local search input
@@ -312,10 +256,7 @@ function QuestionsFilters() {
 							{search.q && ' matching search'}
 							{(search.type ||
 								search.difficulty ||
-								search.subjectId ||
-								search.chapterId ||
-								search.sectionId ||
-								search.lessonId) &&
+								hierarchyFilterState.hasActiveFilters) &&
 								' with filters'}
 						</CardDescription>
 					</div>
@@ -372,76 +313,16 @@ function QuestionsFilters() {
 					</Select>
 				</div>
 
-				{/* Filter Row 2: Hierarchy */}
-				<div className="flex flex-wrap gap-2">
-					<Select
-						onValueChange={(value) => handleFilterChange('subjectId', value)}
-						value={search.subjectId ?? 'all'}
-					>
-						<SelectTrigger className="w-[150px]">
-							<SelectValue placeholder="Subject" />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectItem value="all">All Subjects</SelectItem>
-							{subjects.map((s) => (
-								<SelectItem key={s._id} value={s._id}>
-									{s.name}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-
-					<Select
-						onValueChange={(value) => handleFilterChange('chapterId', value)}
-						value={search.chapterId ?? 'all'}
-					>
-						<SelectTrigger className="w-[150px]">
-							<SelectValue placeholder="Chapter" />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectItem value="all">All Chapters</SelectItem>
-							{availableChapters.map((c) => (
-								<SelectItem key={c._id} value={c._id}>
-									{c.name}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-
-					<Select
-						onValueChange={(value) => handleFilterChange('sectionId', value)}
-						value={search.sectionId ?? 'all'}
-					>
-						<SelectTrigger className="w-[150px]">
-							<SelectValue placeholder="Section" />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectItem value="all">All Sections</SelectItem>
-							{availableSections.map((s) => (
-								<SelectItem key={s._id} value={s._id}>
-									{s.name}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-
-					<Select
-						onValueChange={(value) => handleFilterChange('lessonId', value)}
-						value={search.lessonId ?? 'all'}
-					>
-						<SelectTrigger className="w-[150px]">
-							<SelectValue placeholder="Lesson" />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectItem value="all">All Lessons</SelectItem>
-							{availableLessons.map((l) => (
-								<SelectItem key={l._id} value={l._id}>
-									{l.title}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-				</div>
+				{/* Filter Row 2: Hierarchy (Combobox with search) */}
+				<HierarchyFilterBar
+					chapters={chapters}
+					comboboxWidth="w-[150px]"
+					lessons={lessons}
+					levels={['subject', 'chapter', 'section', 'lesson']}
+					sections={sections}
+					state={hierarchyFilterState}
+					subjects={subjects}
+				/>
 			</div>
 		</CardHeader>
 	);

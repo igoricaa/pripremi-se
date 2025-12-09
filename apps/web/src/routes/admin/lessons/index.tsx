@@ -6,6 +6,7 @@ import { Plus, X } from 'lucide-react';
 import { Suspense, useState } from 'react';
 import { toast } from 'sonner';
 import { DeleteConfirmDialog } from '@/components/admin/DeleteConfirmDialog';
+import { HierarchyFilterBar } from '@/components/admin/HierarchyFilterBar';
 import { CardWithTableSkeleton } from '@/components/admin/skeletons';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,13 +18,7 @@ import {
 } from '@/components/ui/card';
 import { SortableDataTable } from '@/components/ui/data-table/sortable-data-table';
 import { SearchInput } from '@/components/ui/search-input';
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select';
+import { useHierarchyFilterState } from '@/hooks/use-hierarchy-filter-state';
 import { DELETE_MESSAGES } from '@/lib/constants/admin-ui';
 import { convexQuery } from '@/lib/convex';
 import { getLessonColumns } from './columns';
@@ -155,43 +150,25 @@ function LessonsCard({
 	const { lessons, hierarchy } = data;
 	const { subjects, chapters, sections } = hierarchy;
 
-	// Filter states for cascading dropdowns
-	const [selectedSubjectId, setSelectedSubjectId] = useState<string>('all');
-	const [selectedChapterId, setSelectedChapterId] = useState<string>('all');
-	const [selectedSectionId, setSelectedSectionId] = useState<string>('all');
+	// Use hierarchy filter state hook
+	const filterState = useHierarchyFilterState({
+		levels: ['subject', 'chapter', 'section'],
+	});
 	const [searchTerm, setSearchTerm] = useState('');
 
 	// Create lookup maps for table rendering
 	const sectionMap = new Map(sections.map((s) => [s._id, s]));
 	const chapterMap = new Map(chapters.map((c) => [c._id, c]));
 
-	// Cascading reset handlers
-	const handleSubjectChange = (value: string) => {
-		setSelectedSubjectId(value);
-		setSelectedChapterId('all');
-		setSelectedSectionId('all');
-	};
-
-	const handleChapterChange = (value: string) => {
-		setSelectedChapterId(value);
-		setSelectedSectionId('all');
-	};
-
-	// Chapters available based on selected subject
-	const availableChapters =
-		selectedSubjectId === 'all'
-			? chapters
-			: chapters.filter((c) => c.subjectId === selectedSubjectId);
-
-	// Sections available based on selected chapter (or subject if no chapter selected)
+	// Sections available based on selected chapter (or subject if no chapter selected) - for sortable logic
 	const availableSections = (() => {
-		if (selectedChapterId !== 'all') {
-			return sections.filter((s) => s.chapterId === selectedChapterId);
+		if (filterState.chapterId) {
+			return sections.filter((s) => s.chapterId === filterState.chapterId);
 		}
-		if (selectedSubjectId !== 'all') {
+		if (filterState.subjectId) {
 			const chapterIds = new Set(
 				chapters
-					.filter((c) => c.subjectId === selectedSubjectId)
+					.filter((c) => c.subjectId === filterState.subjectId)
 					.map((c) => c._id)
 			);
 			return sections.filter((s) => chapterIds.has(s.chapterId));
@@ -203,19 +180,19 @@ function LessonsCard({
 	const filteredLessons = (() => {
 		let result = lessons;
 
-		if (selectedSectionId !== 'all') {
-			result = result.filter((l) => l.sectionId === selectedSectionId);
-		} else if (selectedChapterId !== 'all') {
+		if (filterState.sectionId) {
+			result = result.filter((l) => l.sectionId === filterState.sectionId);
+		} else if (filterState.chapterId) {
 			const sectionIds = new Set(
 				sections
-					.filter((s) => s.chapterId === selectedChapterId)
+					.filter((s) => s.chapterId === filterState.chapterId)
 					.map((s) => s._id)
 			);
 			result = result.filter((l) => sectionIds.has(l.sectionId));
-		} else if (selectedSubjectId !== 'all') {
+		} else if (filterState.subjectId) {
 			const chapterIds = new Set(
 				chapters
-					.filter((c) => c.subjectId === selectedSubjectId)
+					.filter((c) => c.subjectId === filterState.subjectId)
 					.map((c) => c._id)
 			);
 			const sectionIds = new Set(
@@ -233,33 +210,27 @@ function LessonsCard({
 		return result;
 	})();
 
-	const hasActiveFilters =
-		selectedSubjectId !== 'all' ||
-		selectedChapterId !== 'all' ||
-		selectedSectionId !== 'all' ||
-		searchTerm;
+	const hasActiveFilters = filterState.hasActiveFilters || searchTerm;
 
 	const clearAllFilters = () => {
-		setSelectedSubjectId('all');
-		setSelectedChapterId('all');
-		setSelectedSectionId('all');
+		filterState.clearAll();
 		setSearchTerm('');
 	};
 
 	// Determine description text
 	const filterDescription = searchTerm
 		? 'matching search'
-		: selectedSectionId !== 'all'
+		: filterState.sectionId
 			? 'in selected section'
-			: selectedChapterId !== 'all'
+			: filterState.chapterId
 				? 'in selected chapter'
-				: selectedSubjectId !== 'all'
+				: filterState.subjectId
 					? 'in selected subject'
 					: 'total';
 
 	// Enable drag-and-drop when a specific section is selected OR only one section available
 	const sortableEnabled =
-		selectedSectionId !== 'all' || availableSections.length === 1;
+		!!filterState.sectionId || availableSections.length === 1;
 
 	const columns = getLessonColumns({
 		sectionMap,
@@ -272,7 +243,7 @@ function LessonsCard({
 		try {
 			await reorderLessons({ items });
 			toast.success('Order updated');
-		} catch (error) {
+		} catch {
 			toast.error('Failed to update order');
 		}
 	};
@@ -290,60 +261,13 @@ function LessonsCard({
 							</CardDescription>
 						</div>
 						<div className="flex flex-wrap items-center gap-2">
-							{/* Subject Filter */}
-							<Select
-								onValueChange={handleSubjectChange}
-								value={selectedSubjectId}
-							>
-								<SelectTrigger className="w-[160px]">
-									<SelectValue placeholder="All Subjects" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="all">All Subjects</SelectItem>
-									{subjects.map((s) => (
-										<SelectItem key={s._id} value={s._id}>
-											{s.name}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-
-							{/* Chapter Filter */}
-							<Select
-								onValueChange={handleChapterChange}
-								value={selectedChapterId}
-							>
-								<SelectTrigger className="w-[160px]">
-									<SelectValue placeholder="All Chapters" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="all">All Chapters</SelectItem>
-									{availableChapters.map((c) => (
-										<SelectItem key={c._id} value={c._id}>
-											{c.name}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-
-							{/* Section Filter */}
-							<Select
-								onValueChange={setSelectedSectionId}
-								value={selectedSectionId}
-							>
-								<SelectTrigger className="w-[160px]">
-									<SelectValue placeholder="All Sections" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="all">All Sections</SelectItem>
-									{availableSections.map((s) => (
-										<SelectItem key={s._id} value={s._id}>
-											{s.name}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-
+							<HierarchyFilterBar
+								chapters={chapters}
+								levels={['subject', 'chapter', 'section']}
+								sections={sections}
+								state={filterState}
+								subjects={subjects}
+							/>
 							{hasActiveFilters && (
 								<Button onClick={clearAllFilters} size="sm" variant="outline">
 									<X className="mr-2 h-4 w-4" />
