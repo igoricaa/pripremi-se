@@ -18,7 +18,9 @@ export type LessonProgressStatus =
 /**
  * Array of all lesson progress status values (for Zod enum)
  */
-export const LESSON_PROGRESS_STATUS_VALUES = Object.values(LESSON_PROGRESS_STATUS);
+export const LESSON_PROGRESS_STATUS_VALUES = Object.values(
+	LESSON_PROGRESS_STATUS
+);
 
 /**
  * Zod enum schema for lesson progress status

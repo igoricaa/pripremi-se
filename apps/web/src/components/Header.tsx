@@ -1,11 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { Authenticated, Unauthenticated } from 'convex/react';
-import {
-	Home,
-	Menu,
-	Settings,
-	X,
-} from 'lucide-react';
+import { Home, Menu, Settings, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { authClient } from '@/lib/auth-client';
 import { useTheme } from './ThemeProvider';
@@ -87,7 +82,7 @@ export default function Header() {
 						<Home size={20} />
 						<span className="font-medium">Home</span>
 					</Link>
-					
+
 					<ThemeSwitcher />
 					{/* Settings & Sign in / sign out */}
 					<Authenticated>

@@ -1,6 +1,6 @@
-import { FileImage, FileVideo, FileAudio, FileText } from 'lucide-react';
 import type { FileType } from '@pripremi-se/shared';
 import { getFileTypeFromMime } from '@pripremi-se/shared';
+import { FileAudio, FileImage, FileText, FileVideo } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { createElement } from 'react';
 
@@ -34,7 +34,10 @@ export function formatDate(timestamp: number): string {
  * @param fileType - The file type (image, video, audio, pdf)
  * @param className - Optional className for the icon
  */
-export function getFileIconByType(fileType: FileType, className = 'h-6 w-6'): ReactNode {
+export function getFileIconByType(
+	fileType: FileType,
+	className = 'h-6 w-6'
+): ReactNode {
 	const iconProps = { className };
 	switch (fileType) {
 		case 'image':
@@ -55,7 +58,10 @@ export function getFileIconByType(fileType: FileType, className = 'h-6 w-6'): Re
  * @param mimeType - The MIME type string
  * @param className - Optional className for the icon
  */
-export function getFileIconByMime(mimeType: string, className = 'h-8 w-8'): ReactNode {
+export function getFileIconByMime(
+	mimeType: string,
+	className = 'h-8 w-8'
+): ReactNode {
 	const fileType = getFileTypeFromMime(mimeType);
 	const iconProps = { className };
 	switch (fileType) {

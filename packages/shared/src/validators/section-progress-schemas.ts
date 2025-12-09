@@ -12,14 +12,19 @@ export const startSectionProgressSchema = z.object({
 	sectionId: z.string().min(1, 'Section ID is required'),
 });
 
-export type StartSectionProgressInput = z.infer<typeof startSectionProgressSchema>;
+export type StartSectionProgressInput = z.infer<
+	typeof startSectionProgressSchema
+>;
 
 /**
  * Schema for updating lesson counts (called when lesson progress changes)
  */
 export const updateLessonCountSchema = z.object({
 	sectionId: z.string().min(1, 'Section ID is required'),
-	lessonsCompleted: z.number().int('Lessons completed must be an integer').min(0),
+	lessonsCompleted: z
+		.number()
+		.int('Lessons completed must be an integer')
+		.min(0),
 	totalLessons: z.number().int('Total lessons must be an integer').min(0),
 });
 
@@ -31,7 +36,10 @@ export type UpdateLessonCountInput = z.infer<typeof updateLessonCountSchema>;
 export const updateTestResultSchema = z.object({
 	sectionId: z.string().min(1, 'Section ID is required'),
 	passed: z.boolean(),
-	score: z.number().min(0, 'Score must be at least 0').max(100, 'Score must be at most 100'),
+	score: z
+		.number()
+		.min(0, 'Score must be at least 0')
+		.max(100, 'Score must be at most 100'),
 });
 
 export type UpdateTestResultInput = z.infer<typeof updateTestResultSchema>;
@@ -43,7 +51,9 @@ export const updateSectionLastAccessedSchema = z.object({
 	sectionId: z.string().min(1, 'Section ID is required'),
 });
 
-export type UpdateSectionLastAccessedInput = z.infer<typeof updateSectionLastAccessedSchema>;
+export type UpdateSectionLastAccessedInput = z.infer<
+	typeof updateSectionLastAccessedSchema
+>;
 
 /**
  * Schema for completing section progress
@@ -52,7 +62,9 @@ export const completeSectionProgressSchema = z.object({
 	id: z.string().min(1, 'Progress ID is required'),
 });
 
-export type CompleteSectionProgressInput = z.infer<typeof completeSectionProgressSchema>;
+export type CompleteSectionProgressInput = z.infer<
+	typeof completeSectionProgressSchema
+>;
 
 /**
  * Schema for recalculating section progress (manual sync)
@@ -61,7 +73,9 @@ export const recalculateSectionProgressSchema = z.object({
 	sectionId: z.string().min(1, 'Section ID is required'),
 });
 
-export type RecalculateSectionProgressInput = z.infer<typeof recalculateSectionProgressSchema>;
+export type RecalculateSectionProgressInput = z.infer<
+	typeof recalculateSectionProgressSchema
+>;
 
 // ============================================================================
 // QUERY SCHEMAS
@@ -74,7 +88,9 @@ export const getSectionProgressByIdSchema = z.object({
 	id: z.string().min(1, 'Progress ID is required'),
 });
 
-export type GetSectionProgressByIdInput = z.infer<typeof getSectionProgressByIdSchema>;
+export type GetSectionProgressByIdInput = z.infer<
+	typeof getSectionProgressByIdSchema
+>;
 
 /**
  * Schema for getting user's progress for a specific section
@@ -83,7 +99,9 @@ export const getUserSectionProgressSchema = z.object({
 	sectionId: z.string().min(1, 'Section ID is required'),
 });
 
-export type GetUserSectionProgressInput = z.infer<typeof getUserSectionProgressSchema>;
+export type GetUserSectionProgressInput = z.infer<
+	typeof getUserSectionProgressSchema
+>;
 
 /**
  * Schema for listing user's section progress with optional status filter
@@ -92,7 +110,9 @@ export const listUserSectionProgressSchema = z.object({
 	status: sectionProgressStatusEnum.optional(),
 });
 
-export type ListUserSectionProgressInput = z.infer<typeof listUserSectionProgressSchema>;
+export type ListUserSectionProgressInput = z.infer<
+	typeof listUserSectionProgressSchema
+>;
 
 /**
  * Schema for getting chapter-level progress (aggregate of all sections)
@@ -110,4 +130,6 @@ export const getSectionProgressStatsSchema = z.object({
 	sectionId: z.string().min(1, 'Section ID is required'),
 });
 
-export type GetSectionProgressStatsInput = z.infer<typeof getSectionProgressStatsSchema>;
+export type GetSectionProgressStatsInput = z.infer<
+	typeof getSectionProgressStatsSchema
+>;

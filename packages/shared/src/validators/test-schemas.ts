@@ -27,21 +27,34 @@ export const createTestSchema = z
 		sectionId: z.string().optional(),
 
 		// Test configuration
-		timeLimit: z.number().int('Time limit must be an integer').min(1).optional(),
+		timeLimit: z
+			.number()
+			.int('Time limit must be an integer')
+			.min(1)
+			.optional(),
 		passingScore: z
 			.number()
 			.min(0, 'Passing score must be at least 0')
 			.max(100, 'Passing score must be at most 100'),
-		maxAttempts: z.number().int('Max attempts must be an integer').min(1).optional(),
+		maxAttempts: z
+			.number()
+			.int('Max attempts must be an integer')
+			.min(1)
+			.optional(),
 		shuffleQuestions: z.boolean().default(false),
 		showCorrectAnswers: z.boolean().default(true),
 
-		order: z.number().int('Order must be an integer').min(0, 'Order must be 0 or greater'),
+		order: z
+			.number()
+			.int('Order must be an integer')
+			.min(0, 'Order must be 0 or greater'),
 		isActive: z.boolean().default(false),
 	})
 	.refine(
 		(data) => {
-			const links = [data.subjectId, data.chapterId, data.sectionId].filter(Boolean);
+			const links = [data.subjectId, data.chapterId, data.sectionId].filter(
+				Boolean
+			);
 			return links.length <= 1;
 		},
 		{ message: 'Test can only be linked to one curriculum level' }
@@ -75,17 +88,31 @@ export const updateTestSchema = z.object({
 	sectionId: z.string().optional().nullable(),
 
 	// Test configuration
-	timeLimit: z.number().int('Time limit must be an integer').min(1).optional().nullable(),
+	timeLimit: z
+		.number()
+		.int('Time limit must be an integer')
+		.min(1)
+		.optional()
+		.nullable(),
 	passingScore: z
 		.number()
 		.min(0, 'Passing score must be at least 0')
 		.max(100, 'Passing score must be at most 100')
 		.optional(),
-	maxAttempts: z.number().int('Max attempts must be an integer').min(1).optional().nullable(),
+	maxAttempts: z
+		.number()
+		.int('Max attempts must be an integer')
+		.min(1)
+		.optional()
+		.nullable(),
 	shuffleQuestions: z.boolean().optional(),
 	showCorrectAnswers: z.boolean().optional(),
 
-	order: z.number().int('Order must be an integer').min(0, 'Order must be 0 or greater').optional(),
+	order: z
+		.number()
+		.int('Order must be an integer')
+		.min(0, 'Order must be 0 or greater')
+		.optional(),
 	isActive: z.boolean().optional(),
 });
 
@@ -117,7 +144,10 @@ export const reorderTestsSchema = z.object({
 	items: z.array(
 		z.object({
 			id: z.string().min(1, 'Test ID is required'),
-			order: z.number().int('Order must be an integer').min(0, 'Order must be 0 or greater'),
+			order: z
+				.number()
+				.int('Order must be an integer')
+				.min(0, 'Order must be 0 or greater'),
 		})
 	),
 });

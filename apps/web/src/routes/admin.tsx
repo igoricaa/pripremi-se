@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { api } from '@pripremi-se/backend/convex/_generated/api';
 import {
 	createFileRoute,
 	Navigate,
@@ -6,15 +6,15 @@ import {
 	redirect,
 } from '@tanstack/react-router';
 import { Authenticated, AuthLoading, Unauthenticated } from 'convex/react';
-import { api } from '@pripremi-se/backend/convex/_generated/api';
+import { Suspense } from 'react';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { PageSkeleton } from '@/components/admin/skeletons';
-import { useQueryWithStatus } from '@/lib/convex';
 import {
 	SidebarInset,
 	SidebarProvider,
 	SidebarTrigger,
 } from '@/components/ui/sidebar';
+import { useQueryWithStatus } from '@/lib/convex';
 
 export const Route = createFileRoute('/admin')({
 	beforeLoad: ({ context, location }) => {

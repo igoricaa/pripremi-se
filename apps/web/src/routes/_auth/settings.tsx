@@ -8,7 +8,6 @@ import {
 import { useForm } from '@tanstack/react-form';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
-import { useQueryWithStatus } from '@/lib/convex';
 import {
 	AlertTriangle,
 	CheckCircle2,
@@ -52,6 +51,7 @@ import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { authClient } from '@/lib/auth-client';
+import { useQueryWithStatus } from '@/lib/convex';
 
 type SettingsTab = 'profile' | 'security' | 'danger';
 
@@ -93,7 +93,9 @@ function SettingsPage() {
 					</TabsTrigger>
 				</TabsList>
 
-				<Activity mode={(tab || 'profile') === 'profile' ? 'visible' : 'hidden'}>
+				<Activity
+					mode={(tab || 'profile') === 'profile' ? 'visible' : 'hidden'}
+				>
 					<ProfileTab />
 				</Activity>
 
@@ -114,7 +116,9 @@ function SettingsPage() {
 type UserData = NonNullable<typeof api.users.getCurrentUser._returnType>;
 
 function ProfileTab() {
-	const { data, isPending, isError, error } = useQueryWithStatus(api.users.getCurrentUser);
+	const { data, isPending, isError, error } = useQueryWithStatus(
+		api.users.getCurrentUser
+	);
 
 	if (isPending) {
 		return <ProfileTabSkeleton />;

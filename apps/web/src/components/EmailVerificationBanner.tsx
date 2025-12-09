@@ -1,9 +1,9 @@
 import { api } from '@pripremi-se/backend/convex/_generated/api';
-import { useQueryWithStatus } from '@/lib/convex';
 import { AlertTriangle, Mail, RefreshCw, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { authClient } from '@/lib/auth-client';
+import { useQueryWithStatus } from '@/lib/convex';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import { Button } from './ui/button';
 
@@ -26,7 +26,9 @@ function setCooldownExpiry(): void {
 }
 
 export function EmailVerificationBanner() {
-	const { data, isPending, isError } = useQueryWithStatus(api.users.getCurrentUser);
+	const { data, isPending, isError } = useQueryWithStatus(
+		api.users.getCurrentUser
+	);
 	const [dismissed, setDismissed] = useState(false);
 	const [resending, setResending] = useState(false);
 	const [cooldown, setCooldown] = useState(() => getRemainingCooldown());

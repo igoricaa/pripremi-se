@@ -11,7 +11,10 @@ export type StartTestAttemptInput = z.infer<typeof startTestAttemptSchema>;
 // Schema for updating an in-progress attempt (e.g., tracking time spent)
 export const updateTestAttemptSchema = z.object({
 	id: z.string().min(1, 'Attempt ID is required'),
-	timeSpent: z.number().int('Time spent must be an integer').min(0, 'Time spent must be 0 or greater'),
+	timeSpent: z
+		.number()
+		.int('Time spent must be an integer')
+		.min(0, 'Time spent must be 0 or greater'),
 });
 
 export type UpdateTestAttemptInput = z.infer<typeof updateTestAttemptSchema>;
@@ -19,18 +22,36 @@ export type UpdateTestAttemptInput = z.infer<typeof updateTestAttemptSchema>;
 // Schema for completing a test attempt
 export const completeTestAttemptSchema = z.object({
 	id: z.string().min(1, 'Attempt ID is required'),
-	score: z.number().min(0, 'Score must be at least 0').max(100, 'Score must be at most 100'),
-	correctCount: z.number().int('Correct count must be an integer').min(0, 'Correct count must be 0 or greater'),
-	totalQuestions: z.number().int('Total questions must be an integer').min(1, 'Total questions must be at least 1'),
-	timeSpent: z.number().int('Time spent must be an integer').min(0, 'Time spent must be 0 or greater'),
+	score: z
+		.number()
+		.min(0, 'Score must be at least 0')
+		.max(100, 'Score must be at most 100'),
+	correctCount: z
+		.number()
+		.int('Correct count must be an integer')
+		.min(0, 'Correct count must be 0 or greater'),
+	totalQuestions: z
+		.number()
+		.int('Total questions must be an integer')
+		.min(1, 'Total questions must be at least 1'),
+	timeSpent: z
+		.number()
+		.int('Time spent must be an integer')
+		.min(0, 'Time spent must be 0 or greater'),
 });
 
-export type CompleteTestAttemptInput = z.infer<typeof completeTestAttemptSchema>;
+export type CompleteTestAttemptInput = z.infer<
+	typeof completeTestAttemptSchema
+>;
 
 // Schema for abandoning a test attempt
 export const abandonTestAttemptSchema = z.object({
 	id: z.string().min(1, 'Attempt ID is required'),
-	timeSpent: z.number().int('Time spent must be an integer').min(0, 'Time spent must be 0 or greater').optional(),
+	timeSpent: z
+		.number()
+		.int('Time spent must be an integer')
+		.min(0, 'Time spent must be 0 or greater')
+		.optional(),
 });
 
 export type AbandonTestAttemptInput = z.infer<typeof abandonTestAttemptSchema>;
@@ -48,14 +69,18 @@ export const listUserTestAttemptsSchema = z.object({
 	status: testAttemptStatusEnum.optional(),
 });
 
-export type ListUserTestAttemptsInput = z.infer<typeof listUserTestAttemptsSchema>;
+export type ListUserTestAttemptsInput = z.infer<
+	typeof listUserTestAttemptsSchema
+>;
 
 // Schema for getting user's active (in_progress) attempt for a specific test
 export const getUserActiveAttemptSchema = z.object({
 	testId: z.string().min(1, 'Test ID is required'),
 });
 
-export type GetUserActiveAttemptInput = z.infer<typeof getUserActiveAttemptSchema>;
+export type GetUserActiveAttemptInput = z.infer<
+	typeof getUserActiveAttemptSchema
+>;
 
 // Schema for getting test leaderboard
 export const getTestLeaderboardSchema = z.object({
@@ -70,4 +95,6 @@ export const getUserAttemptCountSchema = z.object({
 	testId: z.string().min(1, 'Test ID is required'),
 });
 
-export type GetUserAttemptCountInput = z.infer<typeof getUserAttemptCountSchema>;
+export type GetUserAttemptCountInput = z.infer<
+	typeof getUserAttemptCountSchema
+>;

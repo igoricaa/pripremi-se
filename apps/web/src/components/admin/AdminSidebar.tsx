@@ -1,3 +1,4 @@
+import { getAdminRoutes } from '@pripremi-se/shared';
 import { Link, useRouterState } from '@tanstack/react-router';
 import {
 	BookOpen,
@@ -8,10 +9,9 @@ import {
 	Layers,
 	LayoutDashboard,
 	ListChecks,
-	Users,
 	type LucideIcon,
+	Users,
 } from 'lucide-react';
-import { getAdminRoutes } from '@pripremi-se/shared';
 import {
 	Sidebar,
 	SidebarContent,
@@ -49,7 +49,7 @@ export function AdminSidebar({ isAdmin }: AdminSidebarProps) {
 	return (
 		<Sidebar>
 			<SidebarHeader className="border-b">
-				<Link to="/admin" className="flex items-center gap-2 px-2 py-3">
+				<Link className="flex items-center gap-2 px-2 py-3" to="/admin">
 					<Home className="h-6 w-6" />
 					<span className="font-semibold text-lg">Admin CMS</span>
 				</Link>

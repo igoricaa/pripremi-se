@@ -20,7 +20,10 @@ export const createSubjectSchema = z.object({
 		.min(1, 'Description is required')
 		.max(500, 'Description must be less than 500 characters'),
 	icon: z.string().max(255, 'Icon must be less than 255 characters').optional(),
-	order: z.number().int('Order must be an integer').min(0, 'Order must be 0 or greater'),
+	order: z
+		.number()
+		.int('Order must be an integer')
+		.min(0, 'Order must be 0 or greater'),
 	isActive: z.boolean().default(false),
 });
 
@@ -86,7 +89,10 @@ export const reorderSubjectsSchema = z.object({
 	items: z.array(
 		z.object({
 			id: z.string().min(1, 'Subject ID is required'),
-			order: z.number().int('Order must be an integer').min(0, 'Order must be 0 or greater'),
+			order: z
+				.number()
+				.int('Order must be an integer')
+				.min(0, 'Order must be 0 or greater'),
 		})
 	),
 });

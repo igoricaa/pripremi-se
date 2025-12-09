@@ -1,37 +1,26 @@
+import { api } from '@pripremi-se/backend/convex/_generated/api';
+import type { Id } from '@pripremi-se/backend/convex/_generated/dataModel';
+import {
+	difficultyLabels,
+	QUESTION_DIFFICULTY,
+	QUESTION_TYPES,
+	type QuestionDifficulty,
+	type QuestionType,
+	questionTypeLabels,
+	questionTypeRequiresOptions,
+	updateQuestionSchema,
+} from '@pripremi-se/shared';
+import { useForm } from '@tanstack/react-form';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useMutation, useQuery } from 'convex/react';
-import { api } from '@pripremi-se/backend/convex/_generated/api';
-import { useForm } from '@tanstack/react-form';
-import {
-	updateQuestionSchema,
-	QUESTION_TYPES,
-	QUESTION_DIFFICULTY,
-	questionTypeLabels,
-	difficultyLabels,
-	questionTypeRequiresOptions,
-	type QuestionType,
-	type QuestionDifficulty,
-} from '@pripremi-se/shared';
 import { ArrowLeft, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { CurriculumSelector } from '@/components/admin/CurriculumSelector';
 import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card';
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select';
+	type QuestionOption,
+	QuestionOptionsEditor,
+} from '@/components/admin/QuestionOptionsEditor';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -42,13 +31,27 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { toast } from 'sonner';
-import { QuestionOptionsEditor, type QuestionOption } from '@/components/admin/QuestionOptionsEditor';
-import { CurriculumSelector } from '@/components/admin/CurriculumSelector';
+import { Button } from '@/components/ui/button';
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
 import { useCurriculumHierarchy } from '@/hooks/use-curriculum-hierarchy';
 import { validateQuestionOptions } from '@/lib/validations/question-validation';
-import { useState, useEffect } from 'react';
-import type { Id } from '@pripremi-se/backend/convex/_generated/dataModel';
 
 export const Route = createFileRoute('/admin/questions/$questionId')({
 	component: EditQuestionPage,
@@ -60,7 +63,7 @@ function EditQuestionPage() {
 
 	// Queries
 	const question = useQuery(api.questions.getQuestionWithOptions, {
-		questionId: questionId as Id<'questions'>
+		questionId: questionId as Id<'questions'>,
 	});
 
 	// Curriculum hierarchy hook with reverse-lookup initialization
@@ -77,13 +80,19 @@ function EditQuestionPage() {
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
 	// Track original options for comparison
-	const [originalOptions, setOriginalOptions] = useState<Array<QuestionOption & { _id?: string }>>([]);
-	const [options, setOptions] = useState<Array<QuestionOption & { _id?: string }>>([]);
+	const [originalOptions, setOriginalOptions] = useState<
+		Array<QuestionOption & { _id?: string }>
+	>([]);
+	const [options, setOptions] = useState<
+		Array<QuestionOption & { _id?: string }>
+	>([]);
 	const [isLoaded, setIsLoaded] = useState(false);
 
 	// Local state to track question type for immediate UI updates
 	// TanStack Form's form.state.values is NOT reactive outside form.Field/form.Subscribe
-	const [currentQuestionType, setCurrentQuestionType] = useState<QuestionType>(QUESTION_TYPES.SINGLE_CHOICE);
+	const [currentQuestionType, setCurrentQuestionType] = useState<QuestionType>(
+		QUESTION_TYPES.SINGLE_CHOICE
+	);
 
 	const form = useForm({
 		defaultValues: {
@@ -145,7 +154,9 @@ function EditQuestionPage() {
 
 	// Sync options with database (add/update/delete)
 	const syncOptions = async () => {
-		const originalIds = new Set(originalOptions.map((o) => o._id).filter(Boolean));
+		const originalIds = new Set(
+			originalOptions.map((o) => o._id).filter(Boolean)
+		);
 		const currentIds = new Set(options.map((o) => o._id).filter(Boolean));
 
 		// Delete removed options
@@ -160,7 +171,12 @@ function EditQuestionPage() {
 			if (opt._id && originalIds.has(opt._id)) {
 				// Update existing option
 				const original = originalOptions.find((o) => o._id === opt._id);
-				if (original && (original.text !== opt.text || original.isCorrect !== opt.isCorrect || original.order !== opt.order)) {
+				if (
+					original &&
+					(original.text !== opt.text ||
+						original.isCorrect !== opt.isCorrect ||
+						original.order !== opt.order)
+				) {
 					await updateQuestionOption({
 						id: opt._id,
 						text: opt.text,
@@ -214,9 +230,16 @@ function EditQuestionPage() {
 			form.setFieldValue('explanation', question.explanation ?? '');
 			form.setFieldValue('type', question.type as QuestionType);
 			form.setFieldValue('points', question.points ?? 1);
-			form.setFieldValue('allowPartialCredit', question.allowPartialCredit ?? false);
+			form.setFieldValue(
+				'allowPartialCredit',
+				question.allowPartialCredit ?? false
+			);
 			form.setFieldValue('lessonId', question.lessonId ?? undefined);
-			form.setFieldValue('difficulty', (question.difficulty ?? QUESTION_DIFFICULTY.MEDIUM) as QuestionDifficulty);
+			form.setFieldValue(
+				'difficulty',
+				(question.difficulty ??
+					QUESTION_DIFFICULTY.MEDIUM) as QuestionDifficulty
+			);
 			form.setFieldValue('isActive', question.isActive ?? false);
 
 			setIsLoaded(true);
@@ -246,7 +269,10 @@ function EditQuestionPage() {
 				{ text: 'True', isCorrect: false, order: 0 },
 				{ text: 'False', isCorrect: false, order: 1 },
 			]);
-		} else if (questionTypeRequiresOptions(newType) && !questionTypeRequiresOptions(prevType)) {
+		} else if (
+			questionTypeRequiresOptions(newType) &&
+			!questionTypeRequiresOptions(prevType)
+		) {
 			// Switching from non-option type to option type
 			setOptions([
 				{ text: '', isCorrect: false, order: 0 },
@@ -267,13 +293,15 @@ function EditQuestionPage() {
 		return (
 			<div className="space-y-6">
 				<div className="flex items-center gap-4">
-					<Button variant="ghost" size="icon" asChild>
+					<Button asChild size="icon" variant="ghost">
 						<Link to="/admin/questions">
 							<ArrowLeft className="h-4 w-4" />
 						</Link>
 					</Button>
 					<div>
-						<h1 className="font-bold text-3xl tracking-tight">Question Not Found</h1>
+						<h1 className="font-bold text-3xl tracking-tight">
+							Question Not Found
+						</h1>
 						<p className="text-muted-foreground">
 							The question you're looking for doesn't exist
 						</p>
@@ -286,7 +314,7 @@ function EditQuestionPage() {
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center gap-4">
-				<Button variant="ghost" size="icon" asChild>
+				<Button asChild size="icon" variant="ghost">
 					<Link to="/admin/questions">
 						<ArrowLeft className="h-4 w-4" />
 					</Link>
@@ -319,11 +347,11 @@ function EditQuestionPage() {
 											<Label htmlFor="text">Question Text *</Label>
 											<Textarea
 												id="text"
-												placeholder="Enter your question here..."
-												value={field.state.value}
-												onChange={(e) => field.handleChange(e.target.value)}
 												onBlur={field.handleBlur}
+												onChange={(e) => field.handleChange(e.target.value)}
+												placeholder="Enter your question here..."
 												rows={4}
+												value={field.state.value}
 											/>
 											{field.state.meta.errors.length > 0 && (
 												<p className="text-destructive text-sm">
@@ -337,14 +365,16 @@ function EditQuestionPage() {
 								<form.Field name="explanation">
 									{(field) => (
 										<div className="space-y-2">
-											<Label htmlFor="explanation">Explanation (optional)</Label>
+											<Label htmlFor="explanation">
+												Explanation (optional)
+											</Label>
 											<Textarea
 												id="explanation"
-												placeholder="Explanation shown after answering..."
-												value={field.state.value}
-												onChange={(e) => field.handleChange(e.target.value)}
 												onBlur={field.handleBlur}
+												onChange={(e) => field.handleChange(e.target.value)}
+												placeholder="Explanation shown after answering..."
 												rows={3}
+												value={field.state.value}
 											/>
 											<p className="text-muted-foreground text-xs">
 												This will be shown to students after they answer
@@ -370,9 +400,9 @@ function EditQuestionPage() {
 								</CardHeader>
 								<CardContent>
 									<QuestionOptionsEditor
-										questionType={currentQuestionType}
-										options={options}
 										onChange={setOptions}
+										options={options}
+										questionType={currentQuestionType}
 									/>
 								</CardContent>
 							</Card>
@@ -393,8 +423,10 @@ function EditQuestionPage() {
 											<Label htmlFor="type">Question Type *</Label>
 											<Select
 												key={isLoaded ? 'loaded' : 'loading'}
+												onValueChange={(value) =>
+													handleTypeChange(value as QuestionType)
+												}
 												value={field.state.value}
-												onValueChange={(value) => handleTypeChange(value as QuestionType)}
 											>
 												<SelectTrigger id="type">
 													<SelectValue />
@@ -417,8 +449,10 @@ function EditQuestionPage() {
 											<Label htmlFor="difficulty">Difficulty</Label>
 											<Select
 												key={isLoaded ? 'loaded' : 'loading'}
+												onValueChange={(value) =>
+													field.handleChange(value as QuestionDifficulty)
+												}
 												value={field.state.value}
-												onValueChange={(value) => field.handleChange(value as QuestionDifficulty)}
 											>
 												<SelectTrigger id="difficulty">
 													<SelectValue />
@@ -443,16 +477,16 @@ function EditQuestionPage() {
 											<Label htmlFor="points">Points</Label>
 											<Input
 												id="points"
-												type="number"
 												min={0}
-												step={0.5}
-												value={field.state.value}
+												onBlur={field.handleBlur}
 												onChange={(e) =>
 													field.handleChange(
 														Number.parseFloat(e.target.value) || 0
 													)
 												}
-												onBlur={field.handleBlur}
+												step={0.5}
+												type="number"
+												value={field.state.value}
 											/>
 										</div>
 									)}
@@ -465,11 +499,14 @@ function EditQuestionPage() {
 												<Label>Partial Credit</Label>
 												<div className="flex items-center space-x-2 pt-2">
 													<Switch
-														id="allowPartialCredit"
 														checked={field.state.value}
+														id="allowPartialCredit"
 														onCheckedChange={field.handleChange}
 													/>
-													<Label htmlFor="allowPartialCredit" className="font-normal">
+													<Label
+														className="font-normal"
+														htmlFor="allowPartialCredit"
+													>
 														{field.state.value ? 'Enabled' : 'Disabled'}
 													</Label>
 												</div>
@@ -484,18 +521,18 @@ function EditQuestionPage() {
 								<form.Field name="lessonId">
 									{(field) => (
 										<CurriculumSelector
-											subjectId={curriculum.subjectId}
 											chapterId={curriculum.chapterId}
-											sectionId={curriculum.sectionId}
-											lessonId={field.state.value}
-											onSubjectChange={curriculum.setSubjectId}
-											onChapterChange={curriculum.setChapterId}
-											onSectionChange={curriculum.setSectionId}
-											onLessonChange={field.handleChange}
-											subjects={curriculum.subjects}
 											chapters={curriculum.chapters}
-											sections={curriculum.sections}
+											lessonId={field.state.value}
 											lessons={curriculum.lessons}
+											onChapterChange={curriculum.setChapterId}
+											onLessonChange={field.handleChange}
+											onSectionChange={curriculum.setSectionId}
+											onSubjectChange={curriculum.setSubjectId}
+											sectionId={curriculum.sectionId}
+											sections={curriculum.sections}
+											subjectId={curriculum.subjectId}
+											subjects={curriculum.subjects}
 										/>
 									)}
 								</form.Field>
@@ -506,11 +543,11 @@ function EditQuestionPage() {
 											<Label>Status</Label>
 											<div className="flex items-center space-x-2 pt-2">
 												<Switch
-													id="isActive"
 													checked={field.state.value}
+													id="isActive"
 													onCheckedChange={field.handleChange}
 												/>
-												<Label htmlFor="isActive" className="font-normal">
+												<Label className="font-normal" htmlFor="isActive">
 													{field.state.value ? 'Published' : 'Draft'}
 												</Label>
 											</div>
@@ -522,31 +559,29 @@ function EditQuestionPage() {
 
 						<div className="flex gap-4">
 							<Button
+								onClick={() => setShowDeleteDialog(true)}
 								type="button"
 								variant="destructive"
-								onClick={() => setShowDeleteDialog(true)}
 							>
 								<Trash2 className="mr-2 h-4 w-4" />
 								Delete
 							</Button>
 							<Button
+								asChild
+								className="flex-1"
 								type="button"
 								variant="outline"
-								className="flex-1"
-								asChild
 							>
-								<Link to="/admin/questions">
-									Cancel
-								</Link>
+								<Link to="/admin/questions">Cancel</Link>
 							</Button>
 							<form.Subscribe
 								selector={(state) => [state.canSubmit, state.isSubmitting]}
 							>
 								{([canSubmit, isSubmitting]) => (
 									<Button
-										type="submit"
 										className="flex-1"
 										disabled={!canSubmit || isSubmitting}
+										type="submit"
 									>
 										{isSubmitting ? 'Saving...' : 'Save Changes'}
 									</Button>
@@ -557,7 +592,7 @@ function EditQuestionPage() {
 				</div>
 			</form>
 
-			<AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+			<AlertDialog onOpenChange={setShowDeleteDialog} open={showDeleteDialog}>
 				<AlertDialogContent>
 					<AlertDialogHeader>
 						<AlertDialogTitle>Delete Question</AlertDialogTitle>
@@ -569,8 +604,8 @@ function EditQuestionPage() {
 					<AlertDialogFooter>
 						<AlertDialogCancel>Cancel</AlertDialogCancel>
 						<AlertDialogAction
-							onClick={handleDelete}
 							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+							onClick={handleDelete}
 						>
 							Delete
 						</AlertDialogAction>

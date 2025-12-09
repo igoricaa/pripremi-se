@@ -1,15 +1,12 @@
-import { Suspense, useState } from 'react';
+import { api } from '@pripremi-se/backend/convex/_generated/api';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { Plus, X } from 'lucide-react';
+import { Suspense, useState } from 'react';
 import { toast } from 'sonner';
-
-import { api } from '@pripremi-se/backend/convex/_generated/api';
-import { convexQuery } from '@/lib/convex';
-import { CardWithTableSkeleton } from '@/components/admin/skeletons';
 import { DeleteConfirmDialog } from '@/components/admin/DeleteConfirmDialog';
-import { DELETE_MESSAGES } from '@/lib/constants/admin-ui';
+import { CardWithTableSkeleton } from '@/components/admin/skeletons';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -19,6 +16,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import { DataTable } from '@/components/ui/data-table';
+import { SearchInput } from '@/components/ui/search-input';
 import {
 	Select,
 	SelectContent,
@@ -26,7 +24,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import { SearchInput } from '@/components/ui/search-input';
+import { DELETE_MESSAGES } from '@/lib/constants/admin-ui';
+import { convexQuery } from '@/lib/convex';
 import { getChapterColumns } from './columns';
 
 export const Route = createFileRoute('/admin/chapters/')({
@@ -90,22 +89,34 @@ function ChaptersPage() {
 				</Button>
 			</div>
 
-			<Suspense fallback={<CardWithTableSkeleton preset="chapters" rows={20} filterWidth="w-[200px]" />}>
+			<Suspense
+				fallback={
+					<CardWithTableSkeleton
+						filterWidth="w-[200px]"
+						preset="chapters"
+						rows={20}
+					/>
+				}
+			>
 				<ChaptersCard onDeleteRequest={(id) => setDeleteId(id)} />
 			</Suspense>
 
 			<DeleteConfirmDialog
-				open={!!deleteId}
-				onOpenChange={() => setDeleteId(null)}
-				onConfirm={handleDelete}
-				title={DELETE_MESSAGES.chapter.title}
 				description={DELETE_MESSAGES.chapter.description}
+				onConfirm={handleDelete}
+				onOpenChange={() => setDeleteId(null)}
+				open={!!deleteId}
+				title={DELETE_MESSAGES.chapter.title}
 			/>
 		</div>
 	);
 }
 
-function ChaptersCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => void }) {
+function ChaptersCard({
+	onDeleteRequest,
+}: {
+	onDeleteRequest: (id: string) => void;
+}) {
 	const { data } = useSuspenseQuery(
 		convexQuery(api.chapters.listChaptersWithSubjects, {})
 	);
@@ -119,7 +130,10 @@ function ChaptersCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => vo
 		if (selectedSubjectId !== 'all' && ch.subjectId !== selectedSubjectId) {
 			return false;
 		}
-		if (searchTerm && !ch.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+		if (
+			searchTerm &&
+			!ch.name.toLowerCase().includes(searchTerm.toLowerCase())
+		) {
 			return false;
 		}
 		return true;
@@ -147,14 +161,16 @@ function ChaptersCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => vo
 								{filteredChapters.length} chapter
 								{filteredChapters.length !== 1 ? 's' : ''}
 								{searchTerm && ' matching search'}
-								{selectedSubjectId !== 'all' && !searchTerm && ' in selected subject'}
+								{selectedSubjectId !== 'all' &&
+									!searchTerm &&
+									' in selected subject'}
 								{!searchTerm && selectedSubjectId === 'all' && ' total'}
 							</CardDescription>
 						</div>
 						<div className="flex items-center gap-2">
 							<Select
-								value={selectedSubjectId}
 								onValueChange={setSelectedSubjectId}
+								value={selectedSubjectId}
 							>
 								<SelectTrigger className="w-[200px]">
 									<SelectValue placeholder="Filter by subject" />
@@ -169,7 +185,7 @@ function ChaptersCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => vo
 								</SelectContent>
 							</Select>
 							{hasActiveFilters && (
-								<Button variant="outline" size="sm" onClick={clearAllFilters}>
+								<Button onClick={clearAllFilters} size="sm" variant="outline">
 									<X className="mr-2 h-4 w-4" />
 									Clear
 								</Button>
@@ -178,10 +194,10 @@ function ChaptersCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => vo
 					</div>
 
 					<SearchInput
-						value={searchTerm}
+						className="max-w-sm"
 						onChange={setSearchTerm}
 						placeholder="Search chapters..."
-						className="max-w-sm"
+						value={searchTerm}
 					/>
 				</div>
 			</CardHeader>

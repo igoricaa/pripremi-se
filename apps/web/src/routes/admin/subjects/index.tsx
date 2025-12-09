@@ -1,12 +1,11 @@
-import { Suspense, useState } from 'react';
+import { api } from '@pripremi-se/backend/convex/_generated/api';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { Plus } from 'lucide-react';
+import { Suspense, useState } from 'react';
 import { toast } from 'sonner';
-
-import { api } from '@pripremi-se/backend/convex/_generated/api';
-import { convexQuery } from '@/lib/convex';
+import { DeleteConfirmDialog } from '@/components/admin/DeleteConfirmDialog';
 import { CardWithTableSkeleton } from '@/components/admin/skeletons';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,9 +16,9 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import { DataTable } from '@/components/ui/data-table';
-import { getSubjectColumns } from './columns';
-import { DeleteConfirmDialog } from '@/components/admin/DeleteConfirmDialog';
 import { DELETE_MESSAGES } from '@/lib/constants/admin-ui';
+import { convexQuery } from '@/lib/convex';
+import { getSubjectColumns } from './columns';
 
 export const Route = createFileRoute('/admin/subjects/')({
 	loader: async ({ context }) => {
@@ -74,22 +73,28 @@ function SubjectsPage() {
 				</Button>
 			</div>
 
-			<Suspense fallback={<CardWithTableSkeleton preset="subjects" rows={20} />}>
+			<Suspense
+				fallback={<CardWithTableSkeleton preset="subjects" rows={20} />}
+			>
 				<SubjectsCard onDeleteRequest={(id) => setDeleteId(id)} />
 			</Suspense>
 
 			<DeleteConfirmDialog
-				open={!!deleteId}
-				onOpenChange={() => setDeleteId(null)}
-				onConfirm={handleDelete}
-				title={DELETE_MESSAGES.subject.title}
 				description={DELETE_MESSAGES.subject.description}
+				onConfirm={handleDelete}
+				onOpenChange={() => setDeleteId(null)}
+				open={!!deleteId}
+				title={DELETE_MESSAGES.subject.title}
 			/>
 		</div>
 	);
 }
 
-function SubjectsCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => void }) {
+function SubjectsCard({
+	onDeleteRequest,
+}: {
+	onDeleteRequest: (id: string) => void;
+}) {
 	const { data: subjects } = useSuspenseQuery(
 		convexQuery(api.subjects.listSubjects, {})
 	);
@@ -105,11 +110,7 @@ function SubjectsCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => vo
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
-				<DataTable
-					columns={columns}
-					data={subjects}
-					defaultPageSize={20}
-				/>
+				<DataTable columns={columns} data={subjects} defaultPageSize={20} />
 			</CardContent>
 		</Card>
 	);

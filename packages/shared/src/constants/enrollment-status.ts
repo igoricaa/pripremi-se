@@ -13,7 +13,8 @@ export const ENROLLMENT_STATUS = {
 /**
  * Union type of all enrollment statuses
  */
-export type EnrollmentStatus = (typeof ENROLLMENT_STATUS)[keyof typeof ENROLLMENT_STATUS];
+export type EnrollmentStatus =
+	(typeof ENROLLMENT_STATUS)[keyof typeof ENROLLMENT_STATUS];
 
 /**
  * Array of all enrollment status values (for Zod enum)

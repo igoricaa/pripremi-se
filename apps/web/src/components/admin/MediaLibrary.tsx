@@ -1,16 +1,25 @@
-import { useState } from 'react';
-import { useMutation } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
-import { useQueryWithStatus } from '@/lib/convex';
 import type { FileType } from '@pripremi-se/shared';
+import { useMutation } from 'convex/react';
+import {
+	Check,
+	Copy,
+	Edit,
+	ExternalLink,
+	FileAudio,
+	FileImage,
+	FileText,
+	FileVideo,
+	Trash2,
+	Upload,
+} from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import {
-	Card,
-	CardContent,
-} from '@/components/ui/card';
 import {
 	Sheet,
 	SheetContent,
@@ -18,23 +27,11 @@ import {
 	SheetHeader,
 	SheetTitle,
 } from '@/components/ui/sheet';
-import {
-	FileImage,
-	FileVideo,
-	FileAudio,
-	FileText,
-	Trash2,
-	Edit,
-	ExternalLink,
-	Upload,
-	Copy,
-	Check,
-} from 'lucide-react';
-import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
-import { FileUploader } from './FileUploader';
-import { DeleteConfirmDialog } from './DeleteConfirmDialog';
 import { DELETE_MESSAGES } from '@/lib/constants/admin-ui';
+import { useQueryWithStatus } from '@/lib/convex';
+import { cn } from '@/lib/utils';
+import { DeleteConfirmDialog } from './DeleteConfirmDialog';
+import { FileUploader } from './FileUploader';
 
 interface MediaLibraryProps {
 	lessonId: string;
@@ -104,14 +101,23 @@ export function MediaLibrary({ lessonId, className }: MediaLibraryProps) {
 	);
 
 	const updateLessonFile = useMutation(api.lessonFiles.updateLessonFile);
-	const deleteLessonFile = useMutation(api.lessonFiles.deleteLessonFile).withOptimisticUpdate((localStore, args) => {
-		const current = localStore.getQuery(api.lessonFiles.listLessonFilesByLesson, { lessonId });
+	const deleteLessonFile = useMutation(
+		api.lessonFiles.deleteLessonFile
+	).withOptimisticUpdate((localStore, args) => {
+		const current = localStore.getQuery(
+			api.lessonFiles.listLessonFilesByLesson,
+			{ lessonId }
+		);
 
 		if (current === undefined) return;
 
 		const updated = current.filter((item) => item._id !== args.id);
-		
-		localStore.setQuery(api.lessonFiles.listLessonFilesByLesson, { lessonId }, updated);
+
+		localStore.setQuery(
+			api.lessonFiles.listLessonFilesByLesson,
+			{ lessonId },
+			updated
+		);
 		toast.success('File deleted successfully');
 	});
 
@@ -202,14 +208,14 @@ export function MediaLibrary({ lessonId, className }: MediaLibraryProps) {
 			) : (
 				<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 					{files.map((file) => (
-						<Card key={file._id} className="overflow-hidden">
+						<Card className="overflow-hidden" key={file._id}>
 							{/* Preview */}
 							<div className="relative aspect-video bg-muted">
 								{file.fileType === 'image' && file.url ? (
 									<img
-										src={file.url}
 										alt={file.altText || file.fileName}
 										className="h-full w-full object-cover"
+										src={file.url}
 									/>
 								) : (
 									<div className="flex h-full items-center justify-center text-muted-foreground">
@@ -217,8 +223,8 @@ export function MediaLibrary({ lessonId, className }: MediaLibraryProps) {
 									</div>
 								)}
 								<Badge
-									variant={getFileTypeBadgeVariant(file.fileType as FileType)}
 									className="absolute right-2 top-2"
+									variant={getFileTypeBadgeVariant(file.fileType as FileType)}
 								>
 									{file.fileType}
 								</Badge>
@@ -226,7 +232,10 @@ export function MediaLibrary({ lessonId, className }: MediaLibraryProps) {
 
 							{/* Info */}
 							<CardContent className="p-4">
-								<p className="mb-1 truncate font-medium text-sm" title={file.fileName}>
+								<p
+									className="mb-1 truncate font-medium text-sm"
+									title={file.fileName}
+								>
 									{file.fileName}
 								</p>
 								<p className="text-muted-foreground text-xs">
@@ -243,9 +252,9 @@ export function MediaLibrary({ lessonId, className }: MediaLibraryProps) {
 									{file.url && (
 										<>
 											<Button
-												variant="outline"
-												size="sm"
 												onClick={() => copyToClipboard(file.url!, file._id)}
+												size="sm"
+												variant="outline"
 											>
 												{copiedUrl === file._id ? (
 													<Check className="h-4 w-4" />
@@ -253,15 +262,11 @@ export function MediaLibrary({ lessonId, className }: MediaLibraryProps) {
 													<Copy className="h-4 w-4" />
 												)}
 											</Button>
-											<Button
-												variant="outline"
-												size="sm"
-												asChild
-											>
+											<Button asChild size="sm" variant="outline">
 												<a
 													href={file.url}
-													target="_blank"
 													rel="noopener noreferrer"
+													target="_blank"
 												>
 													<ExternalLink className="h-4 w-4" />
 												</a>
@@ -269,22 +274,22 @@ export function MediaLibrary({ lessonId, className }: MediaLibraryProps) {
 										</>
 									)}
 									<Button
-										variant="outline"
-										size="sm"
 										onClick={() =>
 											setEditingFile({
 												id: file._id,
 												altText: file.altText ?? '',
 											})
 										}
+										size="sm"
+										variant="outline"
 									>
 										<Edit className="h-4 w-4" />
 									</Button>
 									<Button
-										variant="outline"
-										size="sm"
 										className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
 										onClick={() => setDeleteId(file._id)}
+										size="sm"
+										variant="outline"
 									>
 										<Trash2 className="h-4 w-4" />
 									</Button>
@@ -296,7 +301,7 @@ export function MediaLibrary({ lessonId, className }: MediaLibraryProps) {
 			)}
 
 			{/* Upload sheet */}
-			<Sheet open={showUploader} onOpenChange={setShowUploader}>
+			<Sheet onOpenChange={setShowUploader} open={showUploader}>
 				<SheetContent className="sm:max-w-lg">
 					<SheetHeader>
 						<SheetTitle>Upload Files</SheetTitle>
@@ -316,8 +321,8 @@ export function MediaLibrary({ lessonId, className }: MediaLibraryProps) {
 
 			{/* Edit alt text sheet */}
 			<Sheet
-				open={!!editingFile}
 				onOpenChange={(open) => !open && setEditingFile(null)}
+				open={!!editingFile}
 			>
 				<SheetContent className="sm:max-w-md">
 					<SheetHeader>
@@ -331,13 +336,13 @@ export function MediaLibrary({ lessonId, className }: MediaLibraryProps) {
 							<Label htmlFor="altText">Alt Text</Label>
 							<Input
 								id="altText"
-								placeholder="Describe this image..."
-								value={editingFile?.altText ?? ''}
 								onChange={(e) =>
 									setEditingFile((prev) =>
 										prev ? { ...prev, altText: e.target.value } : null
 									)
 								}
+								placeholder="Describe this image..."
+								value={editingFile?.altText ?? ''}
 							/>
 							<p className="text-muted-foreground text-xs">
 								Alt text describes images for screen readers and displays when
@@ -345,7 +350,7 @@ export function MediaLibrary({ lessonId, className }: MediaLibraryProps) {
 							</p>
 						</div>
 						<div className="flex gap-2">
-							<Button variant="outline" onClick={() => setEditingFile(null)}>
+							<Button onClick={() => setEditingFile(null)} variant="outline">
 								Cancel
 							</Button>
 							<Button onClick={handleUpdateAltText}>Save</Button>
@@ -356,11 +361,11 @@ export function MediaLibrary({ lessonId, className }: MediaLibraryProps) {
 
 			{/* Delete confirmation */}
 			<DeleteConfirmDialog
-				open={!!deleteId}
-				onOpenChange={() => setDeleteId(null)}
-				onConfirm={handleDelete}
-				title={DELETE_MESSAGES.file.title}
 				description={DELETE_MESSAGES.file.description}
+				onConfirm={handleDelete}
+				onOpenChange={() => setDeleteId(null)}
+				open={!!deleteId}
+				title={DELETE_MESSAGES.file.title}
 			/>
 		</div>
 	);

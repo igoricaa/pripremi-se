@@ -1,18 +1,18 @@
-import { useState, useRef } from 'react';
-import { useMutation } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import {
-	MIME_TYPE_MAP,
 	FILE_SIZE_LIMITS,
 	getFileTypeFromMime,
+	MIME_TYPE_MAP,
 } from '@pripremi-se/shared';
+import { useMutation } from 'convex/react';
+import { Upload, X } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Upload, X } from 'lucide-react';
-import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
-import { formatBytes, getFileIconByMime } from '@/lib/format-utils';
 import { MAX_FILE_UPLOAD_COUNT } from '@/lib/constants/admin-ui';
+import { formatBytes, getFileIconByMime } from '@/lib/format-utils';
+import { cn } from '@/lib/utils';
 
 interface FileUploaderProps {
 	lessonId: string;
@@ -201,24 +201,24 @@ export function FileUploader({
 		<div className={cn('space-y-4', className)}>
 			{/* Drop zone */}
 			<div
-				onDrop={handleDrop}
-				onDragOver={handleDragOver}
-				onDragLeave={handleDragLeave}
-				onClick={() => inputRef.current?.click()}
 				className={cn(
 					'flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 transition-colors',
 					isDragging
 						? 'border-primary bg-primary/5'
 						: 'border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50'
 				)}
+				onClick={() => inputRef.current?.click()}
+				onDragLeave={handleDragLeave}
+				onDragOver={handleDragOver}
+				onDrop={handleDrop}
 			>
 				<input
+					accept={acceptedTypes}
+					className="hidden"
+					multiple
+					onChange={(e) => handleFiles(e.target.files)}
 					ref={inputRef}
 					type="file"
-					multiple
-					accept={acceptedTypes}
-					onChange={(e) => handleFiles(e.target.files)}
-					className="hidden"
 				/>
 				<Upload
 					className={cn(
@@ -239,8 +239,8 @@ export function FileUploader({
 				<div className="space-y-2">
 					{uploadingFiles.map((uploadingFile, index) => (
 						<div
-							key={`${uploadingFile.file.name}-${index}`}
 							className="flex items-center gap-4 rounded-lg border p-3"
+							key={`${uploadingFile.file.name}-${index}`}
 						>
 							<div className="text-muted-foreground">
 								{getFileIconByMime(uploadingFile.file.type)}
@@ -253,7 +253,10 @@ export function FileUploader({
 									{formatBytes(uploadingFile.file.size)}
 								</p>
 								{uploadingFile.status === 'uploading' && (
-									<Progress value={uploadingFile.progress} className="mt-2 h-1" />
+									<Progress
+										className="mt-2 h-1"
+										value={uploadingFile.progress}
+									/>
 								)}
 								{uploadingFile.status === 'error' && (
 									<p className="text-destructive text-xs mt-1">
@@ -272,13 +275,13 @@ export function FileUploader({
 								)}
 								{uploadingFile.status !== 'uploading' && (
 									<Button
-										variant="ghost"
-										size="icon"
 										className="h-8 w-8"
 										onClick={(e) => {
 											e.stopPropagation();
 											removeFile(index);
 										}}
+										size="icon"
+										variant="ghost"
 									>
 										<X className="h-4 w-4" />
 									</Button>
@@ -292,7 +295,7 @@ export function FileUploader({
 			{/* Actions */}
 			{onCancel && (
 				<div className="flex justify-end">
-					<Button variant="outline" onClick={onCancel}>
+					<Button onClick={onCancel} variant="outline">
 						Done
 					</Button>
 				</div>

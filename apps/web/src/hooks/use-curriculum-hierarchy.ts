@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
-import { useQuery } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
-import type { Id, Doc } from '@pripremi-se/backend/convex/_generated/dataModel';
+import type { Doc, Id } from '@pripremi-se/backend/convex/_generated/dataModel';
+import { useQuery } from 'convex/react';
+import { useEffect, useRef, useState } from 'react';
 
 interface UseCurriculumHierarchyOptions {
 	/** Initial lessonId to reverse-lookup hierarchy from (for edit mode) */
@@ -82,7 +82,9 @@ export function useCurriculumHierarchy(
 	);
 	const linkedChapter = useQuery(
 		api.chapters.getChapterById,
-		linkedSection?.chapterId ? { id: linkedSection.chapterId as string } : 'skip'
+		linkedSection?.chapterId
+			? { id: linkedSection.chapterId as string }
+			: 'skip'
 	);
 
 	// Initialize hierarchy from reverse-lookup when data is available
@@ -109,7 +111,13 @@ export function useCurriculumHierarchy(
 			// No initialLessonId - mark as initialized with null
 			setInitializedFromLessonId(null);
 		}
-	}, [initialLessonId, linkedChapter, linkedSection, linkedLesson, initializedFromLessonId]);
+	}, [
+		initialLessonId,
+		linkedChapter,
+		linkedSection,
+		linkedLesson,
+		initializedFromLessonId,
+	]);
 
 	// Cascade reset functions (React Compiler handles memoization)
 	const setSubjectId = (id: string | undefined) => {

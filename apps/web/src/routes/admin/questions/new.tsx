@@ -1,23 +1,26 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
-import { useMutation } from 'convex/react';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
-import { useForm } from '@tanstack/react-form';
 import {
 	createQuestionWithOptionsSchema,
-	QUESTION_TYPES,
-	QUESTION_DIFFICULTY,
-	questionTypeLabels,
 	difficultyLabels,
-	questionTypeRequiresOptions,
-	type QuestionType,
+	QUESTION_DIFFICULTY,
+	QUESTION_TYPES,
 	type QuestionDifficulty,
+	type QuestionType,
+	questionTypeLabels,
+	questionTypeRequiresOptions,
 } from '@pripremi-se/shared';
+import { useForm } from '@tanstack/react-form';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
+import { useMutation } from 'convex/react';
 import { ArrowLeft } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { CurriculumSelector } from '@/components/admin/CurriculumSelector';
+import {
+	type QuestionOption,
+	QuestionOptionsEditor,
+} from '@/components/admin/QuestionOptionsEditor';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import {
 	Card,
 	CardContent,
@@ -25,6 +28,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
 	Select,
 	SelectContent,
@@ -32,12 +37,10 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import { toast } from 'sonner';
-import { QuestionOptionsEditor, type QuestionOption } from '@/components/admin/QuestionOptionsEditor';
-import { CurriculumSelector } from '@/components/admin/CurriculumSelector';
+import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
 import { useCurriculumHierarchy } from '@/hooks/use-curriculum-hierarchy';
 import { validateQuestionOptions } from '@/lib/validations/question-validation';
-import { useState, useEffect } from 'react';
 
 export const Route = createFileRoute('/admin/questions/new')({
 	component: NewQuestionPage,
@@ -45,7 +48,9 @@ export const Route = createFileRoute('/admin/questions/new')({
 
 function NewQuestionPage() {
 	const navigate = useNavigate();
-	const createQuestionWithOptions = useMutation(api.questions.createQuestionWithOptions);
+	const createQuestionWithOptions = useMutation(
+		api.questions.createQuestionWithOptions
+	);
 
 	// Curriculum hierarchy hook
 	const curriculum = useCurriculumHierarchy();
@@ -57,7 +62,9 @@ function NewQuestionPage() {
 
 	// Local state to track question type for immediate UI updates
 	// TanStack Form's form.state.values is NOT reactive outside form.Field/form.Subscribe
-	const [currentQuestionType, setCurrentQuestionType] = useState<QuestionType>(QUESTION_TYPES.SINGLE_CHOICE);
+	const [currentQuestionType, setCurrentQuestionType] = useState<QuestionType>(
+		QUESTION_TYPES.SINGLE_CHOICE
+	);
 
 	const form = useForm({
 		defaultValues: {
@@ -120,10 +127,8 @@ function NewQuestionPage() {
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center gap-4">
-				<Button variant="ghost" size="icon" asChild>
-					<Link 
-						to="/admin/questions" 
-					>
+				<Button asChild size="icon" variant="ghost">
+					<Link to="/admin/questions">
 						<ArrowLeft className="h-4 w-4" />
 					</Link>
 				</Button>
@@ -155,11 +160,11 @@ function NewQuestionPage() {
 											<Label htmlFor="text">Question Text *</Label>
 											<Textarea
 												id="text"
-												placeholder="Enter your question here..."
-												value={field.state.value}
-												onChange={(e) => field.handleChange(e.target.value)}
 												onBlur={field.handleBlur}
+												onChange={(e) => field.handleChange(e.target.value)}
+												placeholder="Enter your question here..."
 												rows={4}
+												value={field.state.value}
 											/>
 											{field.state.meta.errors.length > 0 && (
 												<p className="text-destructive text-sm">
@@ -173,14 +178,16 @@ function NewQuestionPage() {
 								<form.Field name="explanation">
 									{(field) => (
 										<div className="space-y-2">
-											<Label htmlFor="explanation">Explanation (optional)</Label>
+											<Label htmlFor="explanation">
+												Explanation (optional)
+											</Label>
 											<Textarea
 												id="explanation"
-												placeholder="Explanation shown after answering..."
-												value={field.state.value}
-												onChange={(e) => field.handleChange(e.target.value)}
 												onBlur={field.handleBlur}
+												onChange={(e) => field.handleChange(e.target.value)}
+												placeholder="Explanation shown after answering..."
 												rows={3}
+												value={field.state.value}
 											/>
 											<p className="text-muted-foreground text-xs">
 												This will be shown to students after they answer
@@ -206,9 +213,9 @@ function NewQuestionPage() {
 								</CardHeader>
 								<CardContent>
 									<QuestionOptionsEditor
-										questionType={currentQuestionType}
-										options={options}
 										onChange={setOptions}
+										options={options}
+										questionType={currentQuestionType}
 									/>
 								</CardContent>
 							</Card>
@@ -228,7 +235,6 @@ function NewQuestionPage() {
 										<div className="space-y-2">
 											<Label htmlFor="type">Question Type *</Label>
 											<Select
-												value={field.state.value}
 												onValueChange={(value) => {
 													const newType = value as QuestionType;
 													const prevType = currentQuestionType;
@@ -249,8 +255,10 @@ function NewQuestionPage() {
 															QUESTION_TYPES.SINGLE_CHOICE,
 															QUESTION_TYPES.MULTIPLE_CHOICE,
 														];
-														const wasCompatible = compatibleTypes.includes(prevType);
-														const isCompatible = compatibleTypes.includes(newType);
+														const wasCompatible =
+															compatibleTypes.includes(prevType);
+														const isCompatible =
+															compatibleTypes.includes(newType);
 
 														if (!(wasCompatible && isCompatible)) {
 															setOptions([
@@ -260,6 +268,7 @@ function NewQuestionPage() {
 														}
 													}
 												}}
+												value={field.state.value}
 											>
 												<SelectTrigger id="type">
 													<SelectValue />
@@ -281,8 +290,10 @@ function NewQuestionPage() {
 										<div className="space-y-2">
 											<Label htmlFor="difficulty">Difficulty</Label>
 											<Select
+												onValueChange={(value) =>
+													field.handleChange(value as QuestionDifficulty)
+												}
 												value={field.state.value}
-												onValueChange={(value) => field.handleChange(value as QuestionDifficulty)}
 											>
 												<SelectTrigger id="difficulty">
 													<SelectValue />
@@ -307,16 +318,16 @@ function NewQuestionPage() {
 											<Label htmlFor="points">Points</Label>
 											<Input
 												id="points"
-												type="number"
 												min={0}
-												step={0.5}
-												value={field.state.value}
+												onBlur={field.handleBlur}
 												onChange={(e) =>
 													field.handleChange(
 														Number.parseFloat(e.target.value) || 0
 													)
 												}
-												onBlur={field.handleBlur}
+												step={0.5}
+												type="number"
+												value={field.state.value}
 											/>
 										</div>
 									)}
@@ -329,11 +340,14 @@ function NewQuestionPage() {
 												<Label>Partial Credit</Label>
 												<div className="flex items-center space-x-2 pt-2">
 													<Switch
-														id="allowPartialCredit"
 														checked={field.state.value}
+														id="allowPartialCredit"
 														onCheckedChange={field.handleChange}
 													/>
-													<Label htmlFor="allowPartialCredit" className="font-normal">
+													<Label
+														className="font-normal"
+														htmlFor="allowPartialCredit"
+													>
 														{field.state.value ? 'Enabled' : 'Disabled'}
 													</Label>
 												</div>
@@ -348,18 +362,18 @@ function NewQuestionPage() {
 								<form.Field name="lessonId">
 									{(field) => (
 										<CurriculumSelector
-											subjectId={curriculum.subjectId}
 											chapterId={curriculum.chapterId}
-											sectionId={curriculum.sectionId}
-											lessonId={field.state.value}
-											onSubjectChange={curriculum.setSubjectId}
-											onChapterChange={curriculum.setChapterId}
-											onSectionChange={curriculum.setSectionId}
-											onLessonChange={field.handleChange}
-											subjects={curriculum.subjects}
 											chapters={curriculum.chapters}
-											sections={curriculum.sections}
+											lessonId={field.state.value}
 											lessons={curriculum.lessons}
+											onChapterChange={curriculum.setChapterId}
+											onLessonChange={field.handleChange}
+											onSectionChange={curriculum.setSectionId}
+											onSubjectChange={curriculum.setSubjectId}
+											sectionId={curriculum.sectionId}
+											sections={curriculum.sections}
+											subjectId={curriculum.subjectId}
+											subjects={curriculum.subjects}
 										/>
 									)}
 								</form.Field>
@@ -370,11 +384,11 @@ function NewQuestionPage() {
 											<Label>Status</Label>
 											<div className="flex items-center space-x-2 pt-2">
 												<Switch
-													id="isActive"
 													checked={field.state.value}
+													id="isActive"
 													onCheckedChange={field.handleChange}
 												/>
-												<Label htmlFor="isActive" className="font-normal">
+												<Label className="font-normal" htmlFor="isActive">
 													{field.state.value ? 'Published' : 'Draft'}
 												</Label>
 											</div>
@@ -386,23 +400,21 @@ function NewQuestionPage() {
 
 						<div className="flex gap-4">
 							<Button
+								asChild
+								className="flex-1"
 								type="button"
 								variant="outline"
-								className="flex-1"
-								asChild
 							>
-								<Link to="/admin/questions">
-									Cancel
-								</Link>
+								<Link to="/admin/questions">Cancel</Link>
 							</Button>
 							<form.Subscribe
 								selector={(state) => [state.canSubmit, state.isSubmitting]}
 							>
 								{([canSubmit, isSubmitting]) => (
 									<Button
-										type="submit"
 										className="flex-1"
 										disabled={!canSubmit || isSubmitting}
+										type="submit"
 									>
 										{isSubmitting ? 'Creating...' : 'Create Question'}
 									</Button>

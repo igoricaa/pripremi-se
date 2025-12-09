@@ -1,9 +1,9 @@
-import { Plus, Trash2, GripVertical } from 'lucide-react';
+import { QUESTION_TYPES } from '@pripremi-se/shared';
+import { GripVertical, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { QUESTION_TYPES } from '@pripremi-se/shared';
 
 export interface QuestionOption {
 	text: string;
@@ -86,10 +86,10 @@ export function QuestionOptionsEditor({
 				<Label>Answer Options</Label>
 				{!isTrueFalse && (
 					<Button
+						onClick={handleAddOption}
+						size="sm"
 						type="button"
 						variant="outline"
-						size="sm"
-						onClick={handleAddOption}
 					>
 						<Plus className="mr-1 h-3 w-3" />
 						Add Option
@@ -100,8 +100,8 @@ export function QuestionOptionsEditor({
 			<div className="space-y-2">
 				{options.map((option, index) => (
 					<div
-						key={index}
 						className="flex items-center gap-3 rounded-md border bg-muted/30 p-3"
+						key={index}
 					>
 						{!isTrueFalse && (
 							<GripVertical className="h-4 w-4 cursor-grab text-muted-foreground" />
@@ -109,11 +109,11 @@ export function QuestionOptionsEditor({
 
 						{isSingleChoice || isTrueFalse ? (
 							<input
-								type="radio"
-								name="correct-answer"
 								checked={option.isCorrect}
-								onChange={() => handleCorrectChange(index, true)}
 								className="h-4 w-4"
+								name="correct-answer"
+								onChange={() => handleCorrectChange(index, true)}
+								type="radio"
 							/>
 						) : (
 							<Checkbox
@@ -128,20 +128,20 @@ export function QuestionOptionsEditor({
 							<span className="flex-1 font-medium">{option.text}</span>
 						) : (
 							<Input
-								value={option.text}
+								className="flex-1"
 								onChange={(e) => handleOptionTextChange(index, e.target.value)}
 								placeholder={`Option ${index + 1}`}
-								className="flex-1"
+								value={option.text}
 							/>
 						)}
 
 						{!isTrueFalse && options.length > 2 && (
 							<Button
+								className="shrink-0"
+								onClick={() => handleRemoveOption(index)}
+								size="icon"
 								type="button"
 								variant="ghost"
-								size="icon"
-								onClick={() => handleRemoveOption(index)}
-								className="shrink-0"
 							>
 								<Trash2 className="h-4 w-4" />
 								<span className="sr-only">Remove option</span>
@@ -166,7 +166,9 @@ export function QuestionOptionsEditor({
 					<p className="text-green-600">1 correct answer selected</p>
 				)}
 				{isMultipleChoice && correctCount >= 1 && (
-					<p className="text-green-600">{correctCount} correct answer(s) selected</p>
+					<p className="text-green-600">
+						{correctCount} correct answer(s) selected
+					</p>
 				)}
 			</div>
 		</div>

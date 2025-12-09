@@ -13,7 +13,8 @@ export const QUESTION_DIFFICULTY = {
 /**
  * Union type of all question difficulty levels
  */
-export type QuestionDifficulty = (typeof QUESTION_DIFFICULTY)[keyof typeof QUESTION_DIFFICULTY];
+export type QuestionDifficulty =
+	(typeof QUESTION_DIFFICULTY)[keyof typeof QUESTION_DIFFICULTY];
 
 /**
  * Array of all question difficulty values (for Zod enum)

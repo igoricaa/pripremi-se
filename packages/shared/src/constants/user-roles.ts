@@ -23,4 +23,8 @@ export const USER_ROLE_VALUES = Object.values(USER_ROLES);
 /**
  * Zod enum schema for user roles
  */
-export const userRoleEnum = z.enum([USER_ROLES.USER, USER_ROLES.EDITOR, USER_ROLES.ADMIN]);
+export const userRoleEnum = z.enum([
+	USER_ROLES.USER,
+	USER_ROLES.EDITOR,
+	USER_ROLES.ADMIN,
+]);

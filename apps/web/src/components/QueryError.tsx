@@ -25,13 +25,18 @@ export function QueryError({
 	className,
 }: QueryErrorProps) {
 	return (
-		<Alert variant="destructive" className={className}>
+		<Alert className={className} variant="destructive">
 			<AlertTriangle className="h-4 w-4" />
 			<AlertTitle>{title}</AlertTitle>
 			<AlertDescription className="flex items-center justify-between">
 				<span>{error.message || 'An unexpected error occurred'}</span>
 				{onRetry && (
-					<Button variant="outline" size="sm" onClick={onRetry} className="ml-4">
+					<Button
+						className="ml-4"
+						onClick={onRetry}
+						size="sm"
+						variant="outline"
+					>
 						<RefreshCw className="mr-2 h-3 w-3" />
 						Retry
 					</Button>

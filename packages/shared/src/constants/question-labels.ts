@@ -1,5 +1,5 @@
-import { QUESTION_TYPES } from './question-types';
 import { QUESTION_DIFFICULTY } from './question-difficulty';
+import { QUESTION_TYPES } from './question-types';
 
 /**
  * Human-readable labels for question types
@@ -22,4 +22,3 @@ export const difficultyLabels: Record<string, string> = {
 	[QUESTION_DIFFICULTY.MEDIUM]: 'Medium',
 	[QUESTION_DIFFICULTY.HARD]: 'Hard',
 };
-

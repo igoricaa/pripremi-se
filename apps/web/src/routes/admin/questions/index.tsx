@@ -1,17 +1,22 @@
-import { Suspense, useState, useEffect } from 'react';
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
-import { useMutation } from 'convex/react';
-import { useSuspenseQuery, useQueryClient } from '@tanstack/react-query';
-import { Plus, X } from 'lucide-react';
-import { toast } from 'sonner';
-
-import { useDebounce } from '@/hooks/use-debounce';
-import { SearchInput } from '@/components/ui/search-input';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import type { Id } from '@pripremi-se/backend/convex/_generated/dataModel';
-import { QUESTION_TYPES, QUESTION_DIFFICULTY, questionTypeLabels, difficultyLabels } from '@pripremi-se/shared';
-import { convexQuery } from '@/lib/convex';
-import { QuestionsFiltersSkeleton, TableContentSkeleton } from '@/components/admin/skeletons';
+import {
+	difficultyLabels,
+	QUESTION_DIFFICULTY,
+	QUESTION_TYPES,
+	questionTypeLabels,
+} from '@pripremi-se/shared';
+import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
+import { useMutation } from 'convex/react';
+import { Plus, X } from 'lucide-react';
+import { Suspense, useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { DeleteConfirmDialog } from '@/components/admin/DeleteConfirmDialog';
+import {
+	QuestionsFiltersSkeleton,
+	TableContentSkeleton,
+} from '@/components/admin/skeletons';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -21,6 +26,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import { DataTable, type PaginationState } from '@/components/ui/data-table';
+import { SearchInput } from '@/components/ui/search-input';
 import {
 	Select,
 	SelectContent,
@@ -28,9 +34,10 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import { getQuestionColumns } from './columns';
-import { DeleteConfirmDialog } from '@/components/admin/DeleteConfirmDialog';
+import { useDebounce } from '@/hooks/use-debounce';
 import { DELETE_MESSAGES } from '@/lib/constants/admin-ui';
+import { convexQuery } from '@/lib/convex';
+import { getQuestionColumns } from './columns';
 
 // URL search params schema for server-side pagination
 interface QuestionsSearch {
@@ -140,17 +147,19 @@ function QuestionsPage() {
 				</Suspense>
 
 				{/* Table - wrapped in Suspense, only this shows skeleton on filter/search change */}
-				<Suspense fallback={<TableContentSkeleton preset="questions" rows={20} />}>
+				<Suspense
+					fallback={<TableContentSkeleton preset="questions" rows={20} />}
+				>
 					<QuestionsTable onDeleteRequest={(id) => setDeleteId(id)} />
 				</Suspense>
 			</Card>
 
 			<DeleteConfirmDialog
-				open={!!deleteId}
-				onOpenChange={() => setDeleteId(null)}
-				onConfirm={handleDelete}
-				title={DELETE_MESSAGES.question.title}
 				description={DELETE_MESSAGES.question.description}
+				onConfirm={handleDelete}
+				onOpenChange={() => setDeleteId(null)}
+				open={!!deleteId}
+				title={DELETE_MESSAGES.question.title}
 			/>
 		</div>
 	);
@@ -237,11 +246,14 @@ function QuestionsFilters() {
 				page: undefined,
 			});
 		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [debouncedSearch]);
 
 	// Reset filters and pagination
-	const handleFilterChange = (filterKey: keyof QuestionsSearch, value: string | undefined) => {
+	const handleFilterChange = (
+		filterKey: keyof QuestionsSearch,
+		value: string | undefined
+	) => {
 		// Build updates based on filter hierarchy
 		const updates: Partial<QuestionsSearch> = {
 			[filterKey]: value === 'all' ? undefined : value,
@@ -265,19 +277,24 @@ function QuestionsFilters() {
 
 	// Get available options for cascading dropdowns
 	const availableChapters = search.subjectId
-		? chaptersBySubject.get(search.subjectId) ?? []
+		? (chaptersBySubject.get(search.subjectId) ?? [])
 		: chapters;
 	const availableSections = search.chapterId
-		? sectionsByChapter.get(search.chapterId) ?? []
+		? (sectionsByChapter.get(search.chapterId) ?? [])
 		: sections;
 	const availableLessons = search.sectionId
-		? lessonsBySection.get(search.sectionId) ?? []
+		? (lessonsBySection.get(search.sectionId) ?? [])
 		: lessons;
 
 	// Check if any filter or search is active
-	const hasActiveFilters = search.q || search.type || search.difficulty ||
-		search.subjectId || search.chapterId ||
-		search.sectionId || search.lessonId;
+	const hasActiveFilters =
+		search.q ||
+		search.type ||
+		search.difficulty ||
+		search.subjectId ||
+		search.chapterId ||
+		search.sectionId ||
+		search.lessonId;
 
 	const clearAllFilters = () => {
 		setSearchInput(''); // Clear local search input
@@ -293,11 +310,17 @@ function QuestionsFilters() {
 						<CardDescription>
 							Manage questions
 							{search.q && ' matching search'}
-							{(search.type || search.difficulty || search.subjectId || search.chapterId || search.sectionId || search.lessonId) && ' with filters'}
+							{(search.type ||
+								search.difficulty ||
+								search.subjectId ||
+								search.chapterId ||
+								search.sectionId ||
+								search.lessonId) &&
+								' with filters'}
 						</CardDescription>
 					</div>
 					{hasActiveFilters && (
-						<Button variant="outline" size="sm" onClick={clearAllFilters}>
+						<Button onClick={clearAllFilters} size="sm" variant="outline">
 							<X className="mr-2 h-4 w-4" />
 							Clear Filters
 						</Button>
@@ -306,17 +329,17 @@ function QuestionsFilters() {
 
 				{/* Search Input */}
 				<SearchInput
-					value={searchInput}
+					className="max-w-sm"
 					onChange={setSearchInput}
 					placeholder="Search questions..."
-					className="max-w-sm"
+					value={searchInput}
 				/>
 
 				{/* Filter Row 1: Type & Difficulty */}
 				<div className="flex flex-wrap gap-2">
 					<Select
-						value={search.type ?? 'all'}
 						onValueChange={(value) => handleFilterChange('type', value)}
+						value={search.type ?? 'all'}
 					>
 						<SelectTrigger className="w-[150px]">
 							<SelectValue placeholder="Type" />
@@ -332,8 +355,8 @@ function QuestionsFilters() {
 					</Select>
 
 					<Select
-						value={search.difficulty ?? 'all'}
 						onValueChange={(value) => handleFilterChange('difficulty', value)}
+						value={search.difficulty ?? 'all'}
 					>
 						<SelectTrigger className="w-[140px]">
 							<SelectValue placeholder="Difficulty" />
@@ -352,8 +375,8 @@ function QuestionsFilters() {
 				{/* Filter Row 2: Hierarchy */}
 				<div className="flex flex-wrap gap-2">
 					<Select
-						value={search.subjectId ?? 'all'}
 						onValueChange={(value) => handleFilterChange('subjectId', value)}
+						value={search.subjectId ?? 'all'}
 					>
 						<SelectTrigger className="w-[150px]">
 							<SelectValue placeholder="Subject" />
@@ -361,14 +384,16 @@ function QuestionsFilters() {
 						<SelectContent>
 							<SelectItem value="all">All Subjects</SelectItem>
 							{subjects.map((s) => (
-								<SelectItem key={s._id} value={s._id}>{s.name}</SelectItem>
+								<SelectItem key={s._id} value={s._id}>
+									{s.name}
+								</SelectItem>
 							))}
 						</SelectContent>
 					</Select>
 
 					<Select
-						value={search.chapterId ?? 'all'}
 						onValueChange={(value) => handleFilterChange('chapterId', value)}
+						value={search.chapterId ?? 'all'}
 					>
 						<SelectTrigger className="w-[150px]">
 							<SelectValue placeholder="Chapter" />
@@ -376,14 +401,16 @@ function QuestionsFilters() {
 						<SelectContent>
 							<SelectItem value="all">All Chapters</SelectItem>
 							{availableChapters.map((c) => (
-								<SelectItem key={c._id} value={c._id}>{c.name}</SelectItem>
+								<SelectItem key={c._id} value={c._id}>
+									{c.name}
+								</SelectItem>
 							))}
 						</SelectContent>
 					</Select>
 
 					<Select
-						value={search.sectionId ?? 'all'}
 						onValueChange={(value) => handleFilterChange('sectionId', value)}
+						value={search.sectionId ?? 'all'}
 					>
 						<SelectTrigger className="w-[150px]">
 							<SelectValue placeholder="Section" />
@@ -391,14 +418,16 @@ function QuestionsFilters() {
 						<SelectContent>
 							<SelectItem value="all">All Sections</SelectItem>
 							{availableSections.map((s) => (
-								<SelectItem key={s._id} value={s._id}>{s.name}</SelectItem>
+								<SelectItem key={s._id} value={s._id}>
+									{s.name}
+								</SelectItem>
 							))}
 						</SelectContent>
 					</Select>
 
 					<Select
-						value={search.lessonId ?? 'all'}
 						onValueChange={(value) => handleFilterChange('lessonId', value)}
+						value={search.lessonId ?? 'all'}
 					>
 						<SelectTrigger className="w-[150px]">
 							<SelectValue placeholder="Lesson" />
@@ -406,7 +435,9 @@ function QuestionsFilters() {
 						<SelectContent>
 							<SelectItem value="all">All Lessons</SelectItem>
 							{availableLessons.map((l) => (
-								<SelectItem key={l._id} value={l._id}>{l.title}</SelectItem>
+								<SelectItem key={l._id} value={l._id}>
+									{l.title}
+								</SelectItem>
 							))}
 						</SelectContent>
 					</Select>
@@ -476,8 +507,15 @@ function QuestionsTable({
 	// Reset cursor stack when filters/search change
 	useEffect(() => {
 		setCursorStack([null]);
-	}, [search.q, search.type, search.difficulty, search.subjectId,
-		search.chapterId, search.sectionId, search.lessonId]);
+	}, [
+		search.q,
+		search.type,
+		search.difficulty,
+		search.subjectId,
+		search.chapterId,
+		search.sectionId,
+		search.lessonId,
+	]);
 
 	// Prefetch next page when we have a nextCursor for instant navigation
 	useEffect(() => {
@@ -518,7 +556,10 @@ function QuestionsTable({
 		// Handle page size change - reset to page 1
 		if (newPageSize !== pageSize) {
 			setCursorStack([null]);
-			updateSearch({ page: undefined, pageSize: newPageSize === 20 ? undefined : newPageSize });
+			updateSearch({
+				page: undefined,
+				pageSize: newPageSize === 20 ? undefined : newPageSize,
+			});
 			return;
 		}
 
@@ -555,13 +596,13 @@ function QuestionsTable({
 				data={questions}
 				defaultPageSize={20}
 				// Server-side pagination
+				disableRandomAccess
 				manualPagination
+				onPaginationChange={handlePaginationChange}
 				pageCount={pageCount}
-				rowCount={totalCount}
 				pageIndex={pageIndex}
 				pageSize={pageSize}
-				onPaginationChange={handlePaginationChange}
-				disableRandomAccess
+				rowCount={totalCount}
 			/>
 		</CardContent>
 	);

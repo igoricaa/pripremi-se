@@ -19,7 +19,14 @@ import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const DATA_DIR = path.join(__dirname, '..', 'convex', 'seed', 'data', 'matematika');
+const DATA_DIR = path.join(
+	__dirname,
+	'..',
+	'convex',
+	'seed',
+	'data',
+	'matematika'
+);
 
 interface ChapterFile {
 	name: string;
@@ -74,7 +81,9 @@ export function loadSeedData(): SubjectFile {
 		const chapterPath = path.join(DATA_DIR, filename);
 		const chapter = loadJsonFile<ChapterFile>(chapterPath);
 		chapters.push(chapter);
-		console.error(`Loaded: ${filename} (${chapter.sections?.length || 0} sections)`);
+		console.error(
+			`Loaded: ${filename} (${chapter.sections?.length || 0} sections)`
+		);
 	}
 
 	console.error(`\nTotal chapters loaded: ${chapters.length}`);

@@ -1,11 +1,14 @@
-import type { ColumnDef } from '@tanstack/react-table';
+import {
+	difficultyLabels,
+	QUESTION_DIFFICULTY,
+	questionTypeLabels,
+} from '@pripremi-se/shared';
 import { Link } from '@tanstack/react-router';
+import type { ColumnDef } from '@tanstack/react-table';
 import { Pencil, Trash2 } from 'lucide-react';
-
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DataTableColumnHeader } from '@/components/ui/data-table';
-import { QUESTION_DIFFICULTY, questionTypeLabels, difficultyLabels } from '@pripremi-se/shared';
 
 const difficultyColors: Record<
 	string,
@@ -92,9 +95,7 @@ export function getQuestionColumns({
 					return <span className="text-muted-foreground">-</span>;
 				}
 				return (
-					<span className="text-muted-foreground text-sm">
-						{lessonTitle}
-					</span>
+					<span className="text-muted-foreground text-sm">{lessonTitle}</span>
 				);
 			},
 		},
@@ -104,19 +105,19 @@ export function getQuestionColumns({
 				const question = row.original;
 				return (
 					<div className="flex items-center gap-2">
-						<Button variant="ghost" size="icon" asChild>
+						<Button asChild size="icon" variant="ghost">
 							<Link
-								to="/admin/questions/$questionId"
 								params={{ questionId: question._id }}
+								to="/admin/questions/$questionId"
 							>
 								<Pencil className="h-4 w-4" />
 								<span className="sr-only">Edit</span>
 							</Link>
 						</Button>
 						<Button
-							variant="ghost"
-							size="icon"
 							onClick={() => onDelete(question._id)}
+							size="icon"
+							variant="ghost"
 						>
 							<Trash2 className="h-4 w-4" />
 							<span className="sr-only">Delete</span>

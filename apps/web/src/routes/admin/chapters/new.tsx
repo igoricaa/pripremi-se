@@ -1,15 +1,11 @@
+import { api } from '@pripremi-se/backend/convex/_generated/api';
+import { createChapterSchema } from '@pripremi-se/shared';
+import { useForm } from '@tanstack/react-form';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
-import { api } from '@pripremi-se/backend/convex/_generated/api';
-import { useQueryWithStatus } from '@/lib/convex';
-import { useForm } from '@tanstack/react-form';
-import { createChapterSchema } from '@pripremi-se/shared';
 import { ArrowLeft } from 'lucide-react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import {
 	Card,
 	CardContent,
@@ -17,6 +13,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
 	Select,
 	SelectContent,
@@ -24,7 +22,9 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import { toast } from 'sonner';
+import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
+import { useQueryWithStatus } from '@/lib/convex';
 
 export const Route = createFileRoute('/admin/chapters/new')({
 	component: NewChapterPage,
@@ -91,7 +91,7 @@ function NewChapterPage() {
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center gap-4">
-				<Button variant="ghost" size="icon" asChild>
+				<Button asChild size="icon" variant="ghost">
 					<Link to="/admin/chapters">
 						<ArrowLeft className="h-4 w-4" />
 					</Link>
@@ -124,8 +124,8 @@ function NewChapterPage() {
 								<div className="space-y-2">
 									<Label htmlFor="subjectId">Subject *</Label>
 									<Select
-										value={field.state.value}
 										onValueChange={handleSubjectChange}
+										value={field.state.value}
 									>
 										<SelectTrigger id="subjectId">
 											<SelectValue placeholder="Select a subject" />
@@ -153,10 +153,10 @@ function NewChapterPage() {
 									<Label htmlFor="name">Name *</Label>
 									<Input
 										id="name"
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
 										placeholder="e.g., Introduction to Algebra"
 										value={field.state.value}
-										onChange={(e) => field.handleChange(e.target.value)}
-										onBlur={field.handleBlur}
 									/>
 									{field.state.meta.errors.length > 0 && (
 										<p className="text-destructive text-sm">
@@ -173,11 +173,11 @@ function NewChapterPage() {
 									<Label htmlFor="description">Description *</Label>
 									<Textarea
 										id="description"
-										placeholder="A brief description of this chapter..."
-										value={field.state.value}
-										onChange={(e) => field.handleChange(e.target.value)}
 										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										placeholder="A brief description of this chapter..."
 										rows={3}
+										value={field.state.value}
 									/>
 									{field.state.meta.errors.length > 0 && (
 										<p className="text-destructive text-sm">
@@ -194,13 +194,13 @@ function NewChapterPage() {
 									<Label htmlFor="order">Display Order</Label>
 									<Input
 										id="order"
-										type="number"
 										min={0}
-										value={field.state.value}
+										onBlur={field.handleBlur}
 										onChange={(e) =>
 											field.handleChange(Number.parseInt(e.target.value) || 0)
 										}
-										onBlur={field.handleBlur}
+										type="number"
+										value={field.state.value}
 									/>
 									{selectedSubjectId && (
 										<p className="text-muted-foreground text-xs">
@@ -217,11 +217,11 @@ function NewChapterPage() {
 									<Label>Status</Label>
 									<div className="flex items-center space-x-2 pt-2">
 										<Switch
-											id="isActive"
 											checked={field.state.value}
+											id="isActive"
 											onCheckedChange={field.handleChange}
 										/>
-										<Label htmlFor="isActive" className="font-normal">
+										<Label className="font-normal" htmlFor="isActive">
 											{field.state.value ? 'Published' : 'Draft'}
 										</Label>
 									</div>
@@ -232,20 +232,14 @@ function NewChapterPage() {
 				</Card>
 
 				<div className="mt-6 flex justify-end gap-4">
-					<Button
-						type="button"
-						variant="outline"
-						asChild
-					>
-						<Link to="/admin/chapters">
-							Cancel
-						</Link>
+					<Button asChild type="button" variant="outline">
+						<Link to="/admin/chapters">Cancel</Link>
 					</Button>
 					<form.Subscribe
 						selector={(state) => [state.canSubmit, state.isSubmitting]}
 					>
 						{([canSubmit, isSubmitting]) => (
-							<Button type="submit" disabled={!canSubmit || isSubmitting}>
+							<Button disabled={!canSubmit || isSubmitting} type="submit">
 								{isSubmitting ? 'Creating...' : 'Create Chapter'}
 							</Button>
 						)}

@@ -1,12 +1,11 @@
-import { Suspense, useState } from 'react';
+import { api } from '@pripremi-se/backend/convex/_generated/api';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { Plus, X } from 'lucide-react';
+import { Suspense, useState } from 'react';
 import { toast } from 'sonner';
-
-import { api } from '@pripremi-se/backend/convex/_generated/api';
-import { convexQuery } from '@/lib/convex';
+import { DeleteConfirmDialog } from '@/components/admin/DeleteConfirmDialog';
 import { CardWithTableSkeleton } from '@/components/admin/skeletons';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,6 +16,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import { DataTable } from '@/components/ui/data-table';
+import { SearchInput } from '@/components/ui/search-input';
 import {
 	Select,
 	SelectContent,
@@ -24,10 +24,9 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import { SearchInput } from '@/components/ui/search-input';
-import { getSectionColumns } from './columns';
-import { DeleteConfirmDialog } from '@/components/admin/DeleteConfirmDialog';
 import { DELETE_MESSAGES } from '@/lib/constants/admin-ui';
+import { convexQuery } from '@/lib/convex';
+import { getSectionColumns } from './columns';
 
 export const Route = createFileRoute('/admin/sections/')({
 	loader: async ({ context }) => {
@@ -90,17 +89,25 @@ function SectionsPage() {
 			</div>
 
 			{/* Data component suspends until ready */}
-			<Suspense fallback={<CardWithTableSkeleton preset="sections" rows={20} filterWidth="w-[340px]" />}>
+			<Suspense
+				fallback={
+					<CardWithTableSkeleton
+						filterWidth="w-[340px]"
+						preset="sections"
+						rows={20}
+					/>
+				}
+			>
 				<SectionsCard onDeleteRequest={(id) => setDeleteId(id)} />
 			</Suspense>
 
 			{/* Delete dialog - always available */}
 			<DeleteConfirmDialog
-				open={!!deleteId}
-				onOpenChange={() => setDeleteId(null)}
-				onConfirm={handleDelete}
-				title={DELETE_MESSAGES.section.title}
 				description={DELETE_MESSAGES.section.description}
+				onConfirm={handleDelete}
+				onOpenChange={() => setDeleteId(null)}
+				open={!!deleteId}
+				title={DELETE_MESSAGES.section.title}
 			/>
 		</div>
 	);
@@ -108,7 +115,9 @@ function SectionsPage() {
 
 function SectionsCard({
 	onDeleteRequest,
-}: { onDeleteRequest: (id: string) => void }) {
+}: {
+	onDeleteRequest: (id: string) => void;
+}) {
 	// Single query - data already prefetched by loader
 	const { data } = useSuspenseQuery(
 		convexQuery(api.sections.listSectionsWithHierarchy, {})
@@ -196,8 +205,8 @@ function SectionsCard({
 						<div className="flex flex-wrap items-center gap-2">
 							{/* Subject Filter */}
 							<Select
-								value={selectedSubjectId}
 								onValueChange={handleSubjectChange}
+								value={selectedSubjectId}
 							>
 								<SelectTrigger className="w-[160px]">
 									<SelectValue placeholder="All Subjects" />
@@ -214,8 +223,8 @@ function SectionsCard({
 
 							{/* Chapter Filter */}
 							<Select
-								value={selectedChapterId}
 								onValueChange={setSelectedChapterId}
+								value={selectedChapterId}
 							>
 								<SelectTrigger className="w-[160px]">
 									<SelectValue placeholder="All Chapters" />
@@ -231,7 +240,7 @@ function SectionsCard({
 							</Select>
 
 							{hasActiveFilters && (
-								<Button variant="outline" size="sm" onClick={clearAllFilters}>
+								<Button onClick={clearAllFilters} size="sm" variant="outline">
 									<X className="mr-2 h-4 w-4" />
 									Clear
 								</Button>
@@ -240,10 +249,10 @@ function SectionsCard({
 					</div>
 
 					<SearchInput
-						value={searchTerm}
+						className="max-w-sm"
 						onChange={setSearchTerm}
 						placeholder="Search sections..."
-						className="max-w-sm"
+						value={searchTerm}
 					/>
 				</div>
 			</CardHeader>

@@ -22,7 +22,9 @@ export const updateEnrollmentStatusSchema = z.object({
 	status: enrollmentStatusEnum,
 });
 
-export type UpdateEnrollmentStatusInput = z.infer<typeof updateEnrollmentStatusSchema>;
+export type UpdateEnrollmentStatusInput = z.infer<
+	typeof updateEnrollmentStatusSchema
+>;
 
 /**
  * Schema for pausing an enrollment
@@ -58,7 +60,9 @@ export const updateEnrollmentAccessSchema = z.object({
 	subjectId: z.string().min(1, 'Subject ID is required'),
 });
 
-export type UpdateEnrollmentAccessInput = z.infer<typeof updateEnrollmentAccessSchema>;
+export type UpdateEnrollmentAccessInput = z.infer<
+	typeof updateEnrollmentAccessSchema
+>;
 
 /**
  * Schema for unenrolling from a subject
@@ -107,7 +111,9 @@ export const getRecentlyAccessedSchema = z.object({
 	limit: z.number().int('Limit must be an integer').min(1).max(20).default(5),
 });
 
-export type GetRecentlyAccessedInput = z.infer<typeof getRecentlyAccessedSchema>;
+export type GetRecentlyAccessedInput = z.infer<
+	typeof getRecentlyAccessedSchema
+>;
 
 /**
  * Schema for getting subject enrollment statistics (admin)
@@ -116,4 +122,6 @@ export const getSubjectEnrollmentStatsSchema = z.object({
 	subjectId: z.string().min(1, 'Subject ID is required'),
 });
 
-export type GetSubjectEnrollmentStatsInput = z.infer<typeof getSubjectEnrollmentStatsSchema>;
+export type GetSubjectEnrollmentStatsInput = z.infer<
+	typeof getSubjectEnrollmentStatsSchema
+>;

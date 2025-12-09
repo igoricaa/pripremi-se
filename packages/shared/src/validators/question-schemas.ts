@@ -1,9 +1,12 @@
 import { z } from 'zod';
-import { questionTypeEnum, questionDifficultyEnum } from '../constants';
+import { questionDifficultyEnum, questionTypeEnum } from '../constants';
 
 // Create question schema (simplified - no test linking)
 export const createQuestionSchema = z.object({
-	text: z.string().min(1, 'Question text is required').max(2000, 'Question text must be less than 2000 characters'),
+	text: z
+		.string()
+		.min(1, 'Question text is required')
+		.max(2000, 'Question text must be less than 2000 characters'),
 	explanation: z
 		.string()
 		.max(1000, 'Explanation must be less than 1000 characters')
@@ -76,12 +79,20 @@ export type DeleteQuestionInput = z.infer<typeof deleteQuestionSchema>;
 // Create question option
 export const createQuestionOptionSchema = z.object({
 	questionId: z.string().min(1, 'Question ID is required'),
-	text: z.string().min(1, 'Option text is required').max(500, 'Option text must be less than 500 characters'),
+	text: z
+		.string()
+		.min(1, 'Option text is required')
+		.max(500, 'Option text must be less than 500 characters'),
 	isCorrect: z.boolean(),
-	order: z.number().int('Order must be an integer').min(0, 'Order must be 0 or greater'),
+	order: z
+		.number()
+		.int('Order must be an integer')
+		.min(0, 'Order must be 0 or greater'),
 });
 
-export type CreateQuestionOptionInput = z.infer<typeof createQuestionOptionSchema>;
+export type CreateQuestionOptionInput = z.infer<
+	typeof createQuestionOptionSchema
+>;
 
 // Update question option
 export const updateQuestionOptionSchema = z.object({
@@ -92,17 +103,25 @@ export const updateQuestionOptionSchema = z.object({
 		.max(500, 'Option text must be less than 500 characters')
 		.optional(),
 	isCorrect: z.boolean().optional(),
-	order: z.number().int('Order must be an integer').min(0, 'Order must be 0 or greater').optional(),
+	order: z
+		.number()
+		.int('Order must be an integer')
+		.min(0, 'Order must be 0 or greater')
+		.optional(),
 });
 
-export type UpdateQuestionOptionInput = z.infer<typeof updateQuestionOptionSchema>;
+export type UpdateQuestionOptionInput = z.infer<
+	typeof updateQuestionOptionSchema
+>;
 
 // Delete question option
 export const deleteQuestionOptionSchema = z.object({
 	id: z.string().min(1, 'Option ID is required'),
 });
 
-export type DeleteQuestionOptionInput = z.infer<typeof deleteQuestionOptionSchema>;
+export type DeleteQuestionOptionInput = z.infer<
+	typeof deleteQuestionOptionSchema
+>;
 
 // ============================================================================
 // BULK CREATE QUESTION WITH OPTIONS
@@ -113,11 +132,19 @@ export const createQuestionWithOptionsSchema = z.object({
 	question: createQuestionSchema,
 	options: z.array(
 		z.object({
-			text: z.string().min(1, 'Option text is required').max(500, 'Option text must be less than 500 characters'),
+			text: z
+				.string()
+				.min(1, 'Option text is required')
+				.max(500, 'Option text must be less than 500 characters'),
 			isCorrect: z.boolean(),
-			order: z.number().int('Order must be an integer').min(0, 'Order must be 0 or greater'),
+			order: z
+				.number()
+				.int('Order must be an integer')
+				.min(0, 'Order must be 0 or greater'),
 		})
 	),
 });
 
-export type CreateQuestionWithOptionsInput = z.infer<typeof createQuestionWithOptionsSchema>;
+export type CreateQuestionWithOptionsInput = z.infer<
+	typeof createQuestionWithOptionsSchema
+>;

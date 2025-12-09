@@ -1,12 +1,12 @@
-import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import {
+	col,
 	DataTableSkeleton,
 	SKELETON_PRESETS,
-	col,
 	type SkeletonColumnConfig,
 	type SkeletonPreset,
 } from '@/components/ui/data-table';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export function StatsGridSkeleton() {
 	return (
@@ -36,7 +36,7 @@ export function TableSkeleton({ rows = 5 }: { rows?: number }) {
 				<Skeleton className="h-4 w-20" />
 			</div>
 			{Array.from({ length: rows }).map((_, i) => (
-				<div key={i} className="flex gap-4 py-2">
+				<div className="flex gap-4 py-2" key={i}>
 					<Skeleton className="h-4 w-32" />
 					<Skeleton className="h-4 w-24" />
 					<Skeleton className="h-4 w-20" />
@@ -55,7 +55,11 @@ export function PageSkeleton() {
 	);
 }
 
-export function CardHeaderSkeleton({ filterWidth = 'w-[280px]' }: { filterWidth?: string }) {
+export function CardHeaderSkeleton({
+	filterWidth = 'w-[280px]',
+}: {
+	filterWidth?: string;
+}) {
 	return (
 		<CardHeader>
 			<div className="flex items-center justify-between">
@@ -120,7 +124,7 @@ export function TableContentSkeleton({
 }) {
 	const skeletonColumns = preset
 		? SKELETON_PRESETS[preset]
-		: columns ?? [col('text'), col('text'), col('badge'), col('actions')];
+		: (columns ?? [col('text'), col('text'), col('badge'), col('actions')]);
 
 	return (
 		<CardContent>
@@ -144,7 +148,7 @@ export function CardWithTableSkeleton({
 }: CardWithTableSkeletonProps) {
 	const skeletonColumns = preset
 		? SKELETON_PRESETS[preset]
-		: columns ?? [col('text'), col('text'), col('badge'), col('actions')];
+		: (columns ?? [col('text'), col('text'), col('badge'), col('actions')]);
 
 	return (
 		<Card>

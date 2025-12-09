@@ -1,12 +1,11 @@
-import { Suspense, useState } from 'react';
+import { api } from '@pripremi-se/backend/convex/_generated/api';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { Plus, X } from 'lucide-react';
+import { Suspense, useState } from 'react';
 import { toast } from 'sonner';
-
-import { api } from '@pripremi-se/backend/convex/_generated/api';
-import { convexQuery } from '@/lib/convex';
+import { DeleteConfirmDialog } from '@/components/admin/DeleteConfirmDialog';
 import { CardWithTableSkeleton } from '@/components/admin/skeletons';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,6 +16,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import { DataTable } from '@/components/ui/data-table';
+import { SearchInput } from '@/components/ui/search-input';
 import {
 	Select,
 	SelectContent,
@@ -24,10 +24,9 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import { SearchInput } from '@/components/ui/search-input';
-import { getLessonColumns } from './columns';
 import { DELETE_MESSAGES } from '@/lib/constants/admin-ui';
-import { DeleteConfirmDialog } from '@/components/admin/DeleteConfirmDialog';
+import { convexQuery } from '@/lib/convex';
+import { getLessonColumns } from './columns';
 
 export const Route = createFileRoute('/admin/lessons/')({
 	loader: async ({ context }) => {
@@ -88,16 +87,24 @@ function LessonsPage() {
 				</Button>
 			</div>
 
-			<Suspense fallback={<CardWithTableSkeleton preset="lessons" rows={20} filterWidth="w-[500px]" />}>
+			<Suspense
+				fallback={
+					<CardWithTableSkeleton
+						filterWidth="w-[500px]"
+						preset="lessons"
+						rows={20}
+					/>
+				}
+			>
 				<LessonsCard onDeleteRequest={(id) => setDeleteId(id)} />
 			</Suspense>
 
 			<DeleteConfirmDialog
-				open={!!deleteId}
-				onOpenChange={() => setDeleteId(null)}
-				onConfirm={handleDelete}
-				title={DELETE_MESSAGES.lesson.title}
 				description={DELETE_MESSAGES.lesson.description}
+				onConfirm={handleDelete}
+				onOpenChange={() => setDeleteId(null)}
+				open={!!deleteId}
+				title={DELETE_MESSAGES.lesson.title}
 			/>
 		</div>
 	);
@@ -105,7 +112,9 @@ function LessonsPage() {
 
 function LessonsCard({
 	onDeleteRequest,
-}: { onDeleteRequest: (id: string) => void }) {
+}: {
+	onDeleteRequest: (id: string) => void;
+}) {
 	const { data } = useSuspenseQuery(
 		convexQuery(api.lessons.listLessonsWithHierarchy, {})
 	);
@@ -236,8 +245,8 @@ function LessonsCard({
 						<div className="flex flex-wrap items-center gap-2">
 							{/* Subject Filter */}
 							<Select
-								value={selectedSubjectId}
 								onValueChange={handleSubjectChange}
+								value={selectedSubjectId}
 							>
 								<SelectTrigger className="w-[160px]">
 									<SelectValue placeholder="All Subjects" />
@@ -254,8 +263,8 @@ function LessonsCard({
 
 							{/* Chapter Filter */}
 							<Select
-								value={selectedChapterId}
 								onValueChange={handleChapterChange}
+								value={selectedChapterId}
 							>
 								<SelectTrigger className="w-[160px]">
 									<SelectValue placeholder="All Chapters" />
@@ -272,8 +281,8 @@ function LessonsCard({
 
 							{/* Section Filter */}
 							<Select
-								value={selectedSectionId}
 								onValueChange={setSelectedSectionId}
+								value={selectedSectionId}
 							>
 								<SelectTrigger className="w-[160px]">
 									<SelectValue placeholder="All Sections" />
@@ -289,7 +298,7 @@ function LessonsCard({
 							</Select>
 
 							{hasActiveFilters && (
-								<Button variant="outline" size="sm" onClick={clearAllFilters}>
+								<Button onClick={clearAllFilters} size="sm" variant="outline">
 									<X className="mr-2 h-4 w-4" />
 									Clear
 								</Button>
@@ -298,10 +307,10 @@ function LessonsCard({
 					</div>
 
 					<SearchInput
-						value={searchTerm}
+						className="max-w-sm"
 						onChange={setSearchTerm}
 						placeholder="Search lessons..."
-						className="max-w-sm"
+						value={searchTerm}
 					/>
 				</div>
 			</CardHeader>

@@ -1,4 +1,8 @@
-import { QUESTION_TYPES, questionTypeRequiresOptions, type QuestionType } from '@pripremi-se/shared';
+import {
+	QUESTION_TYPES,
+	type QuestionType,
+	questionTypeRequiresOptions,
+} from '@pripremi-se/shared';
 import { toast } from 'sonner';
 import type { QuestionOption } from '@/components/admin/QuestionOptionsEditor';
 
@@ -19,16 +23,20 @@ export function validateQuestionOptions(
 
 	const correctCount = options.filter((o) => o.isCorrect).length;
 
-	if (questionType === QUESTION_TYPES.SINGLE_CHOICE || questionType === QUESTION_TYPES.TRUE_FALSE) {
+	if (
+		questionType === QUESTION_TYPES.SINGLE_CHOICE ||
+		questionType === QUESTION_TYPES.TRUE_FALSE
+	) {
 		if (correctCount !== 1) {
 			toast.error('Please select exactly one correct answer');
 			return false;
 		}
-	} else if (questionType === QUESTION_TYPES.MULTIPLE_CHOICE) {
-		if (correctCount < 1) {
-			toast.error('Please select at least one correct answer');
-			return false;
-		}
+	} else if (
+		questionType === QUESTION_TYPES.MULTIPLE_CHOICE &&
+		correctCount < 1
+	) {
+		toast.error('Please select at least one correct answer');
+		return false;
 	}
 
 	// Validate option text (skip for true/false which has predefined text)

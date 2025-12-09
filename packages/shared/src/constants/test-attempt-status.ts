@@ -13,7 +13,8 @@ export const TEST_ATTEMPT_STATUS = {
 /**
  * Union type of all test attempt statuses
  */
-export type TestAttemptStatus = (typeof TEST_ATTEMPT_STATUS)[keyof typeof TEST_ATTEMPT_STATUS];
+export type TestAttemptStatus =
+	(typeof TEST_ATTEMPT_STATUS)[keyof typeof TEST_ATTEMPT_STATUS];
 
 /**
  * Array of all test attempt status values (for Zod enum)

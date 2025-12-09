@@ -1,6 +1,6 @@
-import { Suspense } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { createFileRoute } from '@tanstack/react-router';
 import {
 	BookOpen,
 	FileText,
@@ -9,6 +9,8 @@ import {
 	Layers,
 	ListChecks,
 } from 'lucide-react';
+import { Suspense } from 'react';
+import { StatsGridSkeleton } from '@/components/admin/skeletons';
 import {
 	Card,
 	CardContent,
@@ -16,9 +18,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import { StatsGridSkeleton } from '@/components/admin/skeletons';
 import { convexQuery } from '@/lib/convex';
-import { useSuspenseQuery } from '@tanstack/react-query';
 
 export const Route = createFileRoute('/admin/')({
 	loader: async ({ context }) => {
@@ -26,9 +26,7 @@ export const Route = createFileRoute('/admin/')({
 			return;
 		}
 
-		context.queryClient.prefetchQuery(
-			convexQuery(api.dashboard.getStats, {})
-		);
+		context.queryClient.prefetchQuery(convexQuery(api.dashboard.getStats, {}));
 	},
 	component: AdminDashboard,
 });
@@ -133,11 +131,11 @@ function StatsGrid() {
 		<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 			{statItems.map((stat) => (
 				<StatCard
+					description={stat.description}
+					icon={stat.icon}
 					key={stat.title}
 					title={stat.title}
 					value={stat.value}
-					description={stat.description}
-					icon={stat.icon}
 				/>
 			))}
 		</div>

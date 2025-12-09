@@ -1,29 +1,13 @@
+import { api } from '@pripremi-se/backend/convex/_generated/api';
+import { CONTENT_TYPES, updateLessonSchema } from '@pripremi-se/shared';
+import { useForm } from '@tanstack/react-form';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
-import { api } from '@pripremi-se/backend/convex/_generated/api';
-import { useForm } from '@tanstack/react-form';
-import { updateLessonSchema, CONTENT_TYPES } from '@pripremi-se/shared';
 import { ArrowLeft, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card';
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { MediaLibrary } from '@/components/admin/MediaLibrary';
+import { QueryError } from '@/components/QueryError';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -34,11 +18,27 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
 import { useQueryWithStatus } from '@/lib/convex';
-import { QueryError } from '@/components/QueryError';
-import { MediaLibrary } from '@/components/admin/MediaLibrary';
-import { useState } from 'react';
 
 export const Route = createFileRoute('/admin/lessons/$lessonId')({
 	component: EditLessonPage,
@@ -64,7 +64,10 @@ function EditLessonPage() {
 		defaultValues: {
 			title: lesson?.title ?? '',
 			content: lesson?.content ?? '',
-			contentType: (lesson?.contentType ?? 'text') as 'text' | 'video' | 'interactive',
+			contentType: (lesson?.contentType ?? 'text') as
+				| 'text'
+				| 'video'
+				| 'interactive',
 			estimatedMinutes: lesson?.estimatedMinutes ?? 5,
 			order: lesson?.order ?? 0,
 			isActive: lesson?.isActive ?? false,
@@ -116,7 +119,7 @@ function EditLessonPage() {
 		return (
 			<div className="space-y-6">
 				<div className="flex items-center gap-4">
-					<Button variant="ghost" size="icon" asChild>
+					<Button asChild size="icon" variant="ghost">
 						<Link to="/admin/lessons">
 							<ArrowLeft className="h-4 w-4" />
 						</Link>
@@ -139,7 +142,7 @@ function EditLessonPage() {
 		return (
 			<div className="space-y-6">
 				<div className="flex items-center gap-4">
-					<Button variant="ghost" size="icon" asChild>
+					<Button asChild size="icon" variant="ghost">
 						<Link to="/admin/lessons">
 							<ArrowLeft className="h-4 w-4" />
 						</Link>
@@ -177,7 +180,7 @@ function EditLessonPage() {
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center gap-4">
-				<Button variant="ghost" size="icon" asChild>
+				<Button asChild size="icon" variant="ghost">
 					<Link to="/admin/lessons">
 						<ArrowLeft className="h-4 w-4" />
 					</Link>
@@ -190,7 +193,7 @@ function EditLessonPage() {
 				</div>
 			</div>
 
-			<Tabs defaultValue="content" className="space-y-6">
+			<Tabs className="space-y-6" defaultValue="content">
 				<TabsList>
 					<TabsTrigger value="content">Content</TabsTrigger>
 					<TabsTrigger value="media">Media</TabsTrigger>
@@ -204,7 +207,7 @@ function EditLessonPage() {
 						form.handleSubmit();
 					}}
 				>
-					<TabsContent value="content" className="space-y-6">
+					<TabsContent className="space-y-6" value="content">
 						<Card>
 							<CardHeader>
 								<CardTitle>Lesson Content</CardTitle>
@@ -219,10 +222,10 @@ function EditLessonPage() {
 											<Label htmlFor="title">Title *</Label>
 											<Input
 												id="title"
+												onBlur={field.handleBlur}
+												onChange={(e) => field.handleChange(e.target.value)}
 												placeholder="e.g., Introduction to Linear Equations"
 												value={field.state.value}
-												onChange={(e) => field.handleChange(e.target.value)}
-												onBlur={field.handleBlur}
 											/>
 											{field.state.meta.errors.length > 0 && (
 												<p className="text-destructive text-sm">
@@ -238,13 +241,13 @@ function EditLessonPage() {
 										<div className="space-y-2">
 											<Label htmlFor="content">Content *</Label>
 											<Textarea
-												id="content"
-												placeholder="Write the lesson content here... (Markdown supported)"
-												value={field.state.value}
-												onChange={(e) => field.handleChange(e.target.value)}
-												onBlur={field.handleBlur}
-												rows={20}
 												className="font-mono"
+												id="content"
+												onBlur={field.handleBlur}
+												onChange={(e) => field.handleChange(e.target.value)}
+												placeholder="Write the lesson content here... (Markdown supported)"
+												rows={20}
+												value={field.state.value}
 											/>
 											{field.state.meta.errors.length > 0 && (
 												<p className="text-destructive text-sm">
@@ -259,28 +262,22 @@ function EditLessonPage() {
 
 						<div className="flex justify-between gap-4">
 							<Button
+								onClick={() => setShowDeleteDialog(true)}
 								type="button"
 								variant="destructive"
-								onClick={() => setShowDeleteDialog(true)}
 							>
 								<Trash2 className="mr-2 h-4 w-4" />
 								Delete
 							</Button>
 							<div className="flex gap-4">
-								<Button
-									type="button"
-									variant="outline"
-									asChild
-								>
-									<Link to="/admin/lessons">
-										Cancel
-									</Link>
+								<Button asChild type="button" variant="outline">
+									<Link to="/admin/lessons">Cancel</Link>
 								</Button>
 								<form.Subscribe
 									selector={(state) => [state.canSubmit, state.isSubmitting]}
 								>
 									{([canSubmit, isSubmitting]) => (
-										<Button type="submit" disabled={!canSubmit || isSubmitting}>
+										<Button disabled={!canSubmit || isSubmitting} type="submit">
 											{isSubmitting ? 'Saving...' : 'Save Changes'}
 										</Button>
 									)}
@@ -289,11 +286,11 @@ function EditLessonPage() {
 						</div>
 					</TabsContent>
 
-					<TabsContent value="media" className="space-y-6">
+					<TabsContent className="space-y-6" value="media">
 						<MediaLibrary lessonId={lessonId} />
 					</TabsContent>
 
-					<TabsContent value="settings" className="space-y-6">
+					<TabsContent className="space-y-6" value="settings">
 						<Card>
 							<CardHeader>
 								<CardTitle>Lesson Settings</CardTitle>
@@ -317,12 +314,12 @@ function EditLessonPage() {
 										<div className="space-y-2">
 											<Label htmlFor="contentType">Content Type</Label>
 											<Select
-												value={field.state.value}
 												onValueChange={(value) =>
 													field.handleChange(
 														value as 'text' | 'video' | 'interactive'
 													)
 												}
+												value={field.state.value}
 											>
 												<SelectTrigger id="contentType">
 													<SelectValue />
@@ -351,15 +348,15 @@ function EditLessonPage() {
 											</Label>
 											<Input
 												id="estimatedMinutes"
-												type="number"
 												min={1}
-												value={field.state.value}
+												onBlur={field.handleBlur}
 												onChange={(e) =>
 													field.handleChange(
 														Number.parseInt(e.target.value) || 1
 													)
 												}
-												onBlur={field.handleBlur}
+												type="number"
+												value={field.state.value}
 											/>
 										</div>
 									)}
@@ -381,15 +378,15 @@ function EditLessonPage() {
 											<Label htmlFor="order">Display Order</Label>
 											<Input
 												id="order"
-												type="number"
 												min={0}
-												value={field.state.value}
+												onBlur={field.handleBlur}
 												onChange={(e) =>
 													field.handleChange(
 														Number.parseInt(e.target.value) || 0
 													)
 												}
-												onBlur={field.handleBlur}
+												type="number"
+												value={field.state.value}
 											/>
 										</div>
 									)}
@@ -401,11 +398,11 @@ function EditLessonPage() {
 											<Label>Status</Label>
 											<div className="flex items-center space-x-2 pt-2">
 												<Switch
-													id="isActive"
 													checked={field.state.value}
+													id="isActive"
 													onCheckedChange={field.handleChange}
 												/>
-												<Label htmlFor="isActive" className="font-normal">
+												<Label className="font-normal" htmlFor="isActive">
 													{field.state.value ? 'Published' : 'Draft'}
 												</Label>
 											</div>
@@ -417,28 +414,22 @@ function EditLessonPage() {
 
 						<div className="flex justify-between gap-4">
 							<Button
+								onClick={() => setShowDeleteDialog(true)}
 								type="button"
 								variant="destructive"
-								onClick={() => setShowDeleteDialog(true)}
 							>
 								<Trash2 className="mr-2 h-4 w-4" />
 								Delete
 							</Button>
 							<div className="flex gap-4">
-								<Button
-									type="button"
-									variant="outline"
-									asChild
-								>
-									<Link to="/admin/lessons">
-										Cancel
-									</Link>
+								<Button asChild type="button" variant="outline">
+									<Link to="/admin/lessons">Cancel</Link>
 								</Button>
 								<form.Subscribe
 									selector={(state) => [state.canSubmit, state.isSubmitting]}
 								>
 									{([canSubmit, isSubmitting]) => (
-										<Button type="submit" disabled={!canSubmit || isSubmitting}>
+										<Button disabled={!canSubmit || isSubmitting} type="submit">
 											{isSubmitting ? 'Saving...' : 'Save Changes'}
 										</Button>
 									)}
@@ -449,20 +440,20 @@ function EditLessonPage() {
 				</form>
 			</Tabs>
 
-			<AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+			<AlertDialog onOpenChange={setShowDeleteDialog} open={showDeleteDialog}>
 				<AlertDialogContent>
 					<AlertDialogHeader>
 						<AlertDialogTitle>Delete Lesson</AlertDialogTitle>
 						<AlertDialogDescription>
-							Are you sure you want to delete this lesson? This action cannot
-							be undone.
+							Are you sure you want to delete this lesson? This action cannot be
+							undone.
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel>Cancel</AlertDialogCancel>
 						<AlertDialogAction
-							onClick={handleDelete}
 							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+							onClick={handleDelete}
 						>
 							Delete
 						</AlertDialogAction>

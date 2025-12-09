@@ -33,7 +33,7 @@ export function DeleteConfirmDialog({
 	isDeleting = false,
 }: DeleteConfirmDialogProps) {
 	return (
-		<AlertDialog open={open} onOpenChange={onOpenChange}>
+		<AlertDialog onOpenChange={onOpenChange} open={open}>
 			<AlertDialogContent>
 				<AlertDialogHeader>
 					<AlertDialogTitle>{title}</AlertDialogTitle>
@@ -42,9 +42,9 @@ export function DeleteConfirmDialog({
 				<AlertDialogFooter>
 					<AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
 					<AlertDialogAction
-						onClick={onConfirm}
-						disabled={isDeleting}
 						className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+						disabled={isDeleting}
+						onClick={onConfirm}
 					>
 						{isDeleting ? 'Deleting...' : confirmText}
 					</AlertDialogAction>

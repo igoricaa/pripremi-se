@@ -1,6 +1,5 @@
-import { useState } from 'react';
 import { Check, ChevronsUpDown } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
 	Command,
@@ -15,6 +14,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
 
 interface ComboboxProps {
 	options: { value: string; label: string }[];
@@ -39,14 +39,14 @@ export function Combobox({
 	const selected = options.find((o) => o.value === value);
 
 	return (
-		<Popover open={open} onOpenChange={setOpen}>
+		<Popover onOpenChange={setOpen} open={open}>
 			<PopoverTrigger asChild>
 				<Button
-					variant="outline"
-					role="combobox"
 					aria-expanded={open}
-					disabled={disabled}
 					className="w-full justify-between"
+					disabled={disabled}
+					role="combobox"
+					variant="outline"
 				>
 					{selected?.label ?? (
 						<span className="text-muted-foreground">{placeholder}</span>
@@ -54,7 +54,7 @@ export function Combobox({
 					<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className="w-full p-0" align="start">
+			<PopoverContent align="start" className="w-full p-0">
 				<Command>
 					<CommandInput placeholder={searchPlaceholder} />
 					<CommandList>
@@ -63,11 +63,11 @@ export function Combobox({
 							{options.map((opt) => (
 								<CommandItem
 									key={opt.value}
-									value={opt.label}
 									onSelect={() => {
 										onValueChange(opt.value);
 										setOpen(false);
 									}}
+									value={opt.label}
 								>
 									<Check
 										className={cn(

@@ -6,7 +6,9 @@ export const startLessonProgressSchema = z.object({
 	lessonId: z.string().min(1, 'Lesson ID is required'),
 });
 
-export type StartLessonProgressInput = z.infer<typeof startLessonProgressSchema>;
+export type StartLessonProgressInput = z.infer<
+	typeof startLessonProgressSchema
+>;
 
 // Schema for updating lesson progress (e.g., tracking time spent)
 export const updateLessonProgressSchema = z.object({
@@ -17,7 +19,9 @@ export const updateLessonProgressSchema = z.object({
 		.min(0, 'Time spent must be 0 or greater'),
 });
 
-export type UpdateLessonProgressInput = z.infer<typeof updateLessonProgressSchema>;
+export type UpdateLessonProgressInput = z.infer<
+	typeof updateLessonProgressSchema
+>;
 
 // Schema for completing a lesson
 export const completeLessonProgressSchema = z.object({
@@ -29,7 +33,9 @@ export const completeLessonProgressSchema = z.object({
 		.optional(),
 });
 
-export type CompleteLessonProgressInput = z.infer<typeof completeLessonProgressSchema>;
+export type CompleteLessonProgressInput = z.infer<
+	typeof completeLessonProgressSchema
+>;
 
 // Schema for getting a single lesson progress by ID
 export const getLessonProgressSchema = z.object({
@@ -43,11 +49,15 @@ export const getUserLessonProgressSchema = z.object({
 	lessonId: z.string().min(1, 'Lesson ID is required'),
 });
 
-export type GetUserLessonProgressInput = z.infer<typeof getUserLessonProgressSchema>;
+export type GetUserLessonProgressInput = z.infer<
+	typeof getUserLessonProgressSchema
+>;
 
 // Schema for listing user's lesson progress with optional filters
 export const listUserLessonProgressSchema = z.object({
 	status: lessonProgressStatusEnum.optional(),
 });
 
-export type ListUserLessonProgressInput = z.infer<typeof listUserLessonProgressSchema>;
+export type ListUserLessonProgressInput = z.infer<
+	typeof listUserLessonProgressSchema
+>;

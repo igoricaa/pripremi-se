@@ -1,15 +1,11 @@
+import { api } from '@pripremi-se/backend/convex/_generated/api';
+import { createSubjectSchema } from '@pripremi-se/shared';
+import { useForm } from '@tanstack/react-form';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
-import { api } from '@pripremi-se/backend/convex/_generated/api';
-import { useQueryWithStatus } from '@/lib/convex';
-import { useForm } from '@tanstack/react-form';
-import { createSubjectSchema } from '@pripremi-se/shared';
 import { ArrowLeft } from 'lucide-react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import {
 	Card,
 	CardContent,
@@ -17,7 +13,11 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import { toast } from 'sonner';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
+import { useQueryWithStatus } from '@/lib/convex';
 
 export const Route = createFileRoute('/admin/subjects/new')({
 	component: NewSubjectPage,
@@ -45,7 +45,7 @@ function NewSubjectPage() {
 					slug: undefined, // Always auto-generated
 					order: value.order,
 					isActive: value.isActive,
-				})
+				});
 
 				await createSubject(data);
 				toast.success('Subject created successfully');
@@ -53,22 +53,24 @@ function NewSubjectPage() {
 			} catch (error) {
 				toast.error(
 					error instanceof Error ? error.message : 'Failed to create subject'
-				)
+				);
 			}
 		},
-	})
+	});
 
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center gap-4">
-				<Button variant="ghost" size="icon" asChild>
+				<Button asChild size="icon" variant="ghost">
 					<Link to="/admin/subjects">
 						<ArrowLeft className="h-4 w-4" />
 					</Link>
 				</Button>
 				<div>
 					<h1 className="font-bold text-3xl tracking-tight">New Subject</h1>
-					<p className="text-muted-foreground">Create a new curriculum subject</p>
+					<p className="text-muted-foreground">
+						Create a new curriculum subject
+					</p>
 				</div>
 			</div>
 
@@ -92,11 +94,11 @@ function NewSubjectPage() {
 								<div className="space-y-2">
 									<Label htmlFor="name">Name *</Label>
 									<Input
-										id='name'
+										id="name"
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
 										placeholder="e.g., Mathematics"
 										value={field.state.value}
-										onChange={(e) => field.handleChange(e.target.value)}
-										onBlur={field.handleBlur}
 									/>
 									{field.state.meta.errors.length > 0 && (
 										<p className="text-destructive text-sm">
@@ -112,12 +114,12 @@ function NewSubjectPage() {
 								<div className="space-y-2">
 									<Label htmlFor="description">Description</Label>
 									<Textarea
-										id='description'
-										placeholder="A brief description of this subject..."
-										value={field.state.value}
-										onChange={(e) => field.handleChange(e.target.value)}
+										id="description"
 										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										placeholder="A brief description of this subject..."
 										rows={3}
+										value={field.state.value}
 									/>
 								</div>
 							)}
@@ -125,14 +127,14 @@ function NewSubjectPage() {
 
 						<form.Field name="icon">
 							{(field) => (
-								<div className='space-y-2'>
+								<div className="space-y-2">
 									<Label htmlFor="icon">Icon (emoji)</Label>
 									<Input
-										id='icon'
-										placeholder='e.g., emoji'
-										value={field.state.value}
-										onChange={(e) => field.handleChange(e.target.value)}
+										id="icon"
 										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										placeholder="e.g., emoji"
+										value={field.state.value}
 									/>
 								</div>
 							)}
@@ -141,17 +143,17 @@ function NewSubjectPage() {
 						<div className="grid gap-4 sm:grid-cols-2">
 							<form.Field name="order">
 								{(field) => (
-									<div className='space-y-2'>
+									<div className="space-y-2">
 										<Label htmlFor="order">Display Order</Label>
 										<Input
-											id='order'
-											type='number'
+											id="order"
 											min={0}
-											value={field.state.value}
+											onBlur={field.handleBlur}
 											onChange={(e) =>
 												field.handleChange(Number.parseInt(e.target.value) || 0)
 											}
-											onBlur={field.handleBlur}
+											type="number"
+											value={field.state.value}
 										/>
 									</div>
 								)}
@@ -159,15 +161,15 @@ function NewSubjectPage() {
 
 							<form.Field name="isActive">
 								{(field) => (
-									<div className='space-y-2'>
+									<div className="space-y-2">
 										<Label>Status</Label>
 										<div className="flex items-center space-x-2 pt-2">
 											<Switch
-												id='isActive'
 												checked={field.state.value}
+												id="isActive"
 												onCheckedChange={field.handleChange}
 											/>
-											<Label htmlFor="isActive" className="font-normal">
+											<Label className="font-normal" htmlFor="isActive">
 												{field.state.value ? 'Published' : 'Draft'}
 											</Label>
 										</div>
@@ -179,20 +181,14 @@ function NewSubjectPage() {
 				</Card>
 
 				<div className="mt-6 flex justify-end gap-4">
-					<Button
-						type='button'
-						variant='outline'
-						asChild
-					>
-						<Link to="/admin/subjects">
-							Cancel
-						</Link>
+					<Button asChild type="button" variant="outline">
+						<Link to="/admin/subjects">Cancel</Link>
 					</Button>
 					<form.Subscribe
 						selector={(state) => [state.canSubmit, state.isSubmitting]}
 					>
 						{([canSubmit, isSubmitting]) => (
-							<Button type="submit" disabled={!canSubmit || isSubmitting}>
+							<Button disabled={!canSubmit || isSubmitting} type="submit">
 								{isSubmitting ? 'Creating...' : 'Create Subject'}
 							</Button>
 						)}
@@ -200,5 +196,5 @@ function NewSubjectPage() {
 				</div>
 			</form>
 		</div>
-	)
+	);
 }

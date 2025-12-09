@@ -5,8 +5,8 @@
  * with explicit status, error, and loading states.
  */
 import { convexQuery } from '@convex-dev/react-query';
-import { makeUseQueryWithStatus } from 'convex-helpers/react';
 import { useQueries } from 'convex/react';
+import { makeUseQueryWithStatus } from 'convex-helpers/react';
 
 // Re-export convexQuery for use with TanStack Query loaders and useSuspenseQuery
 export { convexQuery };

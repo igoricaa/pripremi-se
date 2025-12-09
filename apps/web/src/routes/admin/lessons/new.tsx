@@ -1,15 +1,11 @@
+import { api } from '@pripremi-se/backend/convex/_generated/api';
+import { CONTENT_TYPES, createLessonSchema } from '@pripremi-se/shared';
+import { useForm } from '@tanstack/react-form';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
-import { api } from '@pripremi-se/backend/convex/_generated/api';
-import { useQueryWithStatus } from '@/lib/convex';
-import { useForm } from '@tanstack/react-form';
-import { createLessonSchema, CONTENT_TYPES } from '@pripremi-se/shared';
 import { ArrowLeft } from 'lucide-react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import {
 	Card,
 	CardContent,
@@ -17,6 +13,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
 	Select,
 	SelectContent,
@@ -24,7 +22,9 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import { toast } from 'sonner';
+import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
+import { useQueryWithStatus } from '@/lib/convex';
 
 export const Route = createFileRoute('/admin/lessons/new')({
 	component: NewLessonPage,
@@ -90,7 +90,10 @@ function NewLessonPage() {
 		subjectsQuery.data?.map((s) => [s._id as string, s.name]) ?? []
 	);
 
-	const sectionsByChapter = new Map<string, NonNullable<typeof sectionsQuery.data>>();
+	const sectionsByChapter = new Map<
+		string,
+		NonNullable<typeof sectionsQuery.data>
+	>();
 	for (const section of sectionsQuery.data ?? []) {
 		const chapterId = section.chapterId as string;
 		if (!sectionsByChapter.has(chapterId)) {
@@ -99,7 +102,10 @@ function NewLessonPage() {
 		sectionsByChapter.get(chapterId)?.push(section);
 	}
 
-	const chaptersBySubject = new Map<string, NonNullable<typeof chaptersQuery.data>>();
+	const chaptersBySubject = new Map<
+		string,
+		NonNullable<typeof chaptersQuery.data>
+	>();
 	for (const chapter of chaptersQuery.data ?? []) {
 		const subjectId = chapter.subjectId as string;
 		if (!chaptersBySubject.has(subjectId)) {
@@ -124,7 +130,7 @@ function NewLessonPage() {
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center gap-4">
-				<Button variant="ghost" size="icon" asChild>
+				<Button asChild size="icon" variant="ghost">
 					<Link to="/admin/lessons">
 						<ArrowLeft className="h-4 w-4" />
 					</Link>
@@ -161,10 +167,10 @@ function NewLessonPage() {
 											<Label htmlFor="title">Title *</Label>
 											<Input
 												id="title"
+												onBlur={field.handleBlur}
+												onChange={(e) => field.handleChange(e.target.value)}
 												placeholder="e.g., Introduction to Linear Equations"
 												value={field.state.value}
-												onChange={(e) => field.handleChange(e.target.value)}
-												onBlur={field.handleBlur}
 											/>
 											{field.state.meta.errors.length > 0 && (
 												<p className="text-destructive text-sm">
@@ -180,13 +186,13 @@ function NewLessonPage() {
 										<div className="space-y-2">
 											<Label htmlFor="content">Content *</Label>
 											<Textarea
-												id="content"
-												placeholder="Write the lesson content here... (Markdown supported)"
-												value={field.state.value}
-												onChange={(e) => field.handleChange(e.target.value)}
-												onBlur={field.handleBlur}
-												rows={15}
 												className="font-mono"
+												id="content"
+												onBlur={field.handleBlur}
+												onChange={(e) => field.handleChange(e.target.value)}
+												placeholder="Write the lesson content here... (Markdown supported)"
+												rows={15}
+												value={field.state.value}
 											/>
 											{field.state.meta.errors.length > 0 && (
 												<p className="text-destructive text-sm">
@@ -213,8 +219,8 @@ function NewLessonPage() {
 										<div className="space-y-2">
 											<Label htmlFor="sectionId">Section *</Label>
 											<Select
-												value={field.state.value}
 												onValueChange={handleSectionChange}
+												value={field.state.value}
 											>
 												<SelectTrigger id="sectionId">
 													<SelectValue placeholder="Select a section" />
@@ -239,9 +245,9 @@ function NewLessonPage() {
 																				</div>
 																				{chapterSections.map((section) => (
 																					<SelectItem
+																						className="pl-6"
 																						key={section._id}
 																						value={section._id}
-																						className="pl-6"
 																					>
 																						{section.name}
 																					</SelectItem>
@@ -269,12 +275,12 @@ function NewLessonPage() {
 										<div className="space-y-2">
 											<Label htmlFor="contentType">Content Type</Label>
 											<Select
-												value={field.state.value}
 												onValueChange={(value) =>
 													field.handleChange(
 														value as 'text' | 'video' | 'interactive'
 													)
 												}
+												value={field.state.value}
 											>
 												<SelectTrigger id="contentType">
 													<SelectValue />
@@ -303,15 +309,15 @@ function NewLessonPage() {
 											</Label>
 											<Input
 												id="estimatedMinutes"
-												type="number"
 												min={1}
-												value={field.state.value}
+												onBlur={field.handleBlur}
 												onChange={(e) =>
 													field.handleChange(
 														Number.parseInt(e.target.value) || 1
 													)
 												}
-												onBlur={field.handleBlur}
+												type="number"
+												value={field.state.value}
 											/>
 										</div>
 									)}
@@ -323,15 +329,15 @@ function NewLessonPage() {
 											<Label htmlFor="order">Display Order</Label>
 											<Input
 												id="order"
-												type="number"
 												min={0}
-												value={field.state.value}
+												onBlur={field.handleBlur}
 												onChange={(e) =>
 													field.handleChange(
 														Number.parseInt(e.target.value) || 0
 													)
 												}
-												onBlur={field.handleBlur}
+												type="number"
+												value={field.state.value}
 											/>
 											{selectedSectionId && (
 												<p className="text-muted-foreground text-xs">
@@ -348,11 +354,11 @@ function NewLessonPage() {
 											<Label>Status</Label>
 											<div className="flex items-center space-x-2 pt-2">
 												<Switch
-													id="isActive"
 													checked={field.state.value}
+													id="isActive"
 													onCheckedChange={field.handleChange}
 												/>
-												<Label htmlFor="isActive" className="font-normal">
+												<Label className="font-normal" htmlFor="isActive">
 													{field.state.value ? 'Published' : 'Draft'}
 												</Label>
 											</div>
@@ -364,23 +370,21 @@ function NewLessonPage() {
 
 						<div className="flex gap-4">
 							<Button
+								asChild
+								className="flex-1"
 								type="button"
 								variant="outline"
-								className="flex-1"
-								asChild
 							>
-								<Link to="/admin/lessons">
-									Cancel
-								</Link>
+								<Link to="/admin/lessons">Cancel</Link>
 							</Button>
 							<form.Subscribe
 								selector={(state) => [state.canSubmit, state.isSubmitting]}
 							>
 								{([canSubmit, isSubmitting]) => (
 									<Button
-										type="submit"
 										className="flex-1"
 										disabled={!canSubmit || isSubmitting}
+										type="submit"
 									>
 										{isSubmitting ? 'Creating...' : 'Create Lesson'}
 									</Button>
