@@ -89,6 +89,11 @@ export const submitResponse = authedZodMutation({
 			throw new Error('Attempt not found');
 		}
 
+		// Security: Verify the attempt belongs to the current user
+		if (attempt.userId !== user._id) {
+			throw new Error('Unauthorized: You can only submit responses to your own attempts');
+		}
+
 		const existingResponse = await db
 			.query('answerResponses')
 			.withIndex('by_attemptId_questionId', (q) => q.eq('attemptId', attemptId).eq('questionId', questionId))

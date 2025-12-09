@@ -18,16 +18,6 @@ import {
 } from '@/components/ui/card';
 import { DataTable } from '@/components/ui/data-table';
 import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import {
 	Select,
 	SelectContent,
 	SelectItem,
@@ -36,6 +26,8 @@ import {
 } from '@/components/ui/select';
 import { SearchInput } from '@/components/ui/search-input';
 import { getLessonColumns } from './columns';
+import { DELETE_MESSAGES } from '@/lib/constants/admin-ui';
+import { DeleteConfirmDialog } from '@/components/admin/DeleteConfirmDialog';
 
 export const Route = createFileRoute('/admin/lessons/')({
 	loader: async ({ context }) => {
@@ -100,26 +92,13 @@ function LessonsPage() {
 				<LessonsCard onDeleteRequest={(id) => setDeleteId(id)} />
 			</Suspense>
 
-			<AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>Delete Lesson</AlertDialogTitle>
-						<AlertDialogDescription>
-							Are you sure you want to delete this lesson? This action cannot
-							be undone. All associated files will also be deleted.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction
-							onClick={handleDelete}
-							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-						>
-							Delete
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+			<DeleteConfirmDialog
+				open={!!deleteId}
+				onOpenChange={() => setDeleteId(null)}
+				onConfirm={handleDelete}
+				title={DELETE_MESSAGES.lesson.title}
+				description={DELETE_MESSAGES.lesson.description}
+			/>
 		</div>
 	);
 }

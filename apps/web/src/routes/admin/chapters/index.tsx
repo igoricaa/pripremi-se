@@ -8,6 +8,8 @@ import { toast } from 'sonner';
 import { api } from '@pripremi-se/backend/convex/_generated/api';
 import { convexQuery } from '@/lib/convex';
 import { CardWithTableSkeleton } from '@/components/admin/skeletons';
+import { DeleteConfirmDialog } from '@/components/admin/DeleteConfirmDialog';
+import { DELETE_MESSAGES } from '@/lib/constants/admin-ui';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -17,16 +19,6 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import { DataTable } from '@/components/ui/data-table';
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
 import {
 	Select,
 	SelectContent,
@@ -102,27 +94,13 @@ function ChaptersPage() {
 				<ChaptersCard onDeleteRequest={(id) => setDeleteId(id)} />
 			</Suspense>
 
-			<AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>Delete Chapter</AlertDialogTitle>
-						<AlertDialogDescription>
-							Are you sure you want to delete this chapter? This action cannot
-							be undone. All sections and lessons under this chapter must be
-							deleted first.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction
-							onClick={handleDelete}
-							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-						>
-							Delete
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+			<DeleteConfirmDialog
+				open={!!deleteId}
+				onOpenChange={() => setDeleteId(null)}
+				onConfirm={handleDelete}
+				title={DELETE_MESSAGES.chapter.title}
+				description={DELETE_MESSAGES.chapter.description}
+			/>
 		</div>
 	);
 }

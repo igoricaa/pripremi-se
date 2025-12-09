@@ -1,12 +1,6 @@
 import { QUESTION_TYPES, questionTypeRequiresOptions, type QuestionType } from '@pripremi-se/shared';
 import { toast } from 'sonner';
-
-export interface QuestionOption {
-	text: string;
-	isCorrect: boolean;
-	order: number;
-	_id?: string;
-}
+import type { QuestionOption } from '@/components/admin/QuestionOptionsEditor';
 
 /**
  * Validates question options based on question type.

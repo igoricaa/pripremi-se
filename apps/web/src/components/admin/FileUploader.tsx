@@ -8,9 +8,11 @@ import {
 } from '@pripremi-se/shared';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Upload, X, FileImage, FileVideo, FileAudio, FileText } from 'lucide-react';
+import { Upload, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { formatBytes, getFileIconByMime } from '@/lib/format-utils';
+import { MAX_FILE_UPLOAD_COUNT } from '@/lib/constants/admin-ui';
 
 interface FileUploaderProps {
 	lessonId: string;
@@ -28,36 +30,12 @@ interface UploadingFile {
 	error?: string;
 }
 
-function formatBytes(bytes: number): string {
-	if (bytes === 0) return '0 Bytes';
-	const k = 1024;
-	const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-	const i = Math.floor(Math.log(bytes) / Math.log(k));
-	return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
-}
-
-function getFileIcon(mimeType: string) {
-	const type = getFileTypeFromMime(mimeType);
-	switch (type) {
-		case 'image':
-			return <FileImage className="h-8 w-8" />;
-		case 'video':
-			return <FileVideo className="h-8 w-8" />;
-		case 'audio':
-			return <FileAudio className="h-8 w-8" />;
-		case 'pdf':
-			return <FileText className="h-8 w-8" />;
-		default:
-			return <FileText className="h-8 w-8" />;
-	}
-}
-
 export function FileUploader({
 	lessonId,
 	onUploadComplete,
 	onCancel,
 	accept,
-	maxFiles = 10,
+	maxFiles = MAX_FILE_UPLOAD_COUNT,
 	className,
 }: FileUploaderProps) {
 	const [isDragging, setIsDragging] = useState(false);
@@ -265,7 +243,7 @@ export function FileUploader({
 							className="flex items-center gap-4 rounded-lg border p-3"
 						>
 							<div className="text-muted-foreground">
-								{getFileIcon(uploadingFile.file.type)}
+								{getFileIconByMime(uploadingFile.file.type)}
 							</div>
 							<div className="flex-1 min-w-0">
 								<p className="truncate text-sm font-medium">

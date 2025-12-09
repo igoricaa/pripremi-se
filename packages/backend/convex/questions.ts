@@ -343,27 +343,54 @@ export const countQuestionsForAdmin = editorQuery({
 			return { count: results.length };
 		}
 
-		// For accurate counts with filters, we need to query and count
-		// This is acceptable for admin use with moderate data sizes
-		let questions = await db.query('questions').collect();
+		// Use indexes for efficient counting - same strategy as listQuestionsPaginated
+		let usedIndexForDifficulty = false;
+		let baseQuery;
 
-		// Apply filters
-		if (args.lessonId) {
-			questions = questions.filter((q) => q.lessonId === args.lessonId);
+		if (args.lessonId && args.type) {
+			baseQuery = db.query('questions')
+				.withIndex('by_lessonId_type', (q) => q.eq('lessonId', args.lessonId!).eq('type', args.type!));
+		} else if (args.lessonId) {
+			baseQuery = db.query('questions')
+				.withIndex('by_lessonId', (q) => q.eq('lessonId', args.lessonId!));
+		} else if (args.sectionId && args.type) {
+			baseQuery = db.query('questions')
+				.withIndex('by_sectionId_type', (q) => q.eq('sectionId', args.sectionId!).eq('type', args.type!));
+		} else if (args.sectionId) {
+			baseQuery = db.query('questions')
+				.withIndex('by_sectionId', (q) => q.eq('sectionId', args.sectionId!));
+		} else if (args.chapterId && args.type) {
+			baseQuery = db.query('questions')
+				.withIndex('by_chapterId_type', (q) => q.eq('chapterId', args.chapterId!).eq('type', args.type!));
+		} else if (args.chapterId) {
+			baseQuery = db.query('questions')
+				.withIndex('by_chapterId', (q) => q.eq('chapterId', args.chapterId!));
+		} else if (args.subjectId && args.type) {
+			baseQuery = db.query('questions')
+				.withIndex('by_subjectId_type', (q) => q.eq('subjectId', args.subjectId!).eq('type', args.type!));
+		} else if (args.subjectId) {
+			baseQuery = db.query('questions')
+				.withIndex('by_subjectId', (q) => q.eq('subjectId', args.subjectId!));
+		} else if (args.type && args.difficulty) {
+			baseQuery = db.query('questions')
+				.withIndex('by_type_difficulty', (q) => q.eq('type', args.type!).eq('difficulty', args.difficulty!));
+			usedIndexForDifficulty = true;
+		} else if (args.type) {
+			baseQuery = db.query('questions')
+				.withIndex('by_type', (q) => q.eq('type', args.type!));
+		} else if (args.difficulty) {
+			baseQuery = db.query('questions')
+				.withIndex('by_difficulty', (q) => q.eq('difficulty', args.difficulty!));
+			usedIndexForDifficulty = true;
+		} else {
+			// No filters - count all
+			baseQuery = db.query('questions');
 		}
-		if (args.sectionId) {
-			questions = questions.filter((q) => q.sectionId === args.sectionId);
-		}
-		if (args.chapterId) {
-			questions = questions.filter((q) => q.chapterId === args.chapterId);
-		}
-		if (args.subjectId) {
-			questions = questions.filter((q) => q.subjectId === args.subjectId);
-		}
-		if (args.type) {
-			questions = questions.filter((q) => q.type === args.type);
-		}
-		if (args.difficulty) {
+
+		let questions = await baseQuery.collect();
+
+		// Post-filter for difficulty if we used a non-difficulty index
+		if (args.difficulty && !usedIndexForDifficulty) {
 			questions = questions.filter((q) => q.difficulty === args.difficulty);
 		}
 

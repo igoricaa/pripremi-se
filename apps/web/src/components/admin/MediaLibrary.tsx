@@ -12,16 +12,6 @@ import {
 	CardContent,
 } from '@/components/ui/card';
 import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import {
 	Sheet,
 	SheetContent,
 	SheetDescription,
@@ -43,6 +33,8 @@ import {
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { FileUploader } from './FileUploader';
+import { DeleteConfirmDialog } from './DeleteConfirmDialog';
+import { DELETE_MESSAGES } from '@/lib/constants/admin-ui';
 
 interface MediaLibraryProps {
 	lessonId: string;
@@ -100,7 +92,6 @@ function getFileTypeBadgeVariant(fileType: FileType): 'default' | 'secondary' {
 export function MediaLibrary({ lessonId, className }: MediaLibraryProps) {
 	const [showUploader, setShowUploader] = useState(false);
 	const [deleteId, setDeleteId] = useState<string | null>(null);
-	const [isDeleting, setIsDeleting] = useState(false);
 	const [editingFile, setEditingFile] = useState<{
 		id: string;
 		altText: string;
@@ -113,22 +104,29 @@ export function MediaLibrary({ lessonId, className }: MediaLibraryProps) {
 	);
 
 	const updateLessonFile = useMutation(api.lessonFiles.updateLessonFile);
-	const deleteLessonFile = useMutation(api.lessonFiles.deleteLessonFile);
+	const deleteLessonFile = useMutation(api.lessonFiles.deleteLessonFile).withOptimisticUpdate((localStore, args) => {
+		const current = localStore.getQuery(api.lessonFiles.listLessonFilesByLesson, { lessonId });
+
+		if (current === undefined) return;
+
+		const updated = current.filter((item) => item._id !== args.id);
+		
+		localStore.setQuery(api.lessonFiles.listLessonFilesByLesson, { lessonId }, updated);
+		toast.success('File deleted successfully');
+	});
 
 	const handleDelete = async () => {
 		if (!deleteId) return;
 
-		setIsDeleting(true);
+		const idToDelete = deleteId;
+		setDeleteId(null);
+
 		try {
-			await deleteLessonFile({ id: deleteId });
-			toast.success('File deleted successfully');
+			await deleteLessonFile({ id: idToDelete });
 		} catch (error) {
 			toast.error(
 				error instanceof Error ? error.message : 'Failed to delete file'
 			);
-		} finally {
-			setIsDeleting(false);
-			setDeleteId(null);
 		}
 	};
 
@@ -357,28 +355,13 @@ export function MediaLibrary({ lessonId, className }: MediaLibraryProps) {
 			</Sheet>
 
 			{/* Delete confirmation */}
-			<AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>Delete File</AlertDialogTitle>
-						<AlertDialogDescription>
-							Are you sure you want to delete this file? This action cannot be
-							undone. Any references to this file in the lesson content will be
-							broken.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-						<AlertDialogAction
-							onClick={handleDelete}
-							disabled={isDeleting}
-							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-						>
-							{isDeleting ? 'Deleting...' : 'Delete'}
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+			<DeleteConfirmDialog
+				open={!!deleteId}
+				onOpenChange={() => setDeleteId(null)}
+				onConfirm={handleDelete}
+				title={DELETE_MESSAGES.file.title}
+				description={DELETE_MESSAGES.file.description}
+			/>
 		</div>
 	);
 }

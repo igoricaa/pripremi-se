@@ -22,16 +22,6 @@ import {
 } from '@/components/ui/card';
 import { DataTable, type PaginationState } from '@/components/ui/data-table';
 import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import {
 	Select,
 	SelectContent,
 	SelectItem,
@@ -39,6 +29,8 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import { getQuestionColumns } from './columns';
+import { DeleteConfirmDialog } from '@/components/admin/DeleteConfirmDialog';
+import { DELETE_MESSAGES } from '@/lib/constants/admin-ui';
 
 // URL search params schema for server-side pagination
 interface QuestionsSearch {
@@ -108,13 +100,7 @@ export const Route = createFileRoute('/admin/questions/')({
 
 function QuestionsPage() {
 	const [deleteId, setDeleteId] = useState<string | null>(null);
-	const deleteQuestion = useMutation(
-		api.questions.deleteQuestion
-	).withOptimisticUpdate(() => {
-		// Invalidate paginated query cache on delete
-		// Note: We can't easily update paginated results, so we just show toast
-		toast.success('Question deleted successfully');
-	});
+	const deleteQuestion = useMutation(api.questions.deleteQuestion);
 
 	const handleDelete = async () => {
 		if (!deleteId) return;
@@ -124,6 +110,7 @@ function QuestionsPage() {
 
 		try {
 			await deleteQuestion({ id: idToDelete });
+			toast.success('Question deleted successfully');
 		} catch (error) {
 			toast.error(
 				error instanceof Error ? error.message : 'Failed to delete question'
@@ -158,26 +145,13 @@ function QuestionsPage() {
 				</Suspense>
 			</Card>
 
-			<AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>Delete Question</AlertDialogTitle>
-						<AlertDialogDescription>
-							Are you sure you want to delete this question? This action cannot
-							be undone. Questions linked to tests cannot be deleted.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction
-							onClick={handleDelete}
-							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-						>
-							Delete
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+			<DeleteConfirmDialog
+				open={!!deleteId}
+				onOpenChange={() => setDeleteId(null)}
+				onConfirm={handleDelete}
+				title={DELETE_MESSAGES.question.title}
+				description={DELETE_MESSAGES.question.description}
+			/>
 		</div>
 	);
 }

@@ -256,7 +256,8 @@ export default defineSchema({
 		.index('by_userId', ['userId'])
 		.index('by_lessonId', ['lessonId'])
 		.index('by_userId_lessonId', ['userId', 'lessonId'])
-		.index('by_status', ['status']),
+		.index('by_status', ['status'])
+		.index('by_userId_status', ['userId', 'status']),
 
 	// Student Enrollments (tracks which subjects students are enrolled in)
 	studentEnrollments: defineTable({

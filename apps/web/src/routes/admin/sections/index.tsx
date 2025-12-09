@@ -18,16 +18,6 @@ import {
 } from '@/components/ui/card';
 import { DataTable } from '@/components/ui/data-table';
 import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import {
 	Select,
 	SelectContent,
 	SelectItem,
@@ -36,6 +26,8 @@ import {
 } from '@/components/ui/select';
 import { SearchInput } from '@/components/ui/search-input';
 import { getSectionColumns } from './columns';
+import { DeleteConfirmDialog } from '@/components/admin/DeleteConfirmDialog';
+import { DELETE_MESSAGES } from '@/lib/constants/admin-ui';
 
 export const Route = createFileRoute('/admin/sections/')({
 	loader: async ({ context }) => {
@@ -70,7 +62,7 @@ function SectionsPage() {
 		if (!deleteId) return;
 
 		const idToDelete = deleteId;
-		setDeleteId(null); // Close dialog immediately
+		setDeleteId(null);
 
 		try {
 			await deleteSection({ id: idToDelete });
@@ -103,26 +95,13 @@ function SectionsPage() {
 			</Suspense>
 
 			{/* Delete dialog - always available */}
-			<AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>Delete Section</AlertDialogTitle>
-						<AlertDialogDescription>
-							Are you sure you want to delete this section? This action cannot
-							be undone. All lessons under this section must be deleted first.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction
-							onClick={handleDelete}
-							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-						>
-							Delete
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+			<DeleteConfirmDialog
+				open={!!deleteId}
+				onOpenChange={() => setDeleteId(null)}
+				onConfirm={handleDelete}
+				title={DELETE_MESSAGES.section.title}
+				description={DELETE_MESSAGES.section.description}
+			/>
 		</div>
 	);
 }

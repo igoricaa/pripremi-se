@@ -119,7 +119,6 @@ export const getTestById = editorZodQuery({
  * Get a test with all its linked questions (via junction table).
  * Requires editor or admin role.
  */
-// TODO: Check if this can be optimized using some convex-helpers functions or generally be better written.
 export const getTestWithQuestions = editorZodQuery({
 	args: getTestByIdSchema,
 	handler: async (ctx, args) => {
@@ -137,31 +136,46 @@ export const getTestWithQuestions = editorZodQuery({
 			.withIndex('by_testId_order', (q) => q.eq('testId', testId))
 			.collect();
 
-		// Fetch full question details with options
-		const questions = await Promise.all(
-			testQuestions.map(async (tq) => {
-				const question = await db.get(tq.questionId);
-				if (!question) return null;
+		if (testQuestions.length === 0) {
+			return { ...test, questions: [] };
+		}
 
-				const options = await db
-					.query('questionOptions')
-					.withIndex('by_questionId_order', (q) => q.eq('questionId', tq.questionId))
-					.collect();
+		// Batch fetch all questions at once
+		const questionIds = testQuestions.map((tq) => tq.questionId);
+		const questionsData = await Promise.all(questionIds.map((id) => db.get(id)));
+		const questionMap = new Map(
+			questionsData.filter(Boolean).map((q) => [q!._id, q!])
+		);
+
+		// Batch fetch all options for all questions at once
+		const allOptions = await Promise.all(
+			questionIds.map((questionId) =>
+				db.query('questionOptions')
+					.withIndex('by_questionId_order', (q) => q.eq('questionId', questionId))
+					.collect()
+			)
+		);
+		const optionsMap = new Map(
+			questionIds.map((id, i) => [id, allOptions[i]])
+		);
+
+		// Combine questions with their options and order
+		const questions = testQuestions
+			.map((tq) => {
+				const question = questionMap.get(tq.questionId);
+				if (!question) return null;
 
 				return {
 					...question,
-					order: tq.order, // Order from junction table
-					options,
+					order: tq.order,
+					options: optionsMap.get(tq.questionId) ?? [],
 				};
 			})
-		);
-
-		// Filter out any null questions (deleted questions)
-		const validQuestions = questions.filter((q) => q !== null);
+			.filter((q) => q !== null);
 
 		return {
 			...test,
-			questions: validQuestions,
+			questions,
 		};
 	},
 });

@@ -17,17 +17,9 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import { DataTable } from '@/components/ui/data-table';
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
 import { getSubjectColumns } from './columns';
+import { DeleteConfirmDialog } from '@/components/admin/DeleteConfirmDialog';
+import { DELETE_MESSAGES } from '@/lib/constants/admin-ui';
 
 export const Route = createFileRoute('/admin/subjects/')({
 	loader: async ({ context }) => {
@@ -56,7 +48,7 @@ function SubjectsPage() {
 		if (!deleteId) return;
 
 		const idToDelete = deleteId;
-		setDeleteId(null); // Close dialog immediately
+		setDeleteId(null);
 
 		try {
 			await deleteSubject({ id: idToDelete });
@@ -69,7 +61,6 @@ function SubjectsPage() {
 
 	return (
 		<div className="space-y-6">
-			{/* Header renders immediately - no data needed */}
 			<div className="flex items-center justify-between">
 				<div>
 					<h1 className="font-bold text-3xl tracking-tight">Subjects</h1>
@@ -83,39 +74,22 @@ function SubjectsPage() {
 				</Button>
 			</div>
 
-			{/* Data component suspends until ready */}
 			<Suspense fallback={<CardWithTableSkeleton preset="subjects" rows={20} />}>
 				<SubjectsCard onDeleteRequest={(id) => setDeleteId(id)} />
 			</Suspense>
 
-			{/* Delete dialog - always available */}
-			<AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>Delete Subject</AlertDialogTitle>
-						<AlertDialogDescription>
-							Are you sure you want to delete this subject? This action cannot
-							be undone. All chapters, sections, and lessons under this subject
-							must be deleted first.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction
-							onClick={handleDelete}
-							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-						>
-							Delete
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+			<DeleteConfirmDialog
+				open={!!deleteId}
+				onOpenChange={() => setDeleteId(null)}
+				onConfirm={handleDelete}
+				title={DELETE_MESSAGES.subject.title}
+				description={DELETE_MESSAGES.subject.description}
+			/>
 		</div>
 	);
 }
 
 function SubjectsCard({ onDeleteRequest }: { onDeleteRequest: (id: string) => void }) {
-	// Single query - data already prefetched by loader
 	const { data: subjects } = useSuspenseQuery(
 		convexQuery(api.subjects.listSubjects, {})
 	);
